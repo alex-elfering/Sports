@@ -68,6 +68,8 @@ season_stats <- school_results %>%
   summarise_if(is.numeric, sum, na.rm = TRUE) %>%
   ungroup() 
 
+# identifies when a program goes on a break
+# for instance, making sure the rolling function doesn't count when Appalachian State played in FBS until '81 and resumed in 2014
 school_pivot_list <- list()
 for(i in unique(season_stats$School)){
   
