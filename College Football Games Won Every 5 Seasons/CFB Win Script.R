@@ -11,8 +11,12 @@ library(stringi)
 library(glue)
 library(zoo)
 
+# trim function https://stackoverflow.com/questions/2261079/how-can-i-trim-leading-and-trailing-white-space
+trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+
 # load college football results
 FullSchedule <- read.csv('C:/Users/alexe/Desktop/FBS Full Schedule.csv') %>% select(-X)
+Conferences <- read.csv('C:/Users/alexe/Desktop/Conferences.csv') %>% mutate(Conf = trim(Conf), Div = trim(Div)) %>% select(-X)
 
 # data cleaning and identify wins/losses/ties and other metrics
 school_results <- FullSchedule %>%
@@ -40,9 +44,7 @@ school_results <- FullSchedule %>%
           Conf_Game = ifelse(Conf == Opp_Conf & (Conf != 'Ind' & Opp_Conf!= 'Ind') , 1, 0),
   ) %>%
   select(-Notes,
-         -X,
-         -Div) %>%
-  as.tibble()
+         -Div) 
 
 season_stats <- school_results %>%
   select(Season,
@@ -66,31 +68,10 @@ season_stats <- school_results %>%
   summarise_if(is.numeric, sum, na.rm = TRUE) %>%
   ungroup() 
 
-school_complete <- list()
+school_pivot_list <- list()
 for(i in unique(season_stats$School)){
   
-  school_filter <- season_stats%>%
-    filter(School == i) 
-
-  min_season <- min(school_filter$Season) 
-  max_season <- max(school_filter$Season) 
-   
-  school_complete_seasons <- season_stats%>% 
-    filter(School == i) %>%
-    group_by(School) %>%
-    complete(Season = seq(min_season, max_season, 1)) %>%
-    as.data.frame()
-  
-  school_complete[[i]] <- school_complete_seasons
-  
-}
-
-school_complete_df <- rbindlist(school_complete)
-
-school_pivot_list <- list()
-for(i in unique(school_complete_df$School)){
-  
-  school_filter <- school_complete_df%>%
+  school_filter <- season_stats %>%
     filter(School == i) %>%
     mutate(Not_NA = ifelse(!is.na(Conf), 1, 0)) %>%
     mutate(Row = rowid(rleid(Not_NA)) * Not_NA) %>%
