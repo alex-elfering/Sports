@@ -56,7 +56,6 @@ for(a in SeasonVar){
     
     WeekSeason <- UseSeason %>%
       filter(Wk == i) %>%
-      #filter(School == 'Nebraska') %>%
       left_join(UseELODF,
                 by = c('School' = 'School')) %>%
       rename(SchoolELO = Rating) %>%
@@ -120,8 +119,6 @@ for(a in SeasonVar){
     
     if(i == EndWeek){
       
-      #print('Regress happens')
-      
       SeasonConf <- Conferences %>%
         filter(Season == a) %>%
         mutate(Conf = trim(Conf)) %>%
@@ -180,31 +177,7 @@ for(a in SeasonVar){
   SeasonGames[[a]] <- SeasonDF
   SeasonMovements[[a]] <- weeklyDF
   
-}
-
-rbindlist(SeasonMovements) %>%
-  group_by(season,
-           wk) %>%
-  mutate(rank = dense_rank(desc(Rating))) %>%
-  ungroup() %>%
-  filter(School == 'Nebraska') %>%
-  filter(season == 1970) %>%
-  arrange(season,
-          wk) %>%
-  mutate(rank = ifelse(rank > 25, '', rank)) %>%
-  as.data.frame() %>%
-  distinct()
-
-rbindlist(SeasonMovements) %>%
-  group_by(season,
-           wk) %>%
-  mutate(rank = dense_rank(desc(Rating))) %>%
-  ungroup() %>%
-  filter(season == 2008,
-         wk == 8,
-         rank <= 25) %>%
-  as.data.frame()
-  
+}s
 
 ELODF <- rbindlist(SeasonGames, fill = TRUE) %>%
   distinct() %>%
