@@ -2,14 +2,6 @@
 # generates historical ELO ratings for each CFB team in FBS
 # HUGE THANKS TO https://www.sports-reference.com/ for providing the data
 
-library(elo)
-library(data.table)
-library(tidyverse)
-library(ggplot2)
-library(rvest)
-library(stringi)
-library(glue)
-
 # data sources ----
 source('~/CFB Parent Variables.R')
 
@@ -177,7 +169,7 @@ for(a in SeasonVar){
   SeasonGames[[a]] <- SeasonDF
   SeasonMovements[[a]] <- weeklyDF
   
-}s
+}
 
 ELODF <- rbindlist(SeasonGames, fill = TRUE) %>%
   distinct() %>%
