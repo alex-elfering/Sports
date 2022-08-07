@@ -6,7 +6,6 @@
 source('~/CFB Parent Variables.R')
 
 FilterSeason <- WinningGames %>%
-  #filter(School == 'Kentucky' | Opponent == 'Kentucky') %>%
   filter(Season %in% SeasonVar) %>%
   mutate(Ties = ifelse(Pts == Opp, 1, 0),
          Loses = ifelse(Pts < Opp, 1, 0)) %>%
