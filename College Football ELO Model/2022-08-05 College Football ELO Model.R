@@ -203,7 +203,10 @@ FullELODF <- ELODF %>%
          Location = case_when(Location == '' ~ '@',
                               Location == '@' ~ '',
                               Location == 'N' ~ 'N')) %>%
-  bind_rows(ELODF) 
+  bind_rows(ELODF) %>%
+  arrange(Season,
+          team.A,
+          Wk)
 
 write.csv(ELODF, 'C:/Users/alexe/Desktop/ELODF.csv')
 write.csv(FullELODF, '~/FullELODF.csv')
