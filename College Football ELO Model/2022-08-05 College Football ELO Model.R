@@ -172,7 +172,10 @@ for(a in SeasonVar){
 
 ELODF <- rbindlist(SeasonGames, fill = TRUE) %>%
   distinct() %>%
-  mutate(p.Team = round(p.Team, 3)) %>%
+  mutate(p.Team = round(p.Team, 3),
+         ELOAdj = round(ELOAdj, 1),
+         SchoolELO = round(SchoolELO, 1),
+         OpponentELO = round(OpponentELO, 1)) %>%
   rename(elo.A = SchoolELO,
          elo.B = OpponentELO,
          p.A = p.Team,
