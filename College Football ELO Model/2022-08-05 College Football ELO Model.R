@@ -1,10 +1,11 @@
 #### ELO MODEL 
-# generates historical ELO ratings for each CFB team in FBS
+# generates historical ELO ratings for each CFB team in FBS going back to 1869
 # HUGE THANKS TO https://www.sports-reference.com/ for providing the data
 
 # data sources ----
 source('~/CFB Parent Variables.R')
 
+# prepare data for ELO ratings  ----
 FilterSeason <- WinningGames %>%
   filter(Season %in% SeasonVar) %>%
   mutate(Ties = ifelse(Pts == Opp, 1, 0),
@@ -14,8 +15,10 @@ FilterSeason <- WinningGames %>%
 AllSchools <- FilterSeason$School
 AllOpponents <- FilterSeason$Opponent
 
+# all teams start with an initial rating of 1500
 InitRatings <- tibble(School = unique(c(AllOpponents, AllSchools)),
                       Rating = 1500)
+
 UseELODF <- data.frame()
 NewRatings <- data.frame()
 WeeklyMovements <- data.frame()
@@ -27,7 +30,6 @@ WeeklyList <- list()
 SeasonMovements <- list()
 for(a in SeasonVar){
   
-  #a <- 1972
   
   UseSeason <- FilterSeason %>%
     filter(Season == a)
@@ -37,8 +39,7 @@ for(a in SeasonVar){
   
   for(i in BegWeek:EndWeek){
     
-    #i <- 2
-    
+    # use the initial ratings for the very first iteration of the model otherwise the latest ratings
     if(i == 1 & a == BegSeason){
       UseELODF <- InitRatings
     }else{
@@ -108,6 +109,7 @@ for(a in SeasonVar){
       ungroup() %>%
       arrange(desc(Rating))
     
+    # regress each team's rating to the final average their respective conference, otherwise, keep iterating per week each season
     if(i == EndWeek){
       
       SeasonConf <- Conferences %>%
@@ -142,32 +144,20 @@ for(a in SeasonVar){
       FinalELORatings[[a]] <- ExportRatings
       
       print(a)
-      print(ExportRatings)
-      
+
     }else{
-      
-      #print('No Regress happens')
       
       NewRatings <- NewRatings
       
-      WeeklyMovements <- NewRatings %>%
-        mutate(season = a,
-               wk = i)
-      
-      
     }
     
-    WeeklyList[[i]] <- WeeklyMovements
     WeekGames[[i]] <- WeekUpdate
     
   }
   
   SeasonDF <- rbindlist(WeekGames)
-  weeklyDF <- rbindlist(WeeklyList, fill = TRUE)
-  
   SeasonGames[[a]] <- SeasonDF
-  SeasonMovements[[a]] <- weeklyDF
-  
+
 }
 
 ELODF <- rbindlist(SeasonGames, fill = TRUE) %>%
