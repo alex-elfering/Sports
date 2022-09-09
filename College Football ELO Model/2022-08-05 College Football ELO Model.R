@@ -134,13 +134,6 @@ for(a in SeasonVar){
                Rating = RegressRating) %>%
         arrange(desc(Rating)) 
       
-      ExportRatings <- UpdateRatings %>%
-        mutate(Season = a)
-      
-      WeeklyMovements <- NewRatings %>%
-        mutate(season = a,
-               wk = i)
-      
       FinalELORatings[[a]] <- ExportRatings
       
       print(a)
