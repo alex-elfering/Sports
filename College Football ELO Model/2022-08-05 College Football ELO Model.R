@@ -1,200 +1,215 @@
 #### ELO MODEL 
-# generates historical ELO ratings for each CFB team in FBS going back to 1869
+# generates historical ELO ratings for each CFB team in FBS
 # HUGE THANKS TO https://www.sports-reference.com/ for providing the data
+
+library(elo)
+library(data.table)
+library(tidyverse)
+library(ggplot2)
+library(rvest)
+library(stringi)
+library(glue)
 
 # data sources ----
 source('~/CFB Parent Variables.R')
 
-# prepare data for ELO ratings  ----
-FilterSeason <- WinningGames %>%
-  filter(Season %in% SeasonVar) %>%
-  mutate(Ties = ifelse(Pts == Opp, 1, 0),
-         Loses = ifelse(Pts < Opp, 1, 0)) %>%
-  mutate(Wk = as.numeric(Wk))
+all_schools <- winning_games$school
+all_opponents <- winning_games$opponent
 
-AllSchools <- FilterSeason$School
-AllOpponents <- FilterSeason$Opponent
+init_ratings <- tibble(school = unique(c(all_opponents, all_schools)),
+                       rating = 1500)
+use_elo_df <- data.frame()
+new_ratings <- data.frame()
 
-# all teams start with an initial rating of 1500
-InitRatings <- tibble(School = unique(c(AllOpponents, AllSchools)),
-                      Rating = 1500)
-
-UseELODF <- data.frame()
-NewRatings <- data.frame()
-WeeklyMovements <- data.frame()
-
-WeekGames <- list()
-SeasonGames <- list()
-FinalELORatings <- list()
-WeeklyList <- list()
-SeasonMovements <- list()
-for(a in SeasonVar){
+week_games <- list()
+season_games <- list()
+final_elo_ratings <- list()
+weekly_list <- list()
+season_movements <- list()
+for(a in season_var){
   
+  #a <- 1972
   
-  UseSeason <- FilterSeason %>%
-    filter(Season == a)
+  use_season <- winning_games %>%
+    mutate(wk = as.numeric(wk),
+           loses = ifelse(pts < opp, 1, 0),
+           ties = ifelse(pts == opp, 1, 0)) %>%
+    filter(season == a)
   
-  BegWeek <- min(UseSeason$Wk)
-  EndWeek <- max(UseSeason$Wk)
+  beg_week <- min(use_season$wk)
+  end_week <- max(use_season$wk)
   
-  for(i in BegWeek:EndWeek){
+  for(i in beg_week:end_week){
     
-    # use the initial ratings for the very first iteration of the model otherwise the latest ratings
-    if(i == 1 & a == BegSeason){
-      UseELODF <- InitRatings
+    #i <- 1
+    
+    if(i == 1 & a == 1869){
+      use_elo_df <- init_ratings
     }else{
-      UseELODF <- NewRatings
+      use_elo_df <- new_ratings
     }
     
-    WeekSeason <- UseSeason %>%
-      filter(Wk == i) %>%
-      left_join(UseELODF,
-                by = c('School' = 'School')) %>%
-      rename(SchoolELO = Rating) %>%
-      left_join(UseELODF,
-                by = c('Opponent' = 'School')) %>%
-      rename(OppELO = Rating) %>%
-      mutate(SchoolELOAdj = case_when(Location == '' ~ SchoolELO + Adv,
-                                      Location == '@' ~ SchoolELO + DisAdv,
-                                      Location == 'N' ~ SchoolELO + NoAdv)) %>%
-      mutate(OppELOAdj = case_when(Location == '@' ~ OppELO + Adv,
-                                   Location == '' ~ OppELO + DisAdv,
-                                   Location == 'N' ~ OppELO + NoAdv)) %>%
-      mutate(m = (SchoolELOAdj - OppELOAdj)/400,
-             EloDiff = abs(SchoolELOAdj-OppELOAdj),
-             PS = round(EloDiff/25, 1),
-             p.Opponent = 1/(1+10^m),
-             p.Team = 1-p.Opponent,
-             MarginABS = abs(Pts-Opp),
-             MovMult = log(MarginABS + 1)*(2.2/(EloDiff * 0.001 + 2.2)),
-             KAdj = K*log(MarginABS + 1),
-             ELOAdj = (K * MovMult) * (1-p.Team),
-             TeamELOUpdate = case_when(Wins == 1 ~ SchoolELO + ELOAdj,
-                                       Ties == 1 ~ SchoolELO,
-                                       Loses == 1 ~ SchoolELO + (ELOAdj*-1) ),
-             OpponentELOUpdate = case_when(Loses == 1 ~ OppELO + ELOAdj,
-                                           Ties == 1 ~ OppELO,
-                                           Wins == 1 ~ OppELO + (ELOAdj * -1) ))
+    week_season <- use_season %>%
+      filter(wk == i) %>%
+      #filter(School == 'Nebraska') %>%
+      left_join(use_elo_df,
+                by = c('school' = 'school')) %>%
+      rename(school_elo = rating) %>%
+      left_join(use_elo_df,
+                by = c('opponent' = 'school')) %>%
+      rename(opp_elo = rating) %>%
+      mutate(school_elo_adj = case_when(location == '' ~ school_elo + homeadv,
+                                        location == '@' ~ school_elo + awayadv,
+                                        location == 'N' ~ school_elo + 0)) %>%
+      mutate(opp_elo_adj = case_when(location == '@' ~ opp_elo + homeadv,
+                                     location == '' ~ opp_elo + awayadv,
+                                     location == 'N' ~ opp_elo + 0)) %>%
+      mutate(m = (school_elo_adj - opp_elo_adj)/400,
+             elo_diff = abs(school_elo_adj-opp_elo_adj),
+             ps = round(elo_diff/25, 1),
+             p_opponent = 1/(1+10^m),
+             p_team = 1-p_opponent,
+             margin_abs = abs(pts-opp),
+             mov_mult = log(margin_abs + 1)*(2.2/(elo_diff * 0.001 + 2.2)),
+             k_adj = k_val*log(margin_abs + 1),
+             elo_adj = (k_val * mov_mult) * (1-p_team),
+             team_elo_update = case_when(wins == 1 ~ school_elo + elo_adj,
+                                         ties == 1 ~ school_elo,
+                                         loses == 1 ~ school_elo + (elo_adj*-1) ),
+             opponent_elo_update = case_when(loses == 1 ~ opp_elo + elo_adj,
+                                             ties == 1 ~ opp_elo,
+                                             wins == 1 ~ opp_elo + (elo_adj * -1) ))
     
-    WeekUpdate <- WeekSeason %>%
-      select(Season,
-             Wk,
-             Month,
-             Day,
-             Year,
-             School,
-             Opponent,
-             Location,
-             Pts,
-             Opp,
-             PS,
-             ELOAdj,
-             p.Team,
-             p.Opponent,
-             SchoolELO = TeamELOUpdate,
-             OpponentELO = OpponentELOUpdate)
+    week_update <- week_season %>%
+      select(season,
+             wk,
+             month,
+             day,
+             year,
+             school,
+             opponent,
+             location,
+             pts,
+             opp,
+             ps,
+             elo_adj,
+             p_team,
+             p_opponent,
+             school_elo = team_elo_update,
+             opponent_elo = opponent_elo_update)
     
-    SchoolELO <- WeekUpdate %>%
-      select(School,
-             Rating = SchoolELO)
+    school_elo <- week_update %>%
+      select(school,
+             rating = school_elo)
     
-    OpponentELO <- WeekUpdate %>%
-      select(School = Opponent,
-             Rating = OpponentELO)
+    opponent_elo <- week_update %>%
+      select(school = opponent,
+             rating = opponent_elo)
     
-    NewRatings <- bind_rows(UseELODF, SchoolELO, OpponentELO) %>%
-      group_by(School) %>%
-      mutate(Index = row_number()) %>%
-      filter(Index == max(Index)) %>%
+    new_ratings <- bind_rows(use_elo_df, school_elo, opponent_elo) %>%
+      group_by(school) %>%
+      mutate(index = row_number()) %>%
+      filter(index == max(index)) %>%
       ungroup() %>%
-      arrange(desc(Rating))
+      arrange(desc(rating))
     
-    # regress each team's rating to the final average their respective conference, otherwise, keep iterating per week each season
-    if(i == EndWeek){
+    if(i == end_week){
       
-      SeasonConf <- Conferences %>%
-        filter(Season == a) %>%
-        mutate(Conf = trim(Conf)) %>%
-        select(Var.2,
-               Conf)
+      #print('Regress happens')
       
-      UpdateRatings <- NewRatings %>%
-        left_join(SeasonConf,
-                  by = c('School' = 'Var.2')) %>%
-        group_by(Conf) %>%
-        mutate(MeanConfELO = mean(Rating)) %>%
+      season_conf <- conferences %>%
+        filter(season == a) %>%
+        #mutate(Conf = trim(Conf)) %>%
+        select(school,
+               conf)
+      
+      update_ratings <- new_ratings %>%
+        left_join(season_conf,
+                  by = c('school' = 'school')) %>%
+        group_by(conf) %>%
+        mutate(mean_conf_elo = mean(rating)) %>%
         ungroup() %>%
-        mutate(RegressRating = case_when(Rating > MeanConfELO ~ Rating-((Rating-MeanConfELO)*RegressVal),
-                                         is.na(Conf) ~ 1500,
-                                         Rating < MeanConfELO ~ Rating + ((MeanConfELO-Rating)*RegressVal))) %>%
-        arrange(desc(Rating))
+        mutate(regress_rating = case_when(rating > mean_conf_elo ~ rating-((rating-mean_conf_elo)*regress_val),
+                                          is.na(conf) ~ 1500,
+                                          rating < mean_conf_elo ~ rating + ((mean_conf_elo-rating)*regress_val))) %>%
+        arrange(desc(rating))
       
-      NewRatings <- UpdateRatings %>%
-        select(School,
-               Rating = RegressRating) %>%
-        arrange(desc(Rating)) 
+      new_ratings <- update_ratings %>%
+        select(school,
+               rating = regress_rating) %>%
+        arrange(desc(rating)) 
       
-      FinalELORatings[[a]] <- ExportRatings
+      export_ratings <- update_ratings %>%
+        mutate(Season = a)
+      
+      weekly_movements <- new_ratings %>%
+        mutate(season = a,
+               wk = i)
+      
+      final_elo_ratings[[a]] <- export_ratings
       
       print(a)
-
+      print(export_ratings)
+      
     }else{
       
-      NewRatings <- NewRatings
+      #print('No Regress happens')
+      
+      new_ratings <- new_ratings
+      
+      weekly_movements <- new_ratings %>%
+        mutate(season = a,
+               wk = i)
+      
       
     }
     
-    WeekGames[[i]] <- WeekUpdate
+    week_games[[i]] <- week_update
     
   }
   
-  SeasonDF <- rbindlist(WeekGames)
-  SeasonGames[[a]] <- SeasonDF
-
+  season_df <- rbindlist(week_games)
+  weekly_df <- rbindlist(weekly_list, fill = TRUE)
+  
+  season_games[[a]] <- season_df
+  season_movements[[a]] <- weekly_df
+  
 }
 
-ELODF <- rbindlist(SeasonGames, fill = TRUE) %>%
+elo_df <- rbindlist(season_games, fill = TRUE) %>%
   distinct() %>%
-  mutate(p.Team = round(p.Team, 3),
-         ELOAdj = round(ELOAdj, 1),
-         SchoolELO = round(SchoolELO, 1),
-         OpponentELO = round(OpponentELO, 1)) %>%
-  rename(elo.A = SchoolELO,
-         elo.B = OpponentELO,
-         p.A = p.Team,
-         team.A = School,
-         team.B = Opponent
-         ) %>%
-  select(-p.Opponent) %>%
-  arrange(Year,
-          Month,
-          Day)
+  rename(elo_a = school_elo,
+         elo_b = opponent_elo,
+         p_a = p_team,
+         team_a = school,
+         team_b = opponent) %>%
+  select(-p_opponent) %>%
+  arrange(year,
+          month,
+          day)
 
-FullELODF <- ELODF %>%
+full_elo_df <- elo_df %>%
   distinct() %>%
-  select(Season,
-         Wk,
-         Month,
-         Day,
-         Year,
-         team.A = team.B,
-         team.B = team.A,
-         Location,
-         Pts = Opp,
-         Opp = Pts,
-         PS,
-         ELOAdj,
-         p.A,
-         elo.A = elo.B,
-         elo.B = elo.A) %>%
-  mutate(p.A = 1-p.A,
-         Location = case_when(Location == '' ~ '@',
-                              Location == '@' ~ '',
-                              Location == 'N' ~ 'N')) %>%
-  bind_rows(ELODF) %>%
-  arrange(Season,
-          team.A,
-          Wk)
+  select(season,
+         wk,
+         month,
+         day,
+         year,
+         team_a = team_b,
+         team_b = team_a,
+         location,
+         pts = opp,
+         opp = pts,
+         ps,
+         elo_adj,
+         p_a,
+         elo_a = elo_b,
+         elo_b = elo_a) %>%
+  mutate(p_a = 1-p_a,
+         location = case_when(location == '' ~ '@',
+                              location == '@' ~ '',
+                              location == 'N' ~ 'N')) %>%
+  bind_rows(elo_df) 
 
 write.csv(ELODF, 'C:/Users/alexe/Desktop/ELODF.csv')
 write.csv(FullELODF, '~/FullELODF.csv')
