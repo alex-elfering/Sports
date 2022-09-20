@@ -39,7 +39,7 @@ for(a in season_var){
   beg_week <- min(use_season$wk)
   end_week <- max(use_season$wk)
   
-  for(i in beg_week:end_week){
+  for(i in beg_week:3){
     
     #i <- 1
     
@@ -59,10 +59,10 @@ for(a in season_var){
                 by = c('opponent' = 'school')) %>%
       rename(opp_elo = rating) %>%
       mutate(school_elo_adj = case_when(location == '' ~ school_elo + homeadv,
-                                        location == '@' ~ school_elo + awayadv,
+                                        location == '@' ~ school_elo + (homeadv*-1),
                                         location == 'N' ~ school_elo + 0)) %>%
       mutate(opp_elo_adj = case_when(location == '@' ~ opp_elo + homeadv,
-                                     location == '' ~ opp_elo + awayadv,
+                                     location == '' ~ opp_elo + (homeadv*-1),
                                      location == 'N' ~ opp_elo + 0)) %>%
       mutate(m = (school_elo_adj - opp_elo_adj)/400,
              elo_diff = abs(school_elo_adj-opp_elo_adj),
@@ -211,5 +211,5 @@ full_elo_df <- elo_df %>%
                               location == 'N' ~ 'N')) %>%
   bind_rows(elo_df) 
 
-write.csv(ELODF, 'C:/Users/alexe/Desktop/ELODF.csv')
-write.csv(FullELODF, '~/FullELODF.csv')
+write.csv(elo_df, 'C:/Users/alexe/Desktop/ELODF.csv')
+write.csv(full_elo_df, '~/FullELODF.csv')
