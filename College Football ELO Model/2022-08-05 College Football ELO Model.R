@@ -39,7 +39,7 @@ for(a in season_var){
   beg_week <- min(use_season$wk)
   end_week <- max(use_season$wk)
   
-  for(i in beg_week:3){
+  for(i in beg_week:end_week){
     
     #i <- 1
     
@@ -129,9 +129,16 @@ for(a in season_var){
         group_by(conf) %>%
         mutate(mean_conf_elo = mean(rating)) %>%
         ungroup() %>%
-        mutate(regress_rating = case_when(rating > mean_conf_elo ~ rating-((rating-mean_conf_elo)*regress_val),
+        mutate(fbs = ifelse(!is.na(conf), 1, 0)) %>%
+        group_by(fbs) %>%
+        mutate(overall_mean = mean(rating)) %>%
+        ungroup() %>%
+        mutate(fbs_team = ifelse(!is.na(conf), 1, 0)) %>%
+        mutate(regress_rating = case_when(rating > mean_conf_elo & conf != 'Ind' ~ rating-((rating-mean_conf_elo)*regress_val),
+                                          rating < mean_conf_elo & conf != 'Ind' ~ rating + ((mean_conf_elo-rating)*regress_val),
                                           is.na(conf) ~ 1500,
-                                          rating < mean_conf_elo ~ rating + ((mean_conf_elo-rating)*regress_val))) %>%
+                                          rating > overall_mean & conf == 'Ind' ~ rating-((rating-overall_mean)*regress_val),
+                                          rating < overall_mean & conf == 'Ind' ~ rating + ((overall_mean-rating)*regress_val))) %>%
         arrange(desc(rating))
       
       new_ratings <- update_ratings %>%
