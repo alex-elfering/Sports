@@ -218,5 +218,5 @@ full_elo_df <- elo_df %>%
                               location == 'N' ~ 'N')) %>%
   bind_rows(elo_df) 
 
-write.csv(elo_df, 'C:/Users/alexe/Desktop/ELODF.csv')
-write.csv(full_elo_df, '~/FullELODF.csv')
+write.csv(elo_df, '~/GitHub/Sports/College Football ELO Model/Data/ELODF.csv')
+write.csv(full_elo_df, '~/GitHub/Sports/College Football ELO Model/Data/FullELODF.csv')
