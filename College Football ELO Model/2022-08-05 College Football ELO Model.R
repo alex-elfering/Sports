@@ -149,10 +149,6 @@ for(a in season_var){
       export_ratings <- update_ratings %>%
         mutate(Season = a)
       
-      weekly_movements <- new_ratings %>%
-        mutate(season = a,
-               wk = i)
-      
       final_elo_ratings[[a]] <- export_ratings
       
       print(a)
