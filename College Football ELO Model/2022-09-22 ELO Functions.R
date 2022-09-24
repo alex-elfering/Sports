@@ -72,4 +72,53 @@ elo_week_update <- function(df, week_int = i, team_adv = 75, opp_adv = -75, k_va
   
 }
 
-test_update <- elo_week_update(df = use_season)
+team_elo_scores <- function(df){
+  
+  school_elo <- df %>%
+    select(school,
+           rating = school_elo)
+  
+  opponent_elo <- df %>%
+    select(school = opponent,
+           rating = opponent_elo)
+  
+  new_ratings <- bind_rows(use_elo_df, school_elo, opponent_elo) %>%
+    group_by(school) %>%
+    mutate(index = row_number()) %>%
+    filter(index == max(index)) %>%
+    ungroup() %>%
+    arrange(desc(rating))
+  
+  #print(new_ratings)
+  
+}
+
+regress_ratings <- function(conf_df, df, regress_val = 0.3){
+  
+  update_ratings <- df %>%
+    left_join(conf_df,
+              by = c('school' = 'school')) %>%
+    group_by(conf) %>%
+    mutate(mean_conf_elo = mean(rating)) %>%
+    ungroup() %>%
+    mutate(fbs = ifelse(!is.na(conf), 1, 0)) %>%
+    group_by(fbs) %>%
+    mutate(overall_mean = mean(rating)) %>%
+    ungroup() %>%
+    mutate(fbs_team = ifelse(!is.na(conf), 1, 0)) %>%
+    mutate(regress_rating = case_when(rating > mean_conf_elo & conf != 'Ind' ~ rating-((rating-mean_conf_elo)*regress_val),
+                                      rating < mean_conf_elo & conf != 'Ind' ~ rating + ((mean_conf_elo-rating)*regress_val),
+                                      is.na(conf) ~ 1500,
+                                      rating > overall_mean & conf == 'Ind' ~ rating-((rating-overall_mean)*regress_val),
+                                      rating < overall_mean & conf == 'Ind' ~ rating + ((overall_mean-rating)*regress_val))) %>%
+    select(school,
+           rating,
+           regress_rating,
+           mean_conf_elo,
+           overall_mean) %>%
+    arrange(desc(rating))
+  
+ # print(update_ratings)
+  
+  
+}
