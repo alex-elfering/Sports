@@ -4,7 +4,7 @@ library(ggplot2)
 library(glue)
 
 test_scores <- list.files('~/GitHub/Sports/College Football ELO Model/Test Data', pattern = "*.csv", full.names = TRUE)
-test_scores_df <- as.data.frame(rbindlist(lapply(db1b, fread)))
+test_scores_df <- as.data.frame(rbindlist(lapply(test_scores, fread)))
 
 bracket_brier <- test_scores_df %>%
   mutate(brier = ifelse(wins == 1, brier, NA)) %>%
