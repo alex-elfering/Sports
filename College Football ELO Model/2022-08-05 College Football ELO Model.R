@@ -12,6 +12,7 @@ library(glue)
 
 # data sources ----
 source('~/CFB Parent Variables.R')
+source('~/GitHub/Sports/College Football ELO Model/2022-09-22 ELO Functions.R')
 
 all_schools <- winning_games$school
 all_opponents <- winning_games$opponent
@@ -44,7 +45,7 @@ for(a in season_var){
       use_elo_df <- new_ratings
     }
     
-    week_update <- elo_week_update(df = use_season, team_adv = 50, opp_adv = -50, k_val = 20)
+    week_update <- elo_week_update(df = use_season, team_adv = 50, opp_adv = -50, k_val = 30)
     
     new_ratings <- team_elo_scores(df = week_update)
     
@@ -119,5 +120,5 @@ full_elo_df <- elo_df %>%
                               location == 'N' ~ 'N')) %>%
   bind_rows(elo_df) 
 
-write.csv(elo_df, '~/GitHub/Sports/College Football ELO Model/Data/ELODF1.csv')
-write.csv(full_elo_df, '~/GitHub/Sports/College Football ELO Model/Data/FullELODF1.csv')
+write.csv(elo_df, '~/GitHub/Sports/College Football ELO Model/Data/ELODF.csv')
+write.csv(full_elo_df, '~/GitHub/Sports/College Football ELO Model/Data/FullELODF.csv')
