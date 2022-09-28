@@ -145,6 +145,6 @@ for(l in 1:max(test_elo_variables$test_no)){
   print(filter_test)
   
   #write.csv(elo_df, '~/GitHub/Sports/College Football ELO Model/Data/ELODF1.csv')
-  write.csv(game_bins, glue('~/GitHub/Sports/College Football ELO Model/Test Data/ELO Test {l}.csv'))
+  write.csv(game_bins, glue('~/GitHub/Sports/College Football ELO Model/Testing/Test Data/ELO Test {l}.csv'))
   
 }
