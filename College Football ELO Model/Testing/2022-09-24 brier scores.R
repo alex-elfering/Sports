@@ -1,3 +1,5 @@
+# summarizes the average brier score for every variable test done for the College Football ELO Model
+
 library(data.table)
 library(tidyverse)
 library(ggplot2)
