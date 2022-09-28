@@ -1,6 +1,7 @@
 # This script creates a brier score for every game won based on the probability in the College Football ELO Model
 
 library(glue)
+library(tidyverse)
 
 k_vals <- seq(20,60,10)
 home_adv_vals <- seq(50,150,10)
