@@ -45,7 +45,7 @@ for(a in season_var){
       use_elo_df <- new_ratings
     }
     
-    week_update <- elo_week_update(df = use_season, team_adv = 50, opp_adv = -50, k_val = 30)
+    week_update <- elo_week_update(df = use_season, team_adv = 50, opp_adv = -50, k_val = 20)
     
     new_ratings <- team_elo_scores(df = week_update)
     
