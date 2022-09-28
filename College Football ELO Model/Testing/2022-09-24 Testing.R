@@ -1,4 +1,4 @@
-# ELO Testing script
+# This script creates a brier score for every game won based on the probability in the College Football ELO Model
 
 library(glue)
 
