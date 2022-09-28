@@ -62,4 +62,4 @@ brier_scores_chart <- ggplot(brier_scores,
         panel.grid.major.y = element_blank(),
         panel.grid.major.x = element_blank()) 
 
-ggsave(brier_scores_chart, file = '~/GitHub/Sports/College Football ELO Model/Testing/brier_scores_chart.png', width = 17, height = 7, units = c('in'))
+ggsave(brier_scores_chart, file = '~/GitHub/Sports/College Football ELO Model/brier_scores_chart.png', width = 17, height = 7, units = c('in'))
