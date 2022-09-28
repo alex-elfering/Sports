@@ -46,7 +46,7 @@ elo_week_update <- function(df, week_int = i, team_adv = 75, opp_adv = -75, k_va
            margin_abs = abs(pts-opp),
            mov_mult = log(margin_abs + 1)*(2.2/(elo_diff * 0.001 + 2.2)),
            k_adj = k_val*log(margin_abs + 1),
-           elo_adj = (k_val * mov_mult) * (1-p_team),
+           elo_adj = (k_adj * mov_mult) * (1-p_team),
            team_elo_update = case_when(wins == 1 ~ school_elo + elo_adj,
                                        ties == 1 ~ school_elo,
                                        loses == 1 ~ school_elo + (elo_adj*-1) ),
