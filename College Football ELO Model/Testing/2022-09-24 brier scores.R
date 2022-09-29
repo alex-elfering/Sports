@@ -8,7 +8,7 @@ library(ggbeeswarm)
 
 options(scipen = 999)
 
-test_scores <- list.files('~/GitHub/Sports/College Football ELO Model/Test Data', pattern = "*.csv", full.names = TRUE)
+test_scores <- list.files('~/GitHub/Sports/College Football ELO Model/Testing/Test Data', pattern = "*.csv", full.names = TRUE)
 test_scores_df <- as.data.frame(rbindlist(lapply(test_scores, fread)))
 
 brier_scores <- test_scores_df %>%
@@ -25,7 +25,9 @@ brier_scores <- test_scores_df %>%
   ungroup() %>%
   arrange(brier_mean_overall)
 
-brier_scores_chart <- ggplot(brier_scores, 
+brier_scores
+
+ggplot(brier_scores, 
        aes(x = NA, 
            y = round(brier_mean_overall, 5))) +
   geom_beeswarm(size = 8,
