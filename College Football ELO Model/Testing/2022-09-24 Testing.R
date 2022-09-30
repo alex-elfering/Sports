@@ -3,9 +3,9 @@
 library(glue)
 library(tidyverse)
 
-k_vals <- seq(20,60,10)
+k_vals <- c(seq(2,18,2),seq(20,60,10))
 home_adv_vals <- seq(50,150,10)
-regress_vals <- seq(0.2,0.6,0.1)
+regress_vals <- seq(0.1,0.6,0.1)
 
 test_elo_variables <- expand.grid(k_vals, home_adv_vals, regress_vals) %>% 
   mutate(test_no = row_number()) %>%
@@ -23,6 +23,9 @@ for(l in 1:max(test_elo_variables$test_no)){
   k_test <- filter_test$k_vals
   home_test <- filter_test$home_adv_vals
   regress_test <- filter_test$regress_vals
+  
+  all_schools <- winning_games$school
+  all_opponents <- winning_games$opponent
   
   init_ratings <- tibble(school = unique(c(all_opponents, all_schools)),
                          rating = 1500)
@@ -145,6 +148,6 @@ for(l in 1:max(test_elo_variables$test_no)){
   print(filter_test)
   
   #write.csv(elo_df, '~/GitHub/Sports/College Football ELO Model/Data/ELODF1.csv')
-  write.csv(game_bins, glue('~/GitHub/Sports/College Football ELO Model/Test Data/ELO Test {l}.csv'))
+  write.csv(game_bins, glue('~/GitHub/Sports/College Football ELO Model/Testing/Test Data/ELO Test {l}.csv'))
   
 }
