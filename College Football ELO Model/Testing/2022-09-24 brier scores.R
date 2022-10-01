@@ -25,26 +25,52 @@ brier_scores <- test_scores_df %>%
   ungroup() %>%
   arrange(brier_mean_overall)
 
-brier_scores
+brier_k <- brier_scores %>%
+  group_by(k_val) %>%
+  summarise(min_b = min(brier_mean_overall),
+            median_b = median(brier_mean_overall),
+            mean_b = mean(brier_mean_overall),
+            max_b = max(brier_mean_overall)) %>%
+  ungroup()
 
-ggplot(brier_scores, 
-       aes(x = NA, 
-           y = round(brier_mean_overall, 5))) +
-  geom_beeswarm(size = 8,
-                cex = 4,
-                color = 'steelblue',
-                #alpha = 0.7,
-                priority = "density") +
-  geom_beeswarm(size = 6,
-                cex = 4,
-                color = 'white',
-                #alpha = 0.7,
-                priority = "density") +
-  coord_flip() +
+brier_adv <- brier_scores %>%
+  group_by(home_adv) %>%
+  summarise(min_b = min(brier_mean_overall),
+            median_b = median(brier_mean_overall),
+            mean_b = mean(brier_mean_overall),
+            max_b = max(brier_mean_overall)) %>%
+  ungroup()
+
+brier_regress <- brier_scores %>%
+  group_by(regress_val) %>%
+  summarise(min_b = min(brier_mean_overall),
+            median_b = median(brier_mean_overall),
+            mean_b = mean(brier_mean_overall),
+            max_b = max(brier_mean_overall)) %>%
+  ungroup()
+
+brier_k
+brier_adv
+brier_regress
+
+brier_scores_chart <- ggplot(brier_scores, 
+                             aes(x = NA, 
+                                 y = round(brier_mean_overall, 5))) +
+  geom_quasirandom(size = 8,
+                   cex = 4,
+                   color = 'steelblue',
+                   #alpha = 0.7,
+                   priority = "density") +
+  geom_quasirandom(size = 6,
+                   cex = 4,
+                   color = 'white',
+                   #alpha = 0.7,
+                   priority = "density") +
+  #coord_flip() +
   labs(x = '',
-       y = 'average brier score',
-       title = 'Average Brier Score of Variable Testing in CFB ELO Forecast',
-       subtitle = 'Each dot represents a specific test using different variables to predict college football games won.\nLower scores indicate better predictions and higher scores indicate worse predictions') +
+       y = '',
+       #title = 'Average Brier Score of Variable Testing in CFB ELO Forecast',
+       subtitle = '') +
   theme(plot.title = element_text(face = 'bold', size = 18),
         plot.subtitle = element_text(size = 16),
         legend.position = 'top',
@@ -55,8 +81,8 @@ ggplot(brier_scores,
         plot.caption.position =  "plot",
         plot.caption = element_text(size = 12),
         axis.title = element_text(size = 12),
-        axis.text.y.left = ggplot2::element_blank(),
-        axis.text.x.bottom = element_text(size = 12, color = 'black'),
+        axis.text.y.left = element_text(size = 12, color = 'black'),
+        axis.text.x.bottom = element_blank(),
         axis.line.y = element_blank(),
         axis.ticks.y = element_blank(),
         strip.text = ggplot2::element_text(size = 12, hjust = 0, face = 'bold', color = 'black'),
