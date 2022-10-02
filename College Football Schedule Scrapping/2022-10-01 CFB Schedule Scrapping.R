@@ -28,7 +28,7 @@ schools_list <- schools %>%
   select(-Var.4) %>%
   mutate(school = case_when(school == 'UTEP' ~ 'Texas-El Paso',
                             school == 'UAB' ~ 'Alabama-Birmingham',
-                            school == 'BYU' ~ "Brigham Young",
+                            school == 'BYU' ~ "brigham-young",
                             school == 'UCF' ~ "Central Florida",
                             school == "LSU" ~ "Louisiana State",
                             school == "Ole Miss" ~ "Mississippi",
@@ -36,10 +36,14 @@ schools_list <- schools %>%
                            school == "USC" ~ 'Southern California',
                            school == 'SMU' ~ "Southern Methodist",
                            school == 'UTSA' ~ 'Texas-San Antonio',
+                           school == 'Louisiana' ~ 'louisiana-lafayette',
+                           school == 'Bowling Green' ~ 'Bowling Green State',
+                           school == 'The Citadel' ~ 'Citadel',
                            TRUE ~ school)) %>%
   filter(school != '') %>%
   mutate(school = tolower(school),
          school = gsub(' ', '-', school),
+         school = gsub("'", '', school),
          school = gsub('\\-&-', '-', school),
          school = gsub('\\&', '', school),
          school = gsub('[()]', '', school)) %>%
@@ -50,18 +54,21 @@ schools_list <- schools %>%
 school_seasons_schedule_list <- list()
 for(i in schools_list$school_url){
   
+  tag_used <- schools_list %>%
+    filter(school_url == i)
+  
   tryCatch({
     schedules <- read_html(i)
     schedules_list <- schedules %>% html_table(fill = TRUE)
     
     if(length(schedules_list) == 1){
-      cfb_item <- as.data.frame(schedules_list[1])
+      cfb_item <- as.data.frame(schedules_list[1]) %>% mutate(tag = tag_used$school_code)
     }else if(length(schedules_list) == 2){
-      cfb_item <- as.data.frame(schedules_list[2])
+      cfb_item <- as.data.frame(schedules_list[2]) %>% mutate(tag = tag_used$school_code)
     }
     
     print(i)
-    print(cfb_item)
+    print(cfb_item) 
     
     school_seasons_schedule_list[[i]] <- cfb_item
     
