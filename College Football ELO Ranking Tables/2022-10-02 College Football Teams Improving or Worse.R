@@ -97,7 +97,8 @@ pre_ratings <- full_elo_df %>%
 
 pre_school <- pre_ratings %>%
   select(team_a,
-         pre_rating = elo_a)
+         pre_rating = elo_a,
+         pre_rank = rank)
 
 season_wk_ranks <- full_elo_df %>%
   filter(season == season_var) %>%
@@ -161,7 +162,8 @@ season_wk_ranks <- full_elo_df %>%
 team_improvement <- season_wk_ranks %>%
   filter(wk == season_wk) %>%
   inner_join(pre_school) %>%
-  mutate(improvement = (elo_a-pre_rating)/pre_rating ) %>%
+  mutate(improvement = (elo_a-pre_rating)/pre_rating,
+         rank_change = pre_rank-rank) %>%
   arrange(desc(improvement)) %>%
   select(team_a,
          record,
@@ -170,13 +172,14 @@ team_improvement <- season_wk_ranks %>%
          current_elo = elo_a,
          pre_elo = pre_rating,
          rank,
-         jump,
+         rank_change,
          result_label,
          next_label) %>%
   mutate(current_elo = round(current_elo, 1),
          pre_elo = round(pre_elo, 1),
          improvement = round(improvement, 3)*100) %>%
-  filter(improvement >= 5 | improvement <= -5) %>%
+  filter(improvement >= 5 | improvement <= -5,
+         dense_rank(desc(improvement)) <=10 | dense_rank((improvement)) <=10) %>%
   rename(School = team_a,
          Record = record,
          `Conference & Div` = conf,
@@ -184,16 +187,16 @@ team_improvement <- season_wk_ranks %>%
          `Current ELO` = current_elo,
          `Pre-Season ELO` = pre_elo,
          Rank = rank,
-         `Jump from Last Week` = jump,
+         `Jump from Week #1` = rank_change,
          `Game Result` = result_label,
          `Next Match` = next_label) 
 
 # the final table
-improve_gt <- team_improvement %>%
+team_improvement %>%
   gt() %>%
   tab_header(
-    title = md("**Which College Football Teams Gained or Lost 5% or more of their Pre-Season ELO rating?**"),
-    subtitle = glue("Through Week #{season_label}")
+    title = md("**Which College Football Teams Improved or Got Worse Since Week #1?**"),
+    subtitle = glue("Top & bottom 10 teams based on ELO Percent Change from Week #1 | As of Week #{season_label}")
   ) %>%
   tab_source_note(
     source_note = glue('ELO ratings score each team based on factors such as home-field advantage, margin of victory, and quality of opponent. At the end of each season, school ratings regress partially to the value of their respective conference.')
@@ -253,31 +256,31 @@ improve_gt <- team_improvement %>%
   fmt("Percent Change", 
       rows = `Percent Change` < 0, 
       fns = percent_symbol) %>%
-  fmt("Jump from Last Week", 
-      rows = `Jump from Last Week` > 0, 
+  fmt("Jump from Week #1", 
+      rows = `Jump from Week #1` > 0, 
       fns = plus_symbol) %>%
   tab_options(table.font.names = "IBM Plex Sans",
               table.font.size = 12) %>%
   cols_align(
     align = c("left"),
-    columns = c(`Jump from Last Week`, `Pre-Season ELO`)
+    columns = c(`Jump from Week #1`, `Pre-Season ELO`)
   ) %>%
   text_transform(
     locations = cells_body(
-      columns = `Jump from Last Week`,
-      rows = `Jump from Last Week` > 0),
+      columns = `Jump from Week #1`,
+      rows = `Jump from Week #1` > 0),
     fn = function(x) paste(x, up_arrow)
   ) %>%
   text_transform(
     locations = cells_body(
-      columns = `Jump from Last Week`,
-      rows = `Jump from Last Week` < 0),
+      columns = `Jump from Week #1`,
+      rows = `Jump from Week #1` < 0),
     fn = function(x) paste(x, down_arrow)
   ) %>%
   text_transform(
     locations = cells_body(
-      columns = `Jump from Last Week`,
-      rows = `Jump from Last Week` == 0),
+      columns = `Jump from Week #1`,
+      rows = `Jump from Week #1` == 0),
     fn = function(x) paste(x, no_arrow)
   ) %>%
   tab_style(
