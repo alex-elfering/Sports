@@ -176,7 +176,7 @@ teams_ranked %>%
   gt() %>%
   tab_header(
     title = md("**College Football ELO Rankings**"),
-    subtitle = glue("Top 25 Teams sorted by ELO Rating | As of Week #{season_label}")
+    subtitle = glue("Top 25 teams sorted by ELO rating | As of Week #{season_label}")
   ) %>%
   tab_source_note(
     source_note = glue('Almost: {teams_almost}')
