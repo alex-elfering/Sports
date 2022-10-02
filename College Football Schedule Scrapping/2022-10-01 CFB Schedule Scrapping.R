@@ -148,6 +148,7 @@ season_dates <- rbindlist(seasons_dates_list, fill = TRUE)
 
 # clean the schedules ----
 # return the season for each date respectively
+
 clean_schedule_df <- rbindlist(school_seasons_schedule_list, fill = TRUE) %>%
   select(-Var.8,
          -Var.9) %>%
@@ -241,7 +242,7 @@ colnames(full_cfb_schedule) <- tolower(colnames(full_cfb_schedule))
 colnames(winning_games) <- tolower(colnames(winning_games))
 colnames(conferences) <- tolower(colnames(conferences))
 
-write.csv(conferences, 'C:/Users/alexe/Desktop/Conferences.csv')
-write.csv(full_cfb_schedule, 'C:/Users/alexe/Desktop/FBS Full Schedule.csv')
-write.csv(winning_games, 'C:/Users/alexe/Desktop/FBS Winning Games.csv')
+write.csv(conferences, '~/GitHub/Sports/College Football Schedule Scrapping/Data/Conferences.csv')
+write.csv(full_cfb_schedule, '~/GitHub/Sports/College Football Schedule Scrapping/Data/FBS Full Schedule.csv')
+write.csv(winning_games, '~/GitHub/Sports/College Football Schedule Scrapping/Data/FBS Winning Games.csv')
 
