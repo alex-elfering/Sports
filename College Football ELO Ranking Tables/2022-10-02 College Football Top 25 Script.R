@@ -5,6 +5,8 @@ library(htmltools)
 
 options(scipen = 999)
 
+setwd('~/GitHub/Sports/College Football ELO Ranking Tables')
+
 # load the elo model and schedule data
 full_elo_df <- read.csv('~/GitHub/Sports/College Football ELO Model/Data/FullELODF.csv') %>% select(-1)
 conferences <- read.csv('~/GitHub/Sports/College Football Schedule Scrapping/Data/Conferences.csv') %>% select(-1)
@@ -174,7 +176,7 @@ teams_ranked %>%
   gt() %>%
   tab_header(
     title = md("**College Football ELO Rankings**"),
-    subtitle = glue("Through Week #{season_wk}")
+    subtitle = glue("Through Week #{season_label}")
   ) %>%
   tab_source_note(
     source_note = glue('Almost: {teams_almost}')
@@ -285,7 +287,7 @@ teams_ranked %>%
   fmt("Jump", 
       rows = `Jump` > 0, 
       fns = plus_symbol) %>% 
-  gtsave("~/GitHub/Sports/College Football ELO Ranking Tables/Top 25 ELO Rankings.png")
+  gtsave("Top 25 ELO Rankings.png")
 
 
 
