@@ -7,3 +7,5 @@ Contains code, dashboards, and visualizations visualizing topics around various 
 **College Football ELO Ratings Model**: Inspired by FiveThirtyEight. Created ELO ratings for College Football teams going back to 1869 to visualize how teams have changed over time, and also to predict future games.
 
 **College Football Schedule Scrapping**: Scrapes College Football games and conferences for use in ELO model.
+
+**College Football ELO Rankings**: Using my ELO ratings, I created several visualizations examining which teams are in the top 25, or which teams are improving the most or becoming worse. The output are several tables that can be updated throughout the season.
