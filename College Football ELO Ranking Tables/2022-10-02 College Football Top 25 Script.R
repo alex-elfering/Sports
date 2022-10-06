@@ -166,9 +166,9 @@ teams_ranked <- season_wk_ranks %>%
          Record = record,
          `Conference & Div` = conf,
          Rank = rank,
-         Jump = jump,
+         `Jump from Prior Week` = jump,
          `Current ELO` = elo_a,
-         `Change` = elo_adj,
+         `Change from Prior Week` = elo_adj,
          `Game Result` = result_label,
          `Next Match` = next_label) 
 
@@ -235,7 +235,7 @@ teams_ranked %>%
   ) %>%
   cols_align(
     align = c("left"),
-    columns = Change
+    columns = `Change from Prior Week`
   ) %>%
   tab_style(
     style = cell_text(
@@ -245,20 +245,20 @@ teams_ranked %>%
   ) %>%
   text_transform(
     locations = cells_body(
-      columns = Jump,
-      rows = Jump > 0),
+      columns = `Jump from Prior Week`,
+      rows = `Jump from Prior Week` > 0),
     fn = function(x) paste(x, up_arrow)
   ) %>%
   text_transform(
     locations = cells_body(
-      columns = Jump,
-      rows = Jump < 0),
+      columns = `Jump from Prior Week`,
+      rows = `Jump from Prior Week` < 0),
     fn = function(x) paste(x, down_arrow)
   ) %>%
   text_transform(
     locations = cells_body(
-      columns = Jump,
-      rows = Jump == 0),
+      columns = `Jump from Prior Week`,
+      rows = `Jump from Prior Week` == 0),
     fn = function(x) paste(x, no_arrow)
   ) %>%
   tab_style(
@@ -266,8 +266,8 @@ teams_ranked %>%
       cell_fill(color = "#F9E3D6")
     ),
     locations = cells_body(
-      columns = Change,
-      rows = Change < 0
+      columns = `Change from Prior Week`,
+      rows = `Change from Prior Week` < 0
     )
   ) %>%
   tab_style(
@@ -275,17 +275,17 @@ teams_ranked %>%
       cell_fill(color = "#c6dbef")
     ),
     locations = cells_body(
-      columns = Change,
-      rows = Change > 0
+      columns = `Change from Prior Week`,
+      rows = `Change from Prior Week` > 0
     )
   ) %>%
   tab_options(table.font.names = "IBM Plex Sans",
               table.font.size = 12) %>%
-  fmt("Change", 
-      rows = `Change` > 0, 
+  fmt("Change from Prior Week", 
+      rows = `Change from Prior Week` > 0, 
       fns = plus_symbol) %>%
-  fmt("Jump", 
-      rows = `Jump` > 0, 
+  fmt("Jump from Prior Week", 
+      rows = `Jump from Prior Week` > 0, 
       fns = plus_symbol) %>% 
   gtsave("Top 25 ELO Rankings.png")
 
