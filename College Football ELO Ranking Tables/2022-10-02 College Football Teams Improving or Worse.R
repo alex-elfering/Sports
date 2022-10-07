@@ -198,10 +198,10 @@ team_improvement %>%
   gt() %>%
   tab_header(
     title = md("**Which College Football Teams Improved or Got Worse Since Week #1?**"),
-    subtitle = glue("Top & bottom 10 teams based on ELO Percent Change from Week #1 | As of Week #{season_label}")
+    subtitle = glue("Top & bottom 10 teams based on ELO Percent Change from Week #1 | {season_var} Season as of Week #{season_label}")
   ) %>%
   tab_source_note(
-    source_note = glue('ELO ratings score each team based on factors such as home-field advantage, margin of victory, and quality of opponent. At the end of each season, school ratings regress partially to the value of their respective conference.')
+    source_note = glue('ELO ratings score each team based on factors such as home-field advantage, margin of victory, and quality of opponent. At the end of each season, school ratings regress partially to the value of their respective conference. Teams new to FBS begin with an ELO rating of 1500.')
   ) %>%
   tab_source_note(
     source_note = "Code by Alex Elfering | Source: College Football Reference | Model Inspired by FiveThirtyEight"
