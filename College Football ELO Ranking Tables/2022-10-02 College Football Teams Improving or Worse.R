@@ -3,6 +3,8 @@
 
 library(gt)
 library(htmltools)
+library(glue)
+library(tidyverse)
 
 options(scipen = 999)
 
@@ -47,7 +49,7 @@ percent_symbol <- function(.x) {
 }
 
 # what games have been played for each team and who is next?
-latest_results <- full_cfb_schedule %>%
+latest_results <- fbs_schedule %>%
   filter(wk == season_wk,
          season == season_var) %>%
   select(wk, 
@@ -62,7 +64,7 @@ latest_results <- full_cfb_schedule %>%
   select(school,
          result_label)
 
-next_match <- full_cfb_schedule %>%
+next_match <- fbs_schedule %>%
   filter(wk == season_wk + 1,
          season == season_var) %>%
   select(wk, 
