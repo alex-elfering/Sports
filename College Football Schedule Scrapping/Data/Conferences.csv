@@ -3802,16 +3802,16 @@
 "3801","Richmond","Southern",NA,1936
 "3802","Arizona State","BIAA",NA,1936
 "3803","Colorado Mines","RMC",NA,1936
-"3804","New Mexico","BIAA",NA,1936
-"3805","Oklahoma State","MVC",NA,1936
-"3806","Western State","RMC",NA,1936
-"3807","Washburn","MVC",NA,1936
-"3808","Sewanee","SEC",NA,1936
-"3809","William & Mary","Southern",NA,1936
-"3810","Northern Arizona","BIAA",NA,1936
-"3811","Grinnell","MVC",NA,1936
-"3812","Wofford","Ind",NA,1936
-"3813","Virginia","Ind",NA,1936
+"3804","Virginia","Southern",NA,1936
+"3805","New Mexico","BIAA",NA,1936
+"3806","Oklahoma State","MVC",NA,1936
+"3807","Western State","RMC",NA,1936
+"3808","Washburn","MVC",NA,1936
+"3809","Sewanee","SEC",NA,1936
+"3810","William & Mary","Southern",NA,1936
+"3811","Northern Arizona","BIAA",NA,1936
+"3812","Grinnell","MVC",NA,1936
+"3813","Wofford","Ind",NA,1936
 "3814","Pittsburgh","Ind",NA,1937
 "3815","Dartmouth","Ind",NA,1937
 "3816","California","PCC",NA,1937
@@ -13877,70 +13877,70 @@
 "13876","Mississippi State","SEC","West",2022
 "13877","Georgia","SEC","East",2022
 "13878","Clemson","ACC","Atlantic",2022
-"13879","Texas Christian","Big 12",NA,2022
-"13880","Texas","Big 12",NA,2022
-"13881","Southern California","Pac-12","South",2022
-"13882","Kansas","Big 12",NA,2022
-"13883","Penn State","Big Ten","East",2022
-"13884","Louisiana State","SEC","West",2022
+"13879","Texas","Big 12",NA,2022
+"13880","Southern California","Pac-12",NA,2022
+"13881","Kansas","Big 12",NA,2022
+"13882","Penn State","Big Ten","East",2022
+"13883","Louisiana State","SEC","West",2022
+"13884","Texas Christian","Big 12",NA,2022
 "13885","Mississippi","SEC","West",2022
 "13886","James Madison","Sun Belt","East",2022
-"13887","Kansas State","Big 12",NA,2022
+"13887","Syracuse","ACC","Atlantic",2022
 "13888","Wake Forest","ACC","Atlantic",2022
-"13889","Syracuse","ACC","Atlantic",2022
-"13890","UCLA","Pac-12","South",2022
-"13891","Tennessee","SEC","East",2022
-"13892","Utah","Pac-12","South",2022
-"13893","North Carolina State","ACC","Atlantic",2022
-"13894","Illinois","Big Ten","West",2022
-"13895","Washington","Pac-12","North",2022
+"13889","Kansas State","Big 12",NA,2022
+"13890","Tennessee","SEC","East",2022
+"13891","UCLA","Pac-12",NA,2022
+"13892","Utah","Pac-12",NA,2022
+"13893","Central Florida","American",NA,2022
+"13894","North Carolina State","ACC","Atlantic",2022
+"13895","Illinois","Big Ten","West",2022
 "13896","Florida State","ACC","Atlantic",2022
-"13897","Oregon","Pac-12","North",2022
-"13898","Oklahoma State","Big 12",NA,2022
-"13899","Duke","ACC","Coastal",2022
-"13900","Oklahoma","Big 12",NA,2022
-"13901","Southern Methodist","American",NA,2022
+"13897","Washington","Pac-12",NA,2022
+"13898","Oregon","Pac-12",NA,2022
+"13899","Oklahoma State","Big 12",NA,2022
+"13900","Duke","ACC","Coastal",2022
+"13901","Oklahoma","Big 12",NA,2022
 "13902","Michigan","Big Ten","East",2022
-"13903","Maryland","Big Ten","East",2022
-"13904","Memphis","American",NA,2022
+"13903","Memphis","American",NA,2022
+"13904","Maryland","Big Ten","East",2022
 "13905","Notre Dame","Ind",NA,2022
 "13906","Cincinnati","American",NA,2022
 "13907","Texas Tech","Big 12",NA,2022
 "13908","Kentucky","SEC","East",2022
 "13909","South Alabama","Sun Belt","West",2022
-"13910","Minnesota","Big Ten","West",2022
-"13911","Central Florida","American",NA,2022
-"13912","Purdue","Big Ten","West",2022
-"13913","Iowa State","Big 12",NA,2022
-"13914","Tulane","American",NA,2022
-"13915","Appalachian State","Sun Belt","East",2022
-"13916","Baylor","Big 12",NA,2022
-"13917","Nevada-Las Vegas","MWC","West",2022
-"13918","Brigham Young","Ind",NA,2022
-"13919","Liberty","Ind",NA,2022
-"13920","Texas A&M","SEC","West",2022
-"13921","North Carolina","ACC","Coastal",2022
+"13910","Purdue","Big Ten","West",2022
+"13911","Minnesota","Big Ten","West",2022
+"13912","Iowa State","Big 12",NA,2022
+"13913","Tulane","American",NA,2022
+"13914","Appalachian State","Sun Belt","East",2022
+"13915","Baylor","Big 12",NA,2022
+"13916","Nevada-Las Vegas","MWC","West",2022
+"13917","Brigham Young","Ind",NA,2022
+"13918","Liberty","Ind",NA,2022
+"13919","Texas A&M","SEC","West",2022
+"13920","North Carolina","ACC","Coastal",2022
+"13921","Southern Methodist","American",NA,2022
 "13922","Auburn","SEC","West",2022
 "13923","Florida","SEC","East",2022
-"13924","Washington State","Pac-12","North",2022
-"13925","Oregon State","Pac-12","North",2022
-"13926","Pittsburgh","ACC","Coastal",2022
+"13924","Washington State","Pac-12",NA,2022
+"13925","Pittsburgh","ACC","Coastal",2022
+"13926","Oregon State","Pac-12",NA,2022
 "13927","Arkansas","SEC","West",2022
-"13928","California","Pac-12","North",2022
-"13929","West Virginia","Big 12",NA,2022
+"13928","West Virginia","Big 12",NA,2022
+"13929","California","Pac-12",NA,2022
 "13930","San Jose State","MWC","West",2022
-"13931","Houston","American",NA,2022
-"13932","East Carolina","American",NA,2022
+"13931","East Carolina","American",NA,2022
+"13932","Houston","American",NA,2022
 "13933","Alabama-Birmingham","CUSA","West",2022
 "13934","Rice","CUSA","West",2022
-"13935","Air Force","MWC","Mountain",2022
+"13935","Louisville","ACC","Atlantic",2022
 "13936","Miami (FL)","ACC","Coastal",2022
-"13937","Troy","Sun Belt","West",2022
-"13938","Toledo","MAC","West",2022
-"13939","Iowa","Big Ten","West",2022
+"13937","Air Force","MWC","Mountain",2022
+"13938","Troy","Sun Belt","West",2022
+"13939","Toledo","MAC","West",2022
 "13940","Missouri","SEC","East",2022
-"13941","Texas-San Antonio","CUSA","West",2022
-"13942","Louisville","ACC","Atlantic",2022
+"13941","Iowa","Big Ten","West",2022
+"13942","Texas-San Antonio","CUSA","West",2022
 "13943","Arkansas State","Sun Belt","West",2022
 "13944","Coastal Carolina","Sun Belt","East",2022
 "13945","Marshall","Sun Belt","East",2022
@@ -13949,19 +13949,19 @@
 "13948","Tulsa","American",NA,2022
 "13949","Southern Mississippi","Sun Belt","West",2022
 "13950","Georgia Southern","Sun Belt","East",2022
-"13951","Stanford","Pac-12","North",2022
+"13951","Stanford","Pac-12",NA,2022
 "13952","Wisconsin","Big Ten","West",2022
-"13953","North Texas","CUSA","West",2022
-"13954","Rutgers","Big Ten","East",2022
-"13955","Middle Tennessee State","CUSA","East",2022
-"13956","Boise State","MWC","Mountain",2022
+"13953","Rutgers","Big Ten","East",2022
+"13954","Middle Tennessee State","CUSA","East",2022
+"13955","Boise State","MWC","Mountain",2022
+"13956","Wyoming","MWC","Mountain",2022
 "13957","Louisiana","Sun Belt","West",2022
-"13958","Wyoming","MWC","Mountain",2022
-"13959","Arizona","Pac-12","South",2022
+"13958","Georgia Tech","ACC","Coastal",2022
+"13959","North Texas","CUSA","West",2022
 "13960","Virginia","ACC","Coastal",2022
-"13961","Indiana","Big Ten","East",2022
-"13962","Vanderbilt","SEC","East",2022
-"13963","Georgia Tech","ACC","Coastal",2022
+"13961","Arizona","Pac-12",NA,2022
+"13962","Indiana","Big Ten","East",2022
+"13963","Vanderbilt","SEC","East",2022
 "13964","Louisiana-Monroe","Sun Belt","West",2022
 "13965","Western Kentucky","CUSA","East",2022
 "13966","Nebraska","Big Ten","West",2022
@@ -13972,9 +13972,9 @@
 "13971","Central Michigan","MAC","West",2022
 "13972","Northwestern","Big Ten","West",2022
 "13973","Temple","American",NA,2022
-"13974","Arizona State","Pac-12","South",2022
+"13974","Florida Atlantic","CUSA","East",2022
 "13975","Boston College","ACC","Atlantic",2022
-"13976","Florida Atlantic","CUSA","East",2022
+"13976","Arizona State","Pac-12",NA,2022
 "13977","Ball State","MAC","West",2022
 "13978","Virginia Tech","ACC","Coastal",2022
 "13979","Bowling Green","MAC","East",2022
@@ -13982,21 +13982,21 @@
 "13981","Connecticut","Ind",NA,2022
 "13982","Navy","American",NA,2022
 "13983","Miami (OH)","MAC","East",2022
-"13984","Buffalo","MAC","East",2022
-"13985","Northern Illinois","MAC","West",2022
+"13984","Northern Illinois","MAC","West",2022
+"13985","Buffalo","MAC","East",2022
 "13986","Army","Ind",NA,2022
 "13987","Ohio","MAC","East",2022
 "13988","Louisiana Tech","CUSA","West",2022
 "13989","Utah State","MWC","Mountain",2022
 "13990","Western Michigan","MAC","West",2022
 "13991","South Florida","American",NA,2022
-"13992","Texas-El Paso","CUSA","West",2022
-"13993","Texas State","Sun Belt","West",2022
+"13992","Texas State","Sun Belt","West",2022
+"13993","Texas-El Paso","CUSA","West",2022
 "13994","Georgia State","Sun Belt","East",2022
 "13995","Akron","MAC","East",2022
 "13996","Nevada","MWC","West",2022
 "13997","Eastern Michigan","MAC","West",2022
-"13998","Colorado","Pac-12","South",2022
+"13998","Colorado","Pac-12",NA,2022
 "13999","Massachusetts","Ind",NA,2022
 "14000","Florida International","CUSA","East",2022
 "14001","New Mexico State","Ind",NA,2022
