@@ -1,5 +1,7 @@
 # creating a table to rank college football teams based on the College Football ELO Model
 
+library(tidyverse)
+library(glue)
 library(gt)
 library(htmltools)
 
@@ -34,7 +36,7 @@ plus_symbol <- function(.x) {
 }
 
 # what games have been played for each team and who is next?
-latest_results <- full_cfb_schedule %>%
+latest_results <- fbs_schedule %>%
   filter(wk == season_wk,
          season == season_var) %>%
   select(wk, 
@@ -49,7 +51,7 @@ latest_results <- full_cfb_schedule %>%
   select(school,
          result_label)
 
-next_match <- full_cfb_schedule %>%
+next_match <- fbs_schedule %>%
   filter(wk == season_wk + 1,
          season == season_var) %>%
   select(wk, 
