@@ -5,6 +5,7 @@ library(data.table)
 library(rvest)
 library(glue)
 library(stringi)
+library(gt)
 
 fbs_schedule <- read.csv('~/GitHub/Sports/College Football Schedule Scrapping/Data/FBS Full Schedule.csv') %>% select(-1)
 full_elo_df <- read.csv('~/GitHub/Sports/College Football ELO Model/Data/FullELODF.csv') %>% select(-1)
@@ -20,7 +21,7 @@ trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 rank_patterns <- paste('\\(', 1:25, '\\)', sep = '')
 
 seasons_list <- list()
-for(i in 2022){
+for(i in season_var){
   
   tryCatch({
     
@@ -266,7 +267,7 @@ full_games <- function(df){
 week_forecast <- list()
 total_wins_list <- list()
 six_wins_list <- list()
-for(i in 1:1){
+for(i in 1:8){
   
   current_week <- season_results %>%
     filter(wk == i) %>%
@@ -354,5 +355,13 @@ for(i in 1:1){
   
 }
 
+library(MASS)
+
 rbindlist(week_forecast) %>%
-  arrange(desc(win_out_times))
+  filter(wk == 8,
+         conf == 'ACC') %>%
+  mutate(bowl_times = bowl_times/n_times,
+         win_out_times = win_out_times/n_times,
+         bowl_times = fractions(bowl_times)) %>%
+  arrange(desc(avg_wins)) %>%
+  gt()
