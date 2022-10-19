@@ -14,7 +14,7 @@ conferences <- read.csv('~/GitHub/Sports/College Football Schedule Scrapping/Dat
 season_vari <- 2022
 n_times <- 10000
 season_var <- c(1869:1870, 1872:2022)
-
+options(dplyr.summarise.inform = FALSE)
 
 # unique game ids ----
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
@@ -159,7 +159,7 @@ season_results <- fbs_schedule %>%
 # functions ----
 probability <- function(df){
   
-  df_new <- df %>%
+  df_new <- test %>%
     mutate(val = runif(nrow(.), 0, 1),
            wins = ifelse(val <= p_school, 1, 0))
   
@@ -179,22 +179,25 @@ probability <- function(df){
     mutate(wins = ifelse(wins == 1, 0, 1))
   
   df_results_bind <- bind_rows(df_select, df_reverse) %>%
+    #filter(school == 'Nebraska') %>%
+    inner_join(conferences %>% filter(season == 2022),
+               by = c('school' = 'school')) %>%
     arrange(school,
             wk) %>%
-    group_by(school) %>%
+    group_by(school,
+             conf,
+             div) %>%
     summarise(wins = sum(wins),
               games = n()) %>%
     ungroup() %>%
     mutate(losses = games-wins) %>%
     select(-games) %>%
-    inner_join(conferences %>% filter(season == 2022),
-               by = c('school' = 'school')) %>%
     inner_join(current_week,
                by = c('school' = 'school')) %>%
     mutate(total_wins = wins + c_wins,
            total_losses = losses + c_lose,
            bowl = ifelse(total_wins/(total_wins + total_losses) >= 0.5, 1, 0),
-           wins_out = ifelse(total_wins/(total_wins + total_losses) == 1, 1, 0) )
+           wins_out_r = ifelse(wins/(wins+losses) == 1,1, 0) )
   
   #print(df_results_bind)
   
@@ -306,62 +309,30 @@ for(i in 1:8){
            -m,
            -elo_diff,
            -ps,
-           -p_opponent)
+           -p_opponent) %>%
+    mutate(iter = i)
   
   rep_df <- replicate(n_times, test, simplify = FALSE)
   
-  combine_results <- rbindlist(lapply(rep_df, probability))
-  six_win_results <- rbindlist(lapply(rep_df, sixth_win))
-  
-  road_to_six <- six_win_results %>%
-    group_by(school,
-             opponent,
-             wk) %>%
-    summarise(freq = n()) %>%
-    ungroup() %>%
-    mutate(wk_iter = i)
-  
-  total_wins <- combine_results %>%
-    group_by(school,
-             conf,
-             div,
-             total_wins) %>%
-    summarise(freq = n()) %>%
-    ungroup() %>%
-    group_by(school,
-             conf,
-             div) %>%
-    mutate(freq_p = freq/sum(freq)) %>%
-    ungroup() %>%
-    arrange(school,
-            total_wins) %>%
-    mutate(wk = i)
+  results_list <- lapply(rep_df, probability)
+  combine_results <- rbindlist(results_list)
   
   average_results <- combine_results %>%
     group_by(school,
              conf,
-             div) %>%
+             div,
+             c_wins,
+             c_lose) %>%
     summarise(avg_wins = round(mean(total_wins)),
               avg_loses = round(mean(total_losses)),
               bowl_times = sum(bowl),
-              win_out_times = sum(wins_out)) %>%
+              wins_out_r = sum(wins_out_r)) %>%
     ungroup() %>%
     mutate(wk = i) 
   
-  six_wins_list[[i]] <- road_to_six
+  #six_wins_list[[i]] <- road_to_six
   total_wins_list[[i]] <- total_wins
   week_forecast[[i]] <- average_results
   print(i)
   
 }
-
-library(MASS)
-
-rbindlist(week_forecast) %>%
-  filter(wk == 8,
-         conf == 'ACC') %>%
-  mutate(bowl_times = bowl_times/n_times,
-         win_out_times = win_out_times/n_times,
-         bowl_times = fractions(bowl_times)) %>%
-  arrange(desc(avg_wins)) %>%
-  gt()
