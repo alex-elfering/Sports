@@ -179,14 +179,6 @@ for(i in 1:max_forecast_wk){
   
   combine_results <- rbindlist(lapply(rep_df, probability))
   
-  road_to_six <- six_win_results %>%
-    group_by(school,
-             opponent,
-             wk) %>%
-    summarise(freq = n()) %>%
-    ungroup() %>%
-    mutate(wk_iter = i)
-  
   total_wins <- combine_results %>%
     group_by(school,
              conf,
@@ -217,7 +209,6 @@ for(i in 1:max_forecast_wk){
     ungroup() %>%
     mutate(wk = i) 
   
-  six_wins_list[[i]] <- road_to_six
   total_wins_list[[i]] <- total_wins
   week_forecast[[i]] <- average_results
   print(i)
