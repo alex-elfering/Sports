@@ -25,11 +25,12 @@ nor_percent <- function(.x) {
   glue::glue("{.x}%")
 }
 
-fill_scale <- c('#fee8c8', '#fdbb84', '#e34a33')
+wins_6_fill_scale <- c('white', '#fee8c8', '#fdbb84', '#e34a33')
+wins_out_fill_scale <- c('white', '#ece7f2', '#a6bddb', '#2b8cbe')
 
 # loading the data  ----
-#max_iter_wk <- max(weekly_forecast$wk)
-max_iter_wk <- 1
+max_iter_wk <- max(weekly_forecast$wk)
+#max_iter_wk <- 1
 
 # preparing the data for the table  ----
 
@@ -68,7 +69,7 @@ range_games_won %>%
   ungroup() 
   
 # the table for each conference
-conf_var <- 'MAC'
+conf_var <- 'MWC'
 
 filter_conf_table <- latest_forecast %>%
   filter(conf == conf_var) %>%
@@ -81,9 +82,11 @@ filter_conf_table <- latest_forecast %>%
          `Finishes Out` = runs_table)
 
 max_6_wins <- max(filter_conf_table$`Wins 6`)
+max_finishes_out <- max(filter_conf_table$`Finishes Out`)
 
 filter_conf_table %>%
   gt() %>%
+  # 
   tab_options(
     column_labels.border.top.style = "none",
     table.border.top.style = "none",
@@ -131,8 +134,15 @@ filter_conf_table %>%
   data_color(
     columns = `Wins 6`,
     colors = scales::col_numeric(
-      palette = fill_scale,
+      palette = wins_6_fill_scale,
       domain = c(0, max_6_wins)
+    )
+  ) %>%
+  data_color(
+    columns = `Finishes Out`,
+    colors = scales::col_numeric(
+      palette = wins_out_fill_scale,
+      domain = c(0, max_finishes_out)
     )
   ) %>%
   tab_style(

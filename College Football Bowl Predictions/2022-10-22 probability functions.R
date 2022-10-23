@@ -1,7 +1,8 @@
 # functions for college football game predictions
 probability <- function(df){
   
-  df_new <- df %>%
+  df_new <- test %>%
+    filter(school == 'Nebraska' | opponent == 'Nebraska') %>%
     mutate(val = runif(nrow(.), 0, 1),
            wins = ifelse(val <= p_school, 1, 0))
   
@@ -31,7 +32,7 @@ probability <- function(df){
     select(-games) %>%
     inner_join(conferences %>% filter(season == 2022),
                by = c('school' = 'school')) %>%
-    inner_join(current_week,
+    left_join(current_week,
                by = c('school' = 'school')) %>%
     mutate(total_wins = wins + c_wins,
            total_losses = losses + c_lose,
