@@ -2,7 +2,6 @@
 probability <- function(df){
   
   df_new <- test %>%
-    filter(school == 'Nebraska' | opponent == 'Nebraska') %>%
     mutate(val = runif(nrow(.), 0, 1),
            wins = ifelse(val <= p_school, 1, 0))
   
