@@ -1,6 +1,26 @@
+# prediction table outputs for college football model
+
 library(gt)
 
 options(scipen = 999)
+
+# percent symbols to use for the prediction tables
+less_1 <- function(.x) {
+  "<1%"
+}
+
+greater_99 <- function(.x) {
+  ">99%"
+}
+
+no_percent <- function(.x) {
+  "-"
+}
+
+percent_100 <- function(.x) {
+  "\u2713"
+}
+
 
 max_iter_wk <- max(weekly_forecast$wk)
 
