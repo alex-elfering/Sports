@@ -61,7 +61,7 @@ season_wk_ranks <- full_elo_df %>%
   arrange(team_a,
           wk) %>%
   group_by(team_a) %>%
-  complete(wk = seq.int(1, 8, 1)) %>%
+  complete(wk = seq.int(1, 9, 1)) %>%
   bind_rows(pre_ratings) %>%
   arrange(wk) %>%
   fill(season) %>%
@@ -114,7 +114,7 @@ season_results <- fbs_schedule %>%
             loses = sum(loses)) %>%
   ungroup() %>%
   group_by(school) %>%
-  complete(wk = seq(1, 8)) %>%
+  complete(wk = seq(1, 9)) %>%
   replace(is.na(.), 0) %>%
   mutate(roll_wins = cumsum(wins),
          roll_loses = cumsum(loses)) %>%
@@ -178,7 +178,6 @@ for(i in 1:max_forecast_wk){
   rep_df <- replicate(n_times, test, simplify = FALSE)
   
   combine_results <- rbindlist(lapply(rep_df, probability))
-  six_win_results <- rbindlist(lapply(rep_df, sixth_win))
   
   road_to_six <- six_win_results %>%
     group_by(school,
