@@ -225,6 +225,6 @@ for(i in 1:max_forecast_wk){
   
 }
 
-
+range_games_won <- rbindlist(total_wins_list)
 weekly_forecast <- rbindlist(week_forecast)
 
