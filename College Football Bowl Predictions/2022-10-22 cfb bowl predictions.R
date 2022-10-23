@@ -213,6 +213,7 @@ for(i in 1:max_forecast_wk){
               avg_wins = round(mean(total_wins)),
               avg_loses = round(mean(total_losses)),
               bowl_times = sum(bowl),
+              runs_table = sum(runs_table),
               win_out_times = sum(wins_out)) %>%
     ungroup() %>%
     mutate(wk = i) 
@@ -223,6 +224,7 @@ for(i in 1:max_forecast_wk){
   print(i)
   
 }
+
 
 weekly_forecast <- rbindlist(week_forecast)
 
