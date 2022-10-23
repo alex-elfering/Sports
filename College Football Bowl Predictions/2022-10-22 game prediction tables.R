@@ -4,7 +4,7 @@ library(gt)
 
 options(scipen = 999)
 
-# percent symbols to use for the prediction tables
+# percent symbols to use for the prediction tables  ----
 less_1 <- function(.x) {
   "<1%"
 }
@@ -21,8 +21,10 @@ percent_100 <- function(.x) {
   "\u2713"
 }
 
-
+# loading the data  ----
 max_iter_wk <- max(weekly_forecast$wk)
+
+# preparing the data for the table  ----
 
 latest_forecast <- weekly_forecast %>%
   mutate(bowl_times = round((bowl_times/n_times)*100,3),
