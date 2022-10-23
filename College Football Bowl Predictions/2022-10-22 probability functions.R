@@ -36,6 +36,7 @@ probability <- function(df){
     mutate(total_wins = wins + c_wins,
            total_losses = losses + c_lose,
            bowl = ifelse(total_wins/(total_wins + total_losses) >= 0.5, 1, 0),
+           runs_table = ifelse(wins/(wins + losses) == 1, 1, 0),
            wins_out = ifelse(total_wins/(total_wins + total_losses) == 1, 1, 0) )
   
   #print(df_results_bind)
