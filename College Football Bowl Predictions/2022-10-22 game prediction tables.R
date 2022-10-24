@@ -31,7 +31,7 @@ wins_6_fill_scale <- c('white', '#fee8c8', '#fdbb84', '#e34a33')
 wins_out_fill_scale <- c('white', '#ece7f2', '#a6bddb', '#2b8cbe')
 
 # loading the data  ----
-max_iter_wk <- 1
+max_iter_wk <- 9
 
 # preparing the data for the table  ----
 
@@ -152,7 +152,7 @@ overall_table <- final_conf_table %>%
     subtitle = glue("{season_vari} Season as of Week #{max_iter_wk}")
   ) %>%
   tab_source_note(
-    source_note = glue('ELO ratings score each team based on factors such as home-field advantage, margin of victory, and quality of opponent. At the end of each season, school ratings regress partially to the value of their respective conference. Teams new to FBS begin with an ELO rating of 1500.')
+    source_note = glue('Predicted records are calculated using ELO ratings that score each team based on factors such as home-field advantage, margin of victory, and quality of opponent. At the end of each season, school ratings regress partially to the value of their respective conference. Teams new to FBS begin with an ELO rating of 1500. Games are simulated {n_times} and averaged to simulate potential wins and losses.')
   ) %>%
   tab_source_note(
     source_note = glue("Code by Alex Elfering | Source: College Football Reference | Model Inspired by FiveThirtyEight{statement_13_games}")
