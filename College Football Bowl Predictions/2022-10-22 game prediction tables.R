@@ -71,8 +71,8 @@ pivot_games_won <- range_games_won %>%
   select(-wk)
   
 # the table for each conference
-conf_var <- 'MWC'
 
+for(conf_var in unique(latest_forecast$conf)){
 filter_conf_table <- latest_forecast %>%
   filter(conf == conf_var) %>%
   select(-conf,
@@ -126,7 +126,17 @@ overall_table <- filter_conf_table %>%
     School ~ px(200),
     #everything() ~ px(60),
     contains(c('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12')) ~ px(70)
-  ) 
+  ) %>%
+  tab_header(
+    title = md(glue("**{conf_var} Game Predictions**")),
+    subtitle = glue("Top 25 teams sorted by ELO rating | {season_vari} Season as of Week #{max_iter_wk}")
+  ) %>%
+  tab_source_note(
+    source_note = glue('ELO ratings score each team based on factors such as home-field advantage, margin of victory, and quality of opponent. At the end of each season, school ratings regress partially to the value of their respective conference. Teams new to FBS begin with an ELO rating of 1500.')
+  ) %>%
+  tab_source_note(
+    source_note = "Code by Alex Elfering | Source: College Football Reference | Model Inspired by FiveThirtyEight"
+  )
 
 wins_6_table <- overall_table %>%
   fmt("Wins 6", 
@@ -657,4 +667,6 @@ add_black_table <- add_gray_table %>%
     )
   )
 
-add_black_table
+add_black_table %>% 
+  gtsave(glue("~/GitHub/Sports/College Football Bowl Predictions/Conference Tables/{conf_var} {max_iter_wk} game predictions.png"))
+}
