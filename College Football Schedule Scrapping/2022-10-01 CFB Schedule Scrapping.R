@@ -32,14 +32,14 @@ schools_list <- schools %>%
                             school == 'UCF' ~ "Central Florida",
                             school == "LSU" ~ "Louisiana State",
                             school == "Ole Miss" ~ "Mississippi",
-                           school == "Pitt" ~ "Pittsburgh",
-                           school == "USC" ~ 'Southern California',
-                           school == 'SMU' ~ "Southern Methodist",
-                           school == 'UTSA' ~ 'Texas-San Antonio',
-                           school == 'Louisiana' ~ 'louisiana-lafayette',
-                           school == 'Bowling Green' ~ 'Bowling Green State',
-                           school == 'The Citadel' ~ 'Citadel',
-                           TRUE ~ school)) %>%
+                            school == "Pitt" ~ "Pittsburgh",
+                            school == "USC" ~ 'Southern California',
+                            school == 'SMU' ~ "Southern Methodist",
+                            school == 'UTSA' ~ 'Texas-San Antonio',
+                            school == 'Louisiana' ~ 'louisiana-lafayette',
+                            school == 'Bowling Green' ~ 'Bowling Green State',
+                            school == 'The Citadel' ~ 'Citadel',
+                            TRUE ~ school)) %>%
   filter(school != '') %>%
   mutate(school = tolower(school),
          school = gsub(' ', '-', school),
@@ -147,7 +147,7 @@ conferences <- rbindlist(school_conf_list, fill = TRUE) %>%
                             School == "USC" ~ 'Southern California',
                             School == 'SMU' ~ "Southern Methodist",
                             School == 'UTSA' ~ 'Texas-San Antonio',
-                              TRUE ~ School),
+                            TRUE ~ School),
          School = trim(School),
          Conf = trim(Conf))
 
@@ -252,4 +252,3 @@ colnames(conferences) <- tolower(colnames(conferences))
 write.csv(conferences, '~/GitHub/Sports/College Football Schedule Scrapping/Data/Conferences.csv')
 write.csv(full_cfb_schedule, '~/GitHub/Sports/College Football Schedule Scrapping/Data/FBS Full Schedule.csv')
 write.csv(winning_games, '~/GitHub/Sports/College Football Schedule Scrapping/Data/FBS Winning Games.csv')
-
