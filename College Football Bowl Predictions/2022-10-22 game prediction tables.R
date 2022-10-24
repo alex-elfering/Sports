@@ -44,6 +44,7 @@ latest_forecast <- weekly_forecast %>%
   ungroup() %>%
   filter(wk == max_iter_wk) %>%
   arrange(desc(bowl_times),
+          desc(avg_wins),
           desc(runs_table)) %>%
   unite(current_record, c('c_wins', 'c_lose'), sep = '-') %>%
   unite(predicted_record, c('avg_wins', 'avg_loses'), sep = '-') %>%
@@ -70,7 +71,7 @@ pivot_games_won <- range_games_won %>%
   select(-wk)
   
 # the table for each conference
-conf_var <- 'SEC'
+conf_var <- 'MWC'
 
 filter_conf_table <- latest_forecast %>%
   filter(conf == conf_var) %>%
@@ -94,7 +95,7 @@ overall_table <- filter_conf_table %>%
   tab_options(
     column_labels.border.top.style = "none",
     table.border.top.style = "none",
-    column_labels.border.bottom.style = "none",
+    #column_labels.border.bottom.style = "none",
     column_labels.border.bottom.width = 1,
     column_labels.border.bottom.color = "#334422",
     table_body.border.top.style = "none",
@@ -110,7 +111,22 @@ overall_table <- filter_conf_table %>%
     locations = cells_column_labels(everything())
   ) %>%
   tab_options(table.font.names = "IBM Plex Sans",
-              table.font.size = 12) 
+              table.font.size = 12)  %>%
+  tab_spanner(
+    label = "Likelihood Team...",
+    columns = c(
+      'Wins 6', 'Finishes Out'
+    )
+  ) %>%
+  tab_spanner(
+    label = "Likelihood Team Wins...",
+    columns = c(`0`,`1`,`2`,`3`,`4`,`5`,`6`,`7`,`8`,`9`,`10`,`11`,`12`)
+    ) %>%
+  cols_width(
+    School ~ px(200),
+    #everything() ~ px(60),
+    contains(c('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12')) ~ px(70)
+  ) 
 
 wins_6_table <- overall_table %>%
   fmt("Wins 6", 
@@ -640,3 +656,5 @@ add_black_table <- add_gray_table %>%
       rows = `12` >= 1
     )
   )
+
+add_black_table
