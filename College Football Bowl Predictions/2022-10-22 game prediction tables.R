@@ -69,7 +69,7 @@ range_games_won %>%
   ungroup() 
   
 # the table for each conference
-conf_var <- 'MWC'
+conf_var <- 'Big 12'
 
 filter_conf_table <- latest_forecast %>%
   filter(conf == conf_var) %>%
