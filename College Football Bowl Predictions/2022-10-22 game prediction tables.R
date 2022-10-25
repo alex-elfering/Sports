@@ -4,6 +4,7 @@ library(gt)
 
 options(scipen = 999)
 
+source('~/GitHub/Sports/College Football Bowl Predictions/2022-10-22 cfb bowl predictions.R')
 setwd("~/GitHub/Sports/College Football Bowl Predictions/Conference Tables")
 
 # percent symbols to use for the prediction tables  ----
