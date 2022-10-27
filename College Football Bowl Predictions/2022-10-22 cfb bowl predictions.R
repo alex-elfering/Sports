@@ -218,3 +218,5 @@ for(i in 1:max_forecast_wk){
 range_games_won <- rbindlist(total_wins_list)
 weekly_forecast <- rbindlist(week_forecast)
 
+write.csv(weekly_forecast, '~/GitHub/Sports/College Football Bowl Predictions/Data/CFB Game Predictions.csv')
+write.csv(range_games_won, '~/GitHub/Sports/College Football Bowl Predictions/Data/CFB Potential Games Won.csv')
