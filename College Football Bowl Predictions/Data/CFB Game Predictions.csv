@@ -1,0 +1,1180 @@
+"","school","conf","div","c_wins","c_lose","avg_wins","avg_loses","bowl_times","runs_table","win_out_times","wk"
+"1","Air Force","MWC","Mountain",0,0,8,4,9627,37,37,1
+"2","Akron","MAC","East",0,0,3,9,439,0,0,1
+"3","Alabama","SEC","West",0,0,10,2,9995,520,520,1
+"4","Alabama-Birmingham","CUSA","West",0,0,7,5,9147,2,2,1
+"5","Appalachian State","Sun Belt","East",0,0,7,4,8623,10,10,1
+"6","Arizona","Pac-12",NA,0,0,4,8,1555,0,0,1
+"7","Arizona State","Pac-12",NA,0,0,7,5,8425,2,2,1
+"8","Arkansas","SEC","West",0,0,8,4,9271,25,25,1
+"9","Arkansas State","Sun Belt","West",0,0,5,7,4625,0,0,1
+"10","Army","Ind",NA,0,0,8,4,9838,61,61,1
+"11","Auburn","SEC","West",0,0,7,5,8457,1,1,1
+"12","Ball State","MAC","West",0,0,6,6,6244,0,0,1
+"13","Baylor","Big 12",NA,0,0,8,4,9837,74,74,1
+"14","Boise State","MWC","Mountain",0,0,8,4,9125,12,12,1
+"15","Boston College","ACC","Atlantic",0,0,6,6,6128,0,0,1
+"16","Bowling Green","MAC","East",0,0,4,8,1809,0,0,1
+"17","Brigham Young","Ind",NA,0,0,7,5,8578,4,4,1
+"18","Buffalo","MAC","East",0,0,5,7,3239,0,0,1
+"19","California","Pac-12",NA,0,0,7,5,8464,1,1,1
+"20","Central Florida","American",NA,0,0,8,4,9617,63,63,1
+"21","Central Michigan","MAC","West",0,0,8,4,9402,2,2,1
+"22","Charlotte","CUSA","East",0,1,4,8,858,0,0,1
+"23","Cincinnati","American",NA,0,0,9,3,9980,191,191,1
+"24","Clemson","ACC","Atlantic",0,0,9,3,9944,171,171,1
+"25","Coastal Carolina","Sun Belt","East",0,0,9,3,9909,89,89,1
+"26","Colorado","Pac-12",NA,0,0,4,8,2510,0,0,1
+"27","Colorado State","MWC","Mountain",0,0,5,7,2501,0,0,1
+"28","Connecticut","Ind",NA,0,1,4,8,929,0,0,1
+"29","Duke","ACC","Coastal",0,0,5,7,2390,0,0,1
+"30","East Carolina","American",NA,0,0,7,5,8322,1,1,1
+"31","Eastern Michigan","MAC","West",0,0,5,7,4839,0,0,1
+"32","Florida","SEC","East",0,0,6,6,7458,2,2,1
+"33","Florida Atlantic","CUSA","East",1,0,6,6,5653,0,0,1
+"34","Florida International","CUSA","East",0,0,3,9,605,0,0,1
+"35","Florida State","ACC","Atlantic",1,0,6,6,6094,0,0,1
+"36","Fresno State","MWC","West",0,0,8,4,9405,25,25,1
+"37","Georgia","SEC","East",0,0,10,2,9999,1260,1260,1
+"38","Georgia Southern","Sun Belt","East",0,0,5,7,3579,0,0,1
+"39","Georgia State","Sun Belt","East",0,0,7,5,9127,3,3,1
+"40","Georgia Tech","ACC","Coastal",0,0,4,8,1844,0,0,1
+"41","Hawaii","MWC","West",0,1,5,8,1002,0,0,1
+"42","Houston","American",NA,0,0,8,4,9786,40,40,1
+"43","Illinois","Big Ten","West",1,0,6,6,6620,0,0,1
+"44","Indiana","Big Ten","East",0,0,5,7,2733,0,0,1
+"45","Iowa","Big Ten","West",0,0,7,5,9078,7,7,1
+"46","Iowa State","Big 12",NA,0,0,7,5,8967,9,9,1
+"47","James Madison","Sun Belt","East",0,0,3,8,245,0,0,1
+"48","Kansas","Big 12",NA,0,0,4,8,568,0,0,1
+"49","Kansas State","Big 12",NA,0,0,7,5,8610,0,0,1
+"50","Kent State","MAC","East",0,0,4,7,1610,0,0,1
+"51","Kentucky","SEC","East",0,0,9,3,9892,93,93,1
+"52","Liberty","Ind",NA,0,0,8,4,9465,7,7,1
+"53","Louisiana","Sun Belt","West",0,0,10,2,9995,788,788,1
+"54","Louisiana-Monroe","Sun Belt","West",0,0,4,8,931,0,0,1
+"55","Louisiana State","SEC","West",0,0,7,5,8152,2,2,1
+"56","Louisiana Tech","CUSA","West",0,0,4,8,1774,0,0,1
+"57","Louisville","ACC","Atlantic",0,0,6,6,5345,0,0,1
+"58","Marshall","Sun Belt","East",0,0,6,6,5815,1,1,1
+"59","Maryland","Big Ten","East",0,0,7,5,8649,1,1,1
+"60","Massachusetts","Ind",NA,0,0,4,8,938,0,0,1
+"61","Memphis","American",NA,0,0,7,5,8083,1,1,1
+"62","Miami (FL)","ACC","Coastal",0,0,7,5,9269,4,4,1
+"63","Miami (OH)","MAC","East",0,0,7,5,7836,0,0,1
+"64","Michigan","Big Ten","East",0,0,9,3,9979,216,216,1
+"65","Michigan State","Big Ten","East",0,0,8,4,9694,41,41,1
+"66","Middle Tennessee State","CUSA","East",0,0,6,6,7463,1,1,1
+"67","Minnesota","Big Ten","West",0,0,8,4,9783,34,34,1
+"68","Mississippi","SEC","West",0,0,8,4,9768,47,47,1
+"69","Mississippi State","SEC","West",0,0,6,6,7427,0,0,1
+"70","Missouri","SEC","East",0,0,6,6,6150,0,0,1
+"71","Navy","American",NA,0,0,5,7,2815,0,0,1
+"72","Nebraska","Big Ten","West",0,1,5,7,3385,0,0,1
+"73","Nevada","MWC","West",1,0,8,4,9412,11,11,1
+"74","Nevada-Las Vegas","MWC","West",1,0,5,7,2652,0,0,1
+"75","New Mexico","MWC","Mountain",0,0,4,8,1399,0,0,1
+"76","New Mexico State","Ind",NA,0,1,4,7,726,0,0,1
+"77","North Carolina","ACC","Coastal",1,0,6,6,6299,0,0,1
+"78","North Carolina State","ACC","Atlantic",0,0,8,4,9702,49,49,1
+"79","North Texas","CUSA","West",1,0,7,5,9047,1,1,1
+"80","Northern Illinois","MAC","West",0,0,5,7,4347,0,0,1
+"81","Northwestern","Big Ten","West",1,0,6,6,5480,0,0,1
+"82","Notre Dame","Ind",NA,0,0,9,3,9848,74,74,1
+"83","Ohio","MAC","East",0,0,5,7,3662,0,0,1
+"84","Ohio State","Big Ten","East",0,0,9,3,9967,288,288,1
+"85","Oklahoma","Big 12",NA,0,0,9,3,9856,142,142,1
+"86","Oklahoma State","Big 12",NA,0,0,9,3,9912,87,87,1
+"87","Old Dominion","Sun Belt","East",0,0,5,7,2900,0,0,1
+"88","Oregon","Pac-12",NA,0,0,7,5,8685,5,5,1
+"89","Oregon State","Pac-12",NA,0,0,7,5,7848,2,2,1
+"90","Penn State","Big Ten","East",0,0,7,5,8346,7,7,1
+"91","Pittsburgh","ACC","Coastal",0,0,9,3,9945,199,199,1
+"92","Purdue","Big Ten","West",0,0,8,4,9274,13,13,1
+"93","Rice","CUSA","West",0,0,4,8,1544,0,0,1
+"94","Rutgers","Big Ten","East",0,0,5,7,3465,0,0,1
+"95","San Diego State","MWC","West",0,0,8,4,9608,6,6,1
+"96","San Jose State","MWC","West",0,0,5,6,3044,0,0,1
+"97","South Alabama","Sun Belt","West",0,0,6,6,6504,0,0,1
+"98","South Carolina","SEC","East",0,0,7,5,7725,0,0,1
+"99","South Florida","American",NA,0,0,4,8,958,0,0,1
+"100","Southern California","Pac-12",NA,0,0,6,6,5210,0,0,1
+"101","Southern Methodist","American",NA,0,0,7,5,7478,2,2,1
+"102","Southern Mississippi","Sun Belt","West",0,0,4,8,788,0,0,1
+"103","Stanford","Pac-12",NA,0,0,4,8,1908,0,0,1
+"104","Syracuse","ACC","Atlantic",0,0,5,7,4638,0,0,1
+"105","Temple","American",NA,0,0,4,8,1696,0,0,1
+"106","Tennessee","SEC","East",0,0,7,5,8346,0,0,1
+"107","Texas","Big 12",NA,0,0,6,6,6801,0,0,1
+"108","Texas-El Paso","CUSA","West",0,1,4,8,1951,0,0,1
+"109","Texas-San Antonio","CUSA","West",0,0,7,5,8060,0,0,1
+"110","Texas A&M","SEC","West",0,0,8,4,9734,28,28,1
+"111","Texas Christian","Big 12",NA,0,0,6,6,4949,1,1,1
+"112","Texas State","Sun Belt","West",0,0,5,7,3917,0,0,1
+"113","Texas Tech","Big 12",NA,0,0,6,6,7167,3,3,1
+"114","Toledo","MAC","West",0,0,5,6,4820,0,0,1
+"115","Troy","Sun Belt","West",0,0,5,7,5057,0,0,1
+"116","Tulane","American",NA,0,0,5,7,4937,0,0,1
+"117","Tulsa","American",NA,0,0,7,5,8245,1,1,1
+"118","UCLA","Pac-12",NA,0,0,9,3,9928,85,85,1
+"119","Utah","Pac-12",NA,0,0,8,4,9844,87,87,1
+"120","Utah State","MWC","Mountain",1,0,8,4,9626,5,5,1
+"121","Vanderbilt","SEC","East",1,0,5,7,4844,0,0,1
+"122","Virginia","ACC","Coastal",0,0,7,5,7653,3,3,1
+"123","Virginia Tech","ACC","Coastal",0,0,6,6,6537,0,0,1
+"124","Wake Forest","ACC","Atlantic",0,0,8,4,9647,39,39,1
+"125","Washington","Pac-12",NA,0,0,6,6,6096,0,0,1
+"126","Washington State","Pac-12",NA,0,0,8,4,9165,15,15,1
+"127","West Virginia","Big 12",NA,0,0,6,6,5605,0,0,1
+"128","Western Kentucky","CUSA","East",1,0,8,5,9092,5,5,1
+"129","Western Michigan","MAC","West",0,0,6,6,7650,0,0,1
+"130","Wisconsin","Big Ten","West",0,0,8,4,9588,20,20,1
+"131","Wyoming","MWC","Mountain",0,1,5,7,4206,0,0,1
+"132","Air Force","MWC","Mountain",1,0,8,4,9816,69,69,2
+"133","Akron","MAC","East",1,0,4,8,759,0,0,2
+"134","Alabama","SEC","West",1,0,10,2,9996,577,577,2
+"135","Alabama-Birmingham","CUSA","West",1,0,8,4,9551,4,4,2
+"136","Appalachian State","Sun Belt","East",0,1,6,5,6634,3,0,2
+"137","Arizona","Pac-12",NA,1,0,6,6,6304,0,0,2
+"138","Arizona State","Pac-12",NA,1,0,7,5,8335,2,2,2
+"139","Arkansas","SEC","West",1,0,8,4,9665,54,54,2
+"140","Arkansas State","Sun Belt","West",1,0,6,6,5877,0,0,2
+"141","Army","Ind",NA,0,1,8,4,9691,93,0,2
+"142","Auburn","SEC","West",1,0,7,5,8276,0,0,2
+"143","Ball State","MAC","West",0,1,6,6,5703,1,0,2
+"144","Baylor","Big 12",NA,1,0,8,4,9790,53,53,2
+"145","Boise State","MWC","Mountain",0,1,7,5,8069,23,0,2
+"146","Boston College","ACC","Atlantic",0,1,5,7,3499,0,0,2
+"147","Bowling Green","MAC","East",0,1,4,8,1633,0,0,2
+"148","Brigham Young","Ind",NA,1,0,8,4,9521,32,32,2
+"149","Buffalo","MAC","East",0,1,5,7,2923,0,0,2
+"150","California","Pac-12",NA,1,0,7,5,8486,2,2,2
+"151","Central Florida","American",NA,1,0,8,4,9792,92,92,2
+"152","Central Michigan","MAC","West",0,1,7,5,9133,30,0,2
+"153","Charlotte","CUSA","East",0,2,3,9,66,0,0,2
+"154","Cincinnati","American",NA,0,1,9,3,9950,551,0,2
+"155","Clemson","ACC","Atlantic",1,0,10,2,9988,432,432,2
+"156","Coastal Carolina","Sun Belt","East",1,0,9,3,9979,239,239,2
+"157","Colorado","Pac-12",NA,0,1,3,9,434,0,0,2
+"158","Colorado State","MWC","Mountain",0,1,5,7,2650,0,0,2
+"159","Connecticut","Ind",NA,1,1,4,8,1327,0,0,2
+"160","Duke","ACC","Coastal",1,0,5,7,3758,0,0,2
+"161","East Carolina","American",NA,0,1,6,6,7491,3,0,2
+"162","Eastern Michigan","MAC","West",1,0,6,6,5555,0,0,2
+"163","Florida","SEC","East",1,0,7,5,8985,5,5,2
+"164","Florida Atlantic","CUSA","East",1,1,5,7,4152,0,0,2
+"165","Florida International","CUSA","East",1,0,4,8,1430,0,0,2
+"166","Florida State","ACC","Atlantic",2,0,7,5,8171,0,0,2
+"167","Fresno State","MWC","West",1,0,8,4,9519,34,34,2
+"168","Georgia","SEC","East",1,0,10,2,10000,1483,1483,2
+"169","Georgia Southern","Sun Belt","East",1,0,5,7,4285,0,0,2
+"170","Georgia State","Sun Belt","East",0,1,7,5,8362,28,0,2
+"171","Georgia Tech","ACC","Coastal",0,1,4,8,720,0,0,2
+"172","Hawaii","MWC","West",0,2,4,9,192,0,0,2
+"173","Houston","American",NA,1,0,9,3,9961,135,135,2
+"174","Illinois","Big Ten","West",1,1,5,7,4808,0,0,2
+"175","Indiana","Big Ten","East",1,0,5,7,4216,0,0,2
+"176","Iowa","Big Ten","West",1,0,7,5,9173,4,4,2
+"177","Iowa State","Big 12",NA,1,0,7,5,8866,10,10,2
+"178","James Madison","Sun Belt","East",1,0,4,7,1575,0,0,2
+"179","Kansas","Big 12",NA,1,0,4,8,602,0,0,2
+"180","Kansas State","Big 12",NA,1,0,7,5,8551,0,0,2
+"181","Kent State","MAC","East",0,1,4,7,1082,0,0,2
+"182","Kentucky","SEC","East",1,0,9,3,9915,85,85,2
+"183","Liberty","Ind",NA,1,0,8,4,9762,7,7,2
+"184","Louisiana","Sun Belt","West",1,0,10,2,9999,770,770,2
+"185","Louisiana-Monroe","Sun Belt","West",0,1,4,8,672,0,0,2
+"186","Louisiana State","SEC","West",0,1,6,6,5648,3,0,2
+"187","Louisiana Tech","CUSA","West",0,1,4,8,2066,0,0,2
+"188","Louisville","ACC","Atlantic",0,1,5,7,2445,0,0,2
+"189","Marshall","Sun Belt","East",1,0,6,6,6213,0,0,2
+"190","Maryland","Big Ten","East",1,0,7,5,8599,3,3,2
+"191","Massachusetts","Ind",NA,0,1,3,9,519,0,0,2
+"192","Memphis","American",NA,0,1,6,6,7571,8,0,2
+"193","Miami (FL)","ACC","Coastal",1,0,7,5,9312,1,1,2
+"194","Miami (OH)","MAC","East",0,1,6,6,7530,7,0,2
+"195","Michigan","Big Ten","East",1,0,9,3,9985,214,214,2
+"196","Michigan State","Big Ten","East",1,0,8,4,9729,42,42,2
+"197","Middle Tennessee State","CUSA","East",0,1,5,7,2901,0,0,2
+"198","Minnesota","Big Ten","West",1,0,8,4,9841,35,35,2
+"199","Mississippi","SEC","West",1,0,8,4,9813,64,64,2
+"200","Mississippi State","SEC","West",1,0,7,5,7854,0,0,2
+"201","Missouri","SEC","East",1,0,6,6,6053,1,1,2
+"202","Navy","American",NA,0,1,3,9,456,0,0,2
+"203","Nebraska","Big Ten","West",1,1,5,7,3686,0,0,2
+"204","Nevada","MWC","West",2,0,8,4,9750,18,18,2
+"205","Nevada-Las Vegas","MWC","West",1,0,5,7,3048,0,0,2
+"206","New Mexico","MWC","Mountain",1,0,5,7,2433,0,0,2
+"207","New Mexico State","Ind",NA,0,2,4,7,731,0,0,2
+"208","North Carolina","ACC","Coastal",2,0,7,5,8525,4,4,2
+"209","North Carolina State","ACC","Atlantic",1,0,9,3,9912,81,81,2
+"210","North Texas","CUSA","West",1,1,6,6,7265,1,0,2
+"211","Northern Illinois","MAC","West",1,0,5,7,4892,0,0,2
+"212","Northwestern","Big Ten","West",1,0,6,6,5451,0,0,2
+"213","Notre Dame","Ind",NA,0,1,8,4,9737,212,0,2
+"214","Ohio","MAC","East",1,0,6,6,5381,0,0,2
+"215","Ohio State","Big Ten","East",1,0,9,3,9988,369,369,2
+"216","Oklahoma","Big 12",NA,1,0,9,3,9823,146,146,2
+"217","Oklahoma State","Big 12",NA,1,0,9,3,9928,95,95,2
+"218","Old Dominion","Sun Belt","East",1,0,6,6,5056,0,0,2
+"219","Oregon","Pac-12",NA,0,1,7,5,8043,19,0,2
+"220","Oregon State","Pac-12",NA,1,0,7,5,9136,8,8,2
+"221","Penn State","Big Ten","East",1,0,8,4,9624,35,35,2
+"222","Pittsburgh","ACC","Coastal",1,0,9,3,9984,362,362,2
+"223","Purdue","Big Ten","West",0,1,6,6,7105,3,0,2
+"224","Rice","CUSA","West",0,1,4,8,1247,0,0,2
+"225","Rutgers","Big Ten","East",1,0,6,6,5805,0,0,2
+"226","San Diego State","MWC","West",0,1,6,6,7105,6,0,2
+"227","San Jose State","MWC","West",1,0,5,6,3646,0,0,2
+"228","South Alabama","Sun Belt","West",1,0,6,6,7261,0,0,2
+"229","South Carolina","SEC","East",1,0,7,5,8109,2,2,2
+"230","South Florida","American",NA,0,1,3,9,311,0,0,2
+"231","Southern California","Pac-12",NA,1,0,6,6,5636,0,0,2
+"232","Southern Methodist","American",NA,1,0,8,4,9481,13,13,2
+"233","Southern Mississippi","Sun Belt","West",0,1,3,9,374,0,0,2
+"234","Stanford","Pac-12",NA,1,0,4,8,1967,0,0,2
+"235","Syracuse","ACC","Atlantic",1,0,6,6,7324,1,1,2
+"236","Temple","American",NA,0,1,4,8,1117,0,0,2
+"237","Tennessee","SEC","East",1,0,7,5,8521,1,1,2
+"238","Texas","Big 12",NA,1,0,6,6,6939,3,3,2
+"239","Texas-El Paso","CUSA","West",0,2,5,7,2564,1,0,2
+"240","Texas-San Antonio","CUSA","West",0,1,6,6,7377,3,0,2
+"241","Texas A&M","SEC","West",1,0,8,4,9705,21,21,2
+"242","Texas Christian","Big 12",NA,1,0,7,5,7883,1,1,2
+"243","Texas State","Sun Belt","West",0,1,5,7,2826,0,0,2
+"244","Texas Tech","Big 12",NA,1,0,6,6,7000,1,1,2
+"245","Toledo","MAC","West",1,0,7,5,8077,1,1,2
+"246","Troy","Sun Belt","West",0,1,5,7,4719,0,0,2
+"247","Tulane","American",NA,1,0,6,6,5952,0,0,2
+"248","Tulsa","American",NA,0,1,6,6,6693,1,0,2
+"249","UCLA","Pac-12",NA,1,0,9,3,9940,113,113,2
+"250","Utah","Pac-12",NA,0,1,8,4,9684,111,0,2
+"251","Utah State","MWC","Mountain",1,1,8,4,9560,60,0,2
+"252","Vanderbilt","SEC","East",2,0,5,7,4694,0,0,2
+"253","Virginia","ACC","Coastal",1,0,7,5,7811,3,3,2
+"254","Virginia Tech","ACC","Coastal",0,1,5,7,3772,0,0,2
+"255","Wake Forest","ACC","Atlantic",1,0,8,4,9646,40,40,2
+"256","Washington","Pac-12",NA,1,0,6,6,6745,0,0,2
+"257","Washington State","Pac-12",NA,1,0,7,5,9125,11,11,2
+"258","West Virginia","Big 12",NA,0,1,5,7,4325,0,0,2
+"259","Western Kentucky","CUSA","East",2,0,10,3,9931,47,47,2
+"260","Western Michigan","MAC","West",0,1,6,6,7111,10,0,2
+"261","Wisconsin","Big Ten","West",1,0,8,4,9646,21,21,2
+"262","Wyoming","MWC","Mountain",1,1,6,6,6572,4,0,2
+"263","Air Force","MWC","Mountain",2,0,9,3,9974,211,211,3
+"264","Akron","MAC","East",1,1,4,8,1014,0,0,3
+"265","Alabama","SEC","West",2,0,10,2,10000,733,733,3
+"266","Alabama-Birmingham","CUSA","West",1,1,7,5,8754,8,0,3
+"267","Appalachian State","Sun Belt","East",1,1,7,4,9193,143,0,3
+"268","Arizona","Pac-12",NA,1,1,5,7,3586,0,0,3
+"269","Arizona State","Pac-12",NA,1,1,7,5,7922,19,0,3
+"270","Arkansas","SEC","West",2,0,9,3,9882,111,111,3
+"271","Arkansas State","Sun Belt","West",1,1,6,6,5068,0,0,3
+"272","Army","Ind",NA,0,2,7,5,8693,53,0,3
+"273","Auburn","SEC","West",2,0,7,5,8557,0,0,3
+"274","Ball State","MAC","West",0,2,5,7,2819,1,0,3
+"275","Baylor","Big 12",NA,1,1,7,5,9202,62,0,3
+"276","Boise State","MWC","Mountain",1,1,8,4,9476,104,0,3
+"277","Boston College","ACC","Atlantic",0,2,4,8,1322,0,0,3
+"278","Bowling Green","MAC","East",0,2,3,9,275,0,0,3
+"279","Brigham Young","Ind",NA,2,0,9,3,9965,184,184,3
+"280","Buffalo","MAC","East",0,2,3,9,613,0,0,3
+"281","California","Pac-12",NA,2,0,7,5,8889,4,4,3
+"282","Central Florida","American",NA,1,1,7,5,8428,23,0,3
+"283","Central Michigan","MAC","West",0,2,6,6,6074,4,0,3
+"284","Charlotte","CUSA","East",0,3,2,10,21,0,0,3
+"285","Cincinnati","American",NA,1,1,9,3,9953,675,0,3
+"286","Clemson","ACC","Atlantic",2,0,10,2,9992,418,418,3
+"287","Coastal Carolina","Sun Belt","East",2,0,9,3,9977,255,255,3
+"288","Colorado","Pac-12",NA,0,2,3,9,155,0,0,3
+"289","Colorado State","MWC","Mountain",0,2,3,9,442,0,0,3
+"290","Connecticut","Ind",NA,1,2,4,8,667,0,0,3
+"291","Duke","ACC","Coastal",2,0,6,6,7513,0,0,3
+"292","East Carolina","American",NA,1,1,7,5,8230,6,0,3
+"293","Eastern Michigan","MAC","West",1,1,6,6,5728,1,0,3
+"294","Florida","SEC","East",1,1,6,6,7564,5,0,3
+"295","Florida Atlantic","CUSA","East",2,1,6,6,5049,1,0,3
+"296","Florida International","CUSA","East",1,1,3,9,642,0,0,3
+"297","Florida State","ACC","Atlantic",2,0,7,5,7999,1,1,3
+"298","Fresno State","MWC","West",1,1,7,5,8686,28,0,3
+"299","Georgia","SEC","East",2,0,10,2,10000,1341,1341,3
+"300","Georgia Southern","Sun Belt","East",2,0,6,6,7612,1,1,3
+"301","Georgia State","Sun Belt","East",0,2,6,6,5873,12,0,3
+"302","Georgia Tech","ACC","Coastal",1,1,4,8,805,0,0,3
+"303","Hawaii","MWC","West",0,3,4,9,337,1,0,3
+"304","Houston","American",NA,1,1,8,4,9902,253,0,3
+"305","Illinois","Big Ten","West",2,1,6,6,7199,2,0,3
+"306","Indiana","Big Ten","East",2,0,5,7,4500,0,0,3
+"307","Iowa","Big Ten","West",1,1,6,6,7756,7,0,3
+"308","Iowa State","Big 12",NA,2,0,8,4,9808,44,44,3
+"309","James Madison","Sun Belt","East",2,0,5,6,2456,0,0,3
+"310","Kansas","Big 12",NA,2,0,5,7,3349,0,0,3
+"311","Kansas State","Big 12",NA,2,0,7,5,9365,4,4,3
+"312","Kent State","MAC","East",0,2,4,7,1224,0,0,3
+"313","Kentucky","SEC","East",2,0,9,3,9996,275,275,3
+"314","Liberty","Ind",NA,2,0,8,4,9918,10,10,3
+"315","Louisiana","Sun Belt","West",2,0,10,2,9996,694,694,3
+"316","Louisiana-Monroe","Sun Belt","West",1,1,4,8,1017,0,0,3
+"317","Louisiana State","SEC","West",1,1,6,6,5509,2,0,3
+"318","Louisiana Tech","CUSA","West",1,1,5,7,2859,0,0,3
+"319","Louisville","ACC","Atlantic",1,1,6,6,6365,0,0,3
+"320","Marshall","Sun Belt","East",2,0,8,4,9200,18,18,3
+"321","Maryland","Big Ten","East",2,0,7,5,8961,1,1,3
+"322","Massachusetts","Ind",NA,0,2,3,9,359,0,0,3
+"323","Memphis","American",NA,1,1,8,4,9542,79,0,3
+"324","Miami (FL)","ACC","Coastal",2,0,8,4,9442,2,2,3
+"325","Miami (OH)","MAC","East",1,1,7,5,8273,14,0,3
+"326","Michigan","Big Ten","East",2,0,9,3,9990,259,259,3
+"327","Michigan State","Big Ten","East",2,0,8,4,9725,36,36,3
+"328","Middle Tennessee State","CUSA","East",1,1,6,6,6998,1,0,3
+"329","Minnesota","Big Ten","West",2,0,8,4,9878,54,54,3
+"330","Mississippi","SEC","West",2,0,8,4,9809,47,47,3
+"331","Mississippi State","SEC","West",2,0,7,5,9310,0,0,3
+"332","Missouri","SEC","East",1,1,5,7,4509,0,0,3
+"333","Navy","American",NA,0,2,2,10,48,0,0,3
+"334","Nebraska","Big Ten","West",1,2,4,8,896,0,0,3
+"335","Nevada","MWC","West",2,1,6,6,7375,4,0,3
+"336","Nevada-Las Vegas","MWC","West",1,1,5,7,3178,0,0,3
+"337","New Mexico","MWC","Mountain",1,1,4,8,1231,0,0,3
+"338","New Mexico State","Ind",NA,0,3,3,8,144,0,0,3
+"339","North Carolina","ACC","Coastal",3,0,8,4,9668,21,21,3
+"340","North Carolina State","ACC","Atlantic",2,0,9,3,9906,62,62,3
+"341","North Texas","CUSA","West",2,1,6,6,7624,0,0,3
+"342","Northern Illinois","MAC","West",1,1,5,7,4803,0,0,3
+"343","Northwestern","Big Ten","West",1,1,4,8,1612,0,0,3
+"344","Notre Dame","Ind",NA,0,2,6,6,7551,48,0,3
+"345","Ohio","MAC","East",1,1,6,6,5672,0,0,3
+"346","Ohio State","Big Ten","East",2,0,10,2,9991,366,366,3
+"347","Oklahoma","Big 12",NA,2,0,9,3,9885,147,147,3
+"348","Oklahoma State","Big 12",NA,2,0,9,3,9961,127,127,3
+"349","Old Dominion","Sun Belt","East",1,1,5,7,3193,0,0,3
+"350","Oregon","Pac-12",NA,1,1,7,5,8075,19,0,3
+"351","Oregon State","Pac-12",NA,2,0,8,4,9807,48,48,3
+"352","Penn State","Big Ten","East",2,0,8,4,9698,31,31,3
+"353","Pittsburgh","ACC","Coastal",1,1,8,4,9660,156,0,3
+"354","Purdue","Big Ten","West",1,1,6,6,7392,9,0,3
+"355","Rice","CUSA","West",1,1,4,8,1920,0,0,3
+"356","Rutgers","Big Ten","East",2,0,6,6,6209,0,0,3
+"357","San Diego State","MWC","West",1,1,6,6,7638,2,0,3
+"358","San Jose State","MWC","West",1,1,5,6,4096,1,0,3
+"359","South Alabama","Sun Belt","West",2,0,8,4,9592,3,3,3
+"360","South Carolina","SEC","East",1,1,6,6,7621,1,0,3
+"361","South Florida","American",NA,1,1,3,9,454,0,0,3
+"362","Southern California","Pac-12",NA,2,0,7,5,8895,3,3,3
+"363","Southern Methodist","American",NA,2,0,8,4,9544,26,26,3
+"364","Southern Mississippi","Sun Belt","West",0,2,3,9,237,0,0,3
+"365","Stanford","Pac-12",NA,1,1,3,9,267,0,0,3
+"366","Syracuse","ACC","Atlantic",2,0,7,5,9052,3,3,3
+"367","Temple","American",NA,1,1,4,8,1590,0,0,3
+"368","Tennessee","SEC","East",2,0,8,4,9866,16,16,3
+"369","Texas","Big 12",NA,1,1,6,6,5759,0,0,3
+"370","Texas-El Paso","CUSA","West",1,2,5,7,3604,2,0,3
+"371","Texas-San Antonio","CUSA","West",1,1,7,5,9260,26,0,3
+"372","Texas A&M","SEC","West",1,1,7,5,8172,5,0,3
+"373","Texas Christian","Big 12",NA,2,0,7,5,7834,3,3,3
+"374","Texas State","Sun Belt","West",1,1,5,7,3215,0,0,3
+"375","Texas Tech","Big 12",NA,2,0,7,5,8244,1,1,3
+"376","Toledo","MAC","West",2,0,7,5,9063,1,1,3
+"377","Troy","Sun Belt","West",1,1,5,7,4943,0,0,3
+"378","Tulane","American",NA,2,0,6,6,6171,0,0,3
+"379","Tulsa","American",NA,1,1,6,6,7209,3,0,3
+"380","UCLA","Pac-12",NA,2,0,9,3,9941,143,143,3
+"381","Utah","Pac-12",NA,1,1,8,4,9676,118,0,3
+"382","Utah State","MWC","Mountain",1,2,6,6,5942,3,0,3
+"383","Vanderbilt","SEC","East",2,1,4,8,1858,0,0,3
+"384","Virginia","ACC","Coastal",1,1,6,6,5621,2,0,3
+"385","Virginia Tech","ACC","Coastal",1,1,6,6,6025,0,0,3
+"386","Wake Forest","ACC","Atlantic",2,0,9,3,9949,177,177,3
+"387","Washington","Pac-12",NA,2,0,6,6,7175,0,0,3
+"388","Washington State","Pac-12",NA,2,0,9,3,9911,131,131,3
+"389","West Virginia","Big 12",NA,0,2,4,8,638,1,0,3
+"390","Western Kentucky","CUSA","East",2,0,9,4,9876,35,35,3
+"391","Western Michigan","MAC","West",1,1,7,5,9305,78,0,3
+"392","Wisconsin","Big Ten","West",1,1,7,5,8567,17,0,3
+"393","Wyoming","MWC","Mountain",2,1,6,6,7626,3,0,3
+"394","Air Force","MWC","Mountain",2,1,8,4,9873,254,0,4
+"395","Akron","MAC","East",1,2,4,8,842,0,0,4
+"396","Alabama","SEC","West",3,0,10,2,9998,607,607,4
+"397","Alabama-Birmingham","CUSA","West",2,1,7,5,9449,28,0,4
+"398","Appalachian State","Sun Belt","East",2,1,7,4,9583,274,0,4
+"399","Arizona","Pac-12",NA,2,1,5,7,3657,0,0,4
+"400","Arizona State","Pac-12",NA,1,2,5,7,3019,2,0,4
+"401","Arkansas","SEC","West",3,0,9,3,9896,146,146,4
+"402","Arkansas State","Sun Belt","West",1,2,5,7,4418,1,0,4
+"403","Army","Ind",NA,1,2,7,5,9028,68,0,4
+"404","Auburn","SEC","West",2,1,6,6,4991,0,0,4
+"405","Ball State","MAC","West",1,2,5,7,3582,0,0,4
+"406","Baylor","Big 12",NA,2,1,7,5,9262,50,0,4
+"407","Boise State","MWC","Mountain",2,1,8,4,9682,127,0,4
+"408","Boston College","ACC","Atlantic",1,2,4,8,1395,0,0,4
+"409","Bowling Green","MAC","East",1,2,4,8,1131,0,0,4
+"410","Brigham Young","Ind",NA,2,1,8,4,9771,180,0,4
+"411","Buffalo","MAC","East",0,3,3,9,341,0,0,4
+"412","California","Pac-12",NA,2,1,7,5,7847,6,0,4
+"413","Central Florida","American",NA,2,1,8,4,9506,81,0,4
+"414","Central Michigan","MAC","West",1,2,6,6,6562,5,0,4
+"415","Charlotte","CUSA","East",1,3,3,9,160,0,0,4
+"416","Cincinnati","American",NA,2,1,9,3,9986,796,0,4
+"417","Clemson","ACC","Atlantic",3,0,9,3,9989,363,363,4
+"418","Coastal Carolina","Sun Belt","East",3,0,9,3,9992,348,348,4
+"419","Colorado","Pac-12",NA,0,3,2,10,92,0,0,4
+"420","Colorado State","MWC","Mountain",0,3,3,9,316,1,0,4
+"421","Connecticut","Ind",NA,1,3,4,8,601,0,0,4
+"422","Duke","ACC","Coastal",3,0,6,6,7598,0,0,4
+"423","East Carolina","American",NA,2,1,7,5,8580,7,0,4
+"424","Eastern Michigan","MAC","West",2,1,7,5,9255,51,0,4
+"425","Florida","SEC","East",2,1,6,6,7411,2,0,4
+"426","Florida Atlantic","CUSA","East",2,2,5,7,2769,1,0,4
+"427","Florida International","CUSA","East",1,1,4,8,754,0,0,4
+"428","Florida State","ACC","Atlantic",3,0,8,4,9622,16,16,4
+"429","Fresno State","MWC","West",1,2,6,6,7243,35,0,4
+"430","Georgia","SEC","East",3,0,11,1,10000,2545,2545,4
+"431","Georgia Southern","Sun Belt","East",2,1,6,6,6724,0,0,4
+"432","Georgia State","Sun Belt","East",0,3,5,7,2546,4,0,4
+"433","Georgia Tech","ACC","Coastal",1,2,3,9,294,0,0,4
+"434","Hawaii","MWC","West",1,3,4,9,481,1,0,4
+"435","Houston","American",NA,1,2,7,5,8522,76,0,4
+"436","Illinois","Big Ten","West",2,1,7,5,7788,6,0,4
+"437","Indiana","Big Ten","East",3,0,6,6,5855,0,0,4
+"438","Iowa","Big Ten","West",2,1,7,5,8307,12,0,4
+"439","Iowa State","Big 12",NA,3,0,8,4,9789,25,25,4
+"440","James Madison","Sun Belt","East",2,0,5,6,2761,0,0,4
+"441","Kansas","Big 12",NA,3,0,7,5,8085,2,2,4
+"442","Kansas State","Big 12",NA,2,1,6,6,6023,1,0,4
+"443","Kent State","MAC","East",1,2,5,7,3924,0,0,4
+"444","Kentucky","SEC","East",3,0,9,3,9999,259,259,4
+"445","Liberty","Ind",NA,2,1,8,4,9921,82,0,4
+"446","Louisiana","Sun Belt","West",2,1,8,4,9930,303,0,4
+"447","Louisiana-Monroe","Sun Belt","West",1,2,4,8,1123,0,0,4
+"448","Louisiana State","SEC","West",2,1,7,5,8097,6,0,4
+"449","Louisiana Tech","CUSA","West",1,2,5,7,2461,0,0,4
+"450","Louisville","ACC","Atlantic",1,2,5,7,2806,0,0,4
+"451","Marshall","Sun Belt","East",2,1,7,5,7925,16,0,4
+"452","Maryland","Big Ten","East",3,0,8,4,9670,7,7,4
+"453","Massachusetts","Ind",NA,1,2,4,8,736,0,0,4
+"454","Memphis","American",NA,2,1,8,4,9716,95,0,4
+"455","Miami (FL)","ACC","Coastal",2,1,7,5,8937,14,0,4
+"456","Miami (OH)","MAC","East",1,2,7,5,7886,81,0,4
+"457","Michigan","Big Ten","East",3,0,9,3,9982,220,220,4
+"458","Michigan State","Big Ten","East",2,1,7,5,8206,10,0,4
+"459","Middle Tennessee State","CUSA","East",2,1,7,5,8091,4,0,4
+"460","Minnesota","Big Ten","West",3,0,9,3,9943,78,78,4
+"461","Mississippi","SEC","West",3,0,9,3,9934,102,102,4
+"462","Mississippi State","SEC","West",2,1,6,6,8195,1,0,4
+"463","Missouri","SEC","East",2,1,5,7,4743,1,0,4
+"464","Navy","American",NA,0,2,2,10,39,0,0,4
+"465","Nebraska","Big Ten","West",1,3,3,9,311,0,0,4
+"466","Nevada","MWC","West",2,2,6,6,6822,14,0,4
+"467","Nevada-Las Vegas","MWC","West",2,1,6,6,5650,0,0,4
+"468","New Mexico","MWC","Mountain",2,1,5,7,2426,0,0,4
+"469","New Mexico State","Ind",NA,0,4,3,8,109,1,0,4
+"470","North Carolina","ACC","Coastal",3,0,8,4,9607,20,20,4
+"471","North Carolina State","ACC","Atlantic",3,0,9,3,9980,150,150,4
+"472","North Texas","CUSA","West",2,2,6,6,5535,0,0,4
+"473","Northern Illinois","MAC","West",1,2,5,7,2281,0,0,4
+"474","Northwestern","Big Ten","West",1,2,3,9,113,0,0,4
+"475","Notre Dame","Ind",NA,1,2,7,5,8489,78,0,4
+"476","Ohio","MAC","East",1,2,6,6,5447,3,0,4
+"477","Ohio State","Big Ten","East",3,0,10,2,9995,389,389,4
+"478","Oklahoma","Big 12",NA,3,0,9,3,9977,312,312,4
+"479","Oklahoma State","Big 12",NA,3,0,9,3,9948,113,113,4
+"480","Old Dominion","Sun Belt","East",1,2,5,7,2995,0,0,4
+"481","Oregon","Pac-12",NA,2,1,8,4,9439,92,0,4
+"482","Oregon State","Pac-12",NA,3,0,8,4,9871,48,48,4
+"483","Penn State","Big Ten","East",3,0,9,3,9993,313,313,4
+"484","Pittsburgh","ACC","Coastal",2,1,9,3,9941,451,0,4
+"485","Purdue","Big Ten","West",1,2,6,6,5496,3,0,4
+"486","Rice","CUSA","West",2,1,6,6,6671,5,0,4
+"487","Rutgers","Big Ten","East",3,0,6,6,7285,0,0,4
+"488","San Diego State","MWC","West",1,2,6,6,7092,31,0,4
+"489","San Jose State","MWC","West",1,1,5,6,4098,1,0,4
+"490","South Alabama","Sun Belt","West",2,1,8,4,9605,50,0,4
+"491","South Carolina","SEC","East",1,2,6,6,5993,4,0,4
+"492","South Florida","American",NA,1,2,3,9,370,0,0,4
+"493","Southern California","Pac-12",NA,3,0,8,4,9670,7,7,4
+"494","Southern Methodist","American",NA,2,1,7,5,9081,63,0,4
+"495","Southern Mississippi","Sun Belt","West",1,2,4,8,657,0,0,4
+"496","Stanford","Pac-12",NA,1,1,3,9,274,0,0,4
+"497","Syracuse","ACC","Atlantic",3,0,8,4,9644,4,4,4
+"498","Temple","American",NA,1,2,4,8,768,0,0,4
+"499","Tennessee","SEC","East",3,0,8,4,9859,14,14,4
+"500","Texas","Big 12",NA,2,1,6,6,6494,1,0,4
+"501","Texas-El Paso","CUSA","West",1,3,4,8,1654,1,0,4
+"502","Texas-San Antonio","CUSA","West",1,2,7,5,8938,139,0,4
+"503","Texas A&M","SEC","West",2,1,7,5,8905,19,0,4
+"504","Texas Christian","Big 12",NA,2,0,7,5,7720,1,1,4
+"505","Texas State","Sun Belt","West",1,2,5,7,3283,2,0,4
+"506","Texas Tech","Big 12",NA,2,1,6,6,6675,1,0,4
+"507","Toledo","MAC","West",2,1,7,5,8830,14,0,4
+"508","Troy","Sun Belt","West",1,2,5,7,4413,0,0,4
+"509","Tulane","American",NA,3,0,7,5,9376,5,5,4
+"510","Tulsa","American",NA,2,1,6,6,7647,3,0,4
+"511","UCLA","Pac-12",NA,3,0,9,3,9964,152,152,4
+"512","Utah","Pac-12",NA,2,1,8,4,9817,147,0,4
+"513","Utah State","MWC","Mountain",1,2,6,6,5728,5,0,4
+"514","Vanderbilt","SEC","East",3,1,5,7,3743,0,0,4
+"515","Virginia","ACC","Coastal",2,1,6,6,6287,2,0,4
+"516","Virginia Tech","ACC","Coastal",2,1,6,6,6361,0,0,4
+"517","Wake Forest","ACC","Atlantic",3,0,9,3,9977,196,196,4
+"518","Washington","Pac-12",NA,3,0,8,4,9576,6,6,4
+"519","Washington State","Pac-12",NA,3,0,9,3,9903,115,115,4
+"520","West Virginia","Big 12",NA,1,2,4,8,790,0,0,4
+"521","Western Kentucky","CUSA","East",2,1,9,4,9790,133,0,4
+"522","Western Michigan","MAC","West",1,2,7,5,8427,85,0,4
+"523","Wisconsin","Big Ten","West",2,1,7,5,8962,19,0,4
+"524","Wyoming","MWC","Mountain",3,1,7,5,9147,24,0,4
+"525","Air Force","MWC","Mountain",3,1,9,3,9980,500,0,5
+"526","Akron","MAC","East",1,3,4,8,634,1,0,5
+"527","Alabama","SEC","West",4,0,10,2,10000,716,716,5
+"528","Alabama-Birmingham","CUSA","West",2,1,7,5,9364,22,0,5
+"529","Appalachian State","Sun Belt","East",2,2,6,5,7424,108,0,5
+"530","Arizona","Pac-12",NA,2,2,5,7,2477,0,0,5
+"531","Arizona State","Pac-12",NA,1,3,4,8,1337,2,0,5
+"532","Arkansas","SEC","West",3,1,8,4,9645,135,0,5
+"533","Arkansas State","Sun Belt","West",1,3,5,7,2642,6,0,5
+"534","Army","Ind",NA,1,2,7,5,8862,59,0,5
+"535","Auburn","SEC","West",3,1,6,6,6181,0,0,5
+"536","Ball State","MAC","West",1,3,5,7,2375,3,0,5
+"537","Baylor","Big 12",NA,3,1,8,4,9868,292,0,5
+"538","Boise State","MWC","Mountain",2,2,6,6,7946,54,0,5
+"539","Boston College","ACC","Atlantic",1,3,4,8,514,0,0,5
+"540","Bowling Green","MAC","East",1,3,4,8,981,0,0,5
+"541","Brigham Young","Ind",NA,3,1,8,4,9943,310,0,5
+"542","Buffalo","MAC","East",1,3,5,7,3175,23,0,5
+"543","California","Pac-12",NA,3,1,7,5,8680,10,0,5
+"544","Central Florida","American",NA,3,1,8,4,9830,174,0,5
+"545","Central Michigan","MAC","West",1,3,6,6,6977,156,0,5
+"546","Charlotte","CUSA","East",1,4,3,9,111,1,0,5
+"547","Cincinnati","American",NA,3,1,9,3,9995,1283,0,5
+"548","Clemson","ACC","Atlantic",4,0,10,2,10000,1207,1207,5
+"549","Coastal Carolina","Sun Belt","East",4,0,10,2,10000,1077,1077,5
+"550","Colorado","Pac-12",NA,0,4,2,10,5,0,0,5
+"551","Colorado State","MWC","Mountain",0,4,2,10,4,0,0,5
+"552","Connecticut","Ind",NA,1,4,4,8,616,6,0,5
+"553","Duke","ACC","Coastal",3,1,6,6,7800,1,0,5
+"554","East Carolina","American",NA,2,2,6,6,5157,2,0,5
+"555","Eastern Michigan","MAC","West",2,2,6,6,5976,19,0,5
+"556","Florida","SEC","East",2,2,6,6,6498,4,0,5
+"557","Florida Atlantic","CUSA","East",2,3,5,7,2191,5,0,5
+"558","Florida International","CUSA","East",1,2,3,9,449,0,0,5
+"559","Florida State","ACC","Atlantic",4,0,8,4,9930,30,30,5
+"560","Fresno State","MWC","West",1,2,6,6,7301,54,0,5
+"561","Georgia","SEC","East",4,0,11,1,10000,2620,2620,5
+"562","Georgia Southern","Sun Belt","East",3,1,7,5,8343,4,0,5
+"563","Georgia State","Sun Belt","East",0,4,4,8,617,7,0,5
+"564","Georgia Tech","ACC","Coastal",1,3,3,9,193,0,0,5
+"565","Hawaii","MWC","West",1,4,4,9,75,0,0,5
+"566","Houston","American",NA,2,2,7,5,9047,125,0,5
+"567","Illinois","Big Ten","West",3,1,7,5,7941,2,0,5
+"568","Indiana","Big Ten","East",3,1,6,6,5160,0,0,5
+"569","Iowa","Big Ten","West",3,1,8,4,9691,20,0,5
+"570","Iowa State","Big 12",NA,3,1,7,5,8919,10,0,5
+"571","James Madison","Sun Belt","East",3,0,6,5,7057,0,0,5
+"572","Kansas","Big 12",NA,4,0,7,5,8808,1,1,5
+"573","Kansas State","Big 12",NA,3,1,7,5,9072,18,0,5
+"574","Kent State","MAC","East",1,3,5,7,3880,16,0,5
+"575","Kentucky","SEC","East",4,0,9,3,9997,272,272,5
+"576","Liberty","Ind",NA,3,1,8,4,9953,128,0,5
+"577","Louisiana","Sun Belt","West",2,2,7,5,9386,203,0,5
+"578","Louisiana-Monroe","Sun Belt","West",2,2,5,7,3084,1,0,5
+"579","Louisiana State","SEC","West",3,1,7,5,8241,12,0,5
+"580","Louisiana Tech","CUSA","West",1,3,4,8,1481,4,0,5
+"581","Louisville","ACC","Atlantic",2,2,5,7,3798,2,0,5
+"582","Marshall","Sun Belt","East",2,2,6,6,6215,16,0,5
+"583","Maryland","Big Ten","East",3,1,8,4,9626,44,0,5
+"584","Massachusetts","Ind",NA,1,3,3,9,255,0,0,5
+"585","Memphis","American",NA,3,1,8,4,9875,170,0,5
+"586","Miami (FL)","ACC","Coastal",2,2,6,6,5266,5,0,5
+"587","Miami (OH)","MAC","East",2,2,8,4,9519,497,0,5
+"588","Michigan","Big Ten","East",4,0,10,2,9997,333,333,5
+"589","Michigan State","Big Ten","East",2,2,5,7,4892,3,0,5
+"590","Middle Tennessee State","CUSA","East",3,1,8,4,9861,178,0,5
+"591","Minnesota","Big Ten","West",4,0,10,2,9998,532,532,5
+"592","Mississippi","SEC","West",4,0,9,3,9968,127,127,5
+"593","Mississippi State","SEC","West",3,1,7,5,8266,1,0,5
+"594","Missouri","SEC","East",2,2,5,7,3586,0,0,5
+"595","Navy","American",NA,1,2,3,9,400,0,0,5
+"596","Nebraska","Big Ten","West",1,3,3,9,282,0,0,5
+"597","Nevada","MWC","West",2,3,6,6,6088,76,0,5
+"598","Nevada-Las Vegas","MWC","West",3,1,7,5,9078,8,0,5
+"599","New Mexico","MWC","Mountain",2,2,5,7,2311,1,0,5
+"600","New Mexico State","Ind",NA,1,4,4,7,352,8,0,5
+"601","North Carolina","ACC","Coastal",3,1,7,5,8714,9,0,5
+"602","North Carolina State","ACC","Atlantic",4,0,9,3,9996,140,140,5
+"603","North Texas","CUSA","West",2,3,5,7,5032,6,0,5
+"604","Northern Illinois","MAC","West",1,3,5,7,2564,16,0,5
+"605","Northwestern","Big Ten","West",1,3,2,10,6,0,0,5
+"606","Notre Dame","Ind",NA,2,2,8,4,9756,402,0,5
+"607","Ohio","MAC","East",2,2,6,6,6155,9,0,5
+"608","Ohio State","Big Ten","East",4,0,10,2,10000,825,825,5
+"609","Oklahoma","Big 12",NA,3,1,8,4,9475,99,0,5
+"610","Oklahoma State","Big 12",NA,3,0,9,3,9938,63,63,5
+"611","Old Dominion","Sun Belt","East",2,2,5,7,3946,3,0,5
+"612","Oregon","Pac-12",NA,3,1,9,3,9921,438,0,5
+"613","Oregon State","Pac-12",NA,3,1,7,5,9278,29,0,5
+"614","Penn State","Big Ten","East",4,0,10,2,9993,328,328,5
+"615","Pittsburgh","ACC","Coastal",3,1,9,3,9969,654,0,5
+"616","Purdue","Big Ten","West",2,2,6,6,5655,5,0,5
+"617","Rice","CUSA","West",2,2,6,6,5988,5,0,5
+"618","Rutgers","Big Ten","East",3,1,5,7,4431,0,0,5
+"619","San Diego State","MWC","West",2,2,7,5,7967,69,0,5
+"620","San Jose State","MWC","West",2,1,6,5,7160,15,0,5
+"621","South Alabama","Sun Belt","West",3,1,8,4,9720,75,0,5
+"622","South Carolina","SEC","East",2,2,6,6,6001,4,0,5
+"623","South Florida","American",NA,1,3,3,9,176,0,0,5
+"624","Southern California","Pac-12",NA,4,0,9,3,9975,42,42,5
+"625","Southern Methodist","American",NA,2,2,6,6,7290,38,0,5
+"626","Southern Mississippi","Sun Belt","West",2,2,5,7,3072,2,0,5
+"627","Stanford","Pac-12",NA,1,2,3,9,141,0,0,5
+"628","Syracuse","ACC","Atlantic",4,0,8,4,9836,8,8,5
+"629","Temple","American",NA,2,2,4,8,1214,0,0,5
+"630","Tennessee","SEC","East",4,0,8,4,9958,26,26,5
+"631","Texas","Big 12",NA,2,2,5,7,4483,1,0,5
+"632","Texas-El Paso","CUSA","West",2,3,6,6,5381,32,0,5
+"633","Texas-San Antonio","CUSA","West",2,2,7,5,9044,123,0,5
+"634","Texas A&M","SEC","West",3,1,8,4,9815,71,0,5
+"635","Texas Christian","Big 12",NA,3,0,8,4,9399,10,10,5
+"636","Texas State","Sun Belt","West",2,2,5,7,4168,1,0,5
+"637","Texas Tech","Big 12",NA,3,1,6,6,7737,1,0,5
+"638","Toledo","MAC","West",2,2,7,5,8522,98,0,5
+"639","Troy","Sun Belt","West",2,2,6,6,6494,7,0,5
+"640","Tulane","American",NA,3,1,6,6,7384,3,0,5
+"641","Tulsa","American",NA,2,2,6,6,7222,32,0,5
+"642","UCLA","Pac-12",NA,4,0,9,3,9997,272,272,5
+"643","Utah","Pac-12",NA,3,1,9,3,9985,426,0,5
+"644","Utah State","MWC","Mountain",1,3,5,7,2275,4,0,5
+"645","Vanderbilt","SEC","East",3,2,5,7,3486,0,0,5
+"646","Virginia","ACC","Coastal",2,2,6,6,6243,15,0,5
+"647","Virginia Tech","ACC","Coastal",2,2,5,7,2725,0,0,5
+"648","Wake Forest","ACC","Atlantic",3,1,8,4,9870,160,0,5
+"649","Washington","Pac-12",NA,4,0,8,4,9838,3,3,5
+"650","Washington State","Pac-12",NA,3,1,8,4,9607,93,0,5
+"651","West Virginia","Big 12",NA,2,2,5,7,3102,0,0,5
+"652","Western Kentucky","CUSA","East",3,1,9,4,9784,101,0,5
+"653","Western Michigan","MAC","West",1,3,6,6,6560,95,0,5
+"654","Wisconsin","Big Ten","West",2,2,7,5,8309,77,0,5
+"655","Wyoming","MWC","Mountain",3,2,7,5,9314,241,0,5
+"656","Air Force","MWC","Mountain",4,1,9,3,9989,716,0,6
+"657","Akron","MAC","East",1,4,3,9,116,1,0,6
+"658","Alabama","SEC","West",5,0,11,1,10000,1757,1757,6
+"659","Alabama-Birmingham","CUSA","West",2,2,7,5,8423,22,0,6
+"660","Appalachian State","Sun Belt","East",3,2,7,5,9505,137,0,6
+"661","Arizona","Pac-12",NA,3,2,5,7,3435,0,0,6
+"662","Arizona State","Pac-12",NA,1,4,4,8,827,2,0,6
+"663","Arkansas","SEC","West",3,2,7,5,8590,95,0,6
+"664","Arkansas State","Sun Belt","West",2,3,5,7,4436,20,0,6
+"665","Army","Ind",NA,1,3,5,7,4628,12,0,6
+"666","Auburn","SEC","West",3,2,5,7,3622,0,0,6
+"667","Ball State","MAC","West",2,3,5,7,3616,9,0,6
+"668","Baylor","Big 12",NA,3,2,7,5,9132,171,0,6
+"669","Boise State","MWC","Mountain",3,2,7,5,9467,155,0,6
+"670","Boston College","ACC","Atlantic",2,3,4,8,828,0,0,6
+"671","Bowling Green","MAC","East",2,3,5,7,2673,3,0,6
+"672","Brigham Young","Ind",NA,4,1,9,3,9973,363,0,6
+"673","Buffalo","MAC","East",2,3,6,6,5484,49,0,6
+"674","California","Pac-12",NA,3,2,6,6,7913,42,0,6
+"675","Central Florida","American",NA,3,1,8,4,9763,122,0,6
+"676","Central Michigan","MAC","West",1,4,5,7,4758,274,0,6
+"677","Charlotte","CUSA","East",1,5,3,9,9,0,0,6
+"678","Cincinnati","American",NA,4,1,10,2,10000,2399,0,6
+"679","Clemson","ACC","Atlantic",5,0,11,1,10000,1940,1940,6
+"680","Coastal Carolina","Sun Belt","East",5,0,10,2,10000,1365,1365,6
+"681","Colorado","Pac-12",NA,0,5,1,11,0,0,0,6
+"682","Colorado State","MWC","Mountain",0,4,2,10,9,0,0,6
+"683","Connecticut","Ind",NA,2,4,5,7,1768,28,0,6
+"684","Duke","ACC","Coastal",4,1,7,5,9056,10,0,6
+"685","East Carolina","American",NA,3,2,6,6,6901,3,0,6
+"686","Eastern Michigan","MAC","West",3,2,6,6,6942,19,0,6
+"687","Florida","SEC","East",3,2,6,6,6814,11,0,6
+"688","Florida Atlantic","CUSA","East",2,4,4,8,973,10,0,6
+"689","Florida International","CUSA","East",2,2,5,7,3282,2,0,6
+"690","Florida State","ACC","Atlantic",4,1,7,5,9594,14,0,6
+"691","Fresno State","MWC","West",1,3,5,7,4197,39,0,6
+"692","Georgia","SEC","East",5,0,11,1,10000,3065,3065,6
+"693","Georgia Southern","Sun Belt","East",3,2,6,6,7607,22,0,6
+"694","Georgia State","Sun Belt","East",1,4,5,7,3599,108,0,6
+"695","Georgia Tech","ACC","Coastal",2,3,5,7,2072,2,0,6
+"696","Hawaii","MWC","West",1,4,4,9,91,2,0,6
+"697","Houston","American",NA,2,3,6,6,6504,61,0,6
+"698","Illinois","Big Ten","West",4,1,8,4,9860,92,0,6
+"699","Indiana","Big Ten","East",3,2,5,7,2274,0,0,6
+"700","Iowa","Big Ten","West",3,2,7,5,8610,19,0,6
+"701","Iowa State","Big 12",NA,3,2,6,6,7895,12,0,6
+"702","James Madison","Sun Belt","East",4,0,7,4,8349,6,6,6
+"703","Kansas","Big 12",NA,5,0,7,5,9619,2,2,6
+"704","Kansas State","Big 12",NA,4,1,7,5,9549,37,0,6
+"705","Kent State","MAC","East",2,3,5,7,4942,29,0,6
+"706","Kentucky","SEC","East",4,1,9,3,9989,626,0,6
+"707","Liberty","Ind",NA,4,1,9,3,9997,396,0,6
+"708","Louisiana","Sun Belt","West",2,3,6,6,7636,153,0,6
+"709","Louisiana-Monroe","Sun Belt","West",2,3,4,8,980,0,0,6
+"710","Louisiana State","SEC","West",4,1,8,4,9653,50,0,6
+"711","Louisiana Tech","CUSA","West",1,3,4,8,1317,2,0,6
+"712","Louisville","ACC","Atlantic",2,3,5,7,2418,0,0,6
+"713","Marshall","Sun Belt","East",3,2,6,6,6583,23,0,6
+"714","Maryland","Big Ten","East",4,1,8,4,9923,114,0,6
+"715","Massachusetts","Ind",NA,1,4,3,9,98,0,0,6
+"716","Memphis","American",NA,4,1,8,4,9952,197,0,6
+"717","Miami (FL)","ACC","Coastal",2,2,6,6,5529,6,0,6
+"718","Miami (OH)","MAC","East",2,3,7,5,8600,601,0,6
+"719","Michigan","Big Ten","East",5,0,10,2,10000,1192,1192,6
+"720","Michigan State","Big Ten","East",2,3,5,7,3151,3,0,6
+"721","Middle Tennessee State","CUSA","East",3,2,7,5,9075,108,0,6
+"722","Minnesota","Big Ten","West",4,1,8,4,9965,226,0,6
+"723","Mississippi","SEC","West",5,0,9,3,9998,241,241,6
+"724","Mississippi State","SEC","West",4,1,7,5,9815,7,0,6
+"725","Missouri","SEC","East",2,3,5,7,3288,4,0,6
+"726","Navy","American",NA,1,3,4,8,353,0,0,6
+"727","Nebraska","Big Ten","West",2,3,4,8,879,0,0,6
+"728","Nevada","MWC","West",2,3,6,6,5881,60,0,6
+"729","Nevada-Las Vegas","MWC","West",4,1,7,5,9469,20,0,6
+"730","New Mexico","MWC","Mountain",2,3,5,7,2403,2,0,6
+"731","New Mexico State","Ind",NA,1,5,3,8,1,1,0,6
+"732","North Carolina","ACC","Coastal",4,1,7,5,9458,42,0,6
+"733","North Carolina State","ACC","Atlantic",4,1,9,3,9976,511,0,6
+"734","North Texas","CUSA","West",3,3,6,6,6551,14,0,6
+"735","Northern Illinois","MAC","West",1,4,4,8,1322,26,0,6
+"736","Northwestern","Big Ten","West",1,4,2,10,1,0,0,6
+"737","Notre Dame","Ind",NA,2,2,8,4,9693,350,0,6
+"738","Ohio","MAC","East",2,3,5,7,4618,9,0,6
+"739","Ohio State","Big Ten","East",5,0,10,2,10000,818,818,6
+"740","Oklahoma","Big 12",NA,3,2,7,5,8365,90,0,6
+"741","Oklahoma State","Big 12",NA,4,0,10,2,9998,563,563,6
+"742","Old Dominion","Sun Belt","East",2,3,4,8,1285,0,0,6
+"743","Oregon","Pac-12",NA,4,1,9,3,9954,578,0,6
+"744","Oregon State","Pac-12",NA,3,2,7,5,9099,171,0,6
+"745","Penn State","Big Ten","East",5,0,10,2,10000,349,349,6
+"746","Pittsburgh","ACC","Coastal",3,2,8,4,9579,374,0,6
+"747","Purdue","Big Ten","West",3,2,7,5,9369,181,0,6
+"748","Rice","CUSA","West",3,2,7,5,8202,46,0,6
+"749","Rutgers","Big Ten","East",3,2,5,7,4034,0,0,6
+"750","San Diego State","MWC","West",2,3,6,6,6161,108,0,6
+"751","San Jose State","MWC","West",3,1,8,3,9723,278,0,6
+"752","South Alabama","Sun Belt","West",4,1,9,3,9986,626,0,6
+"753","South Carolina","SEC","East",3,2,6,6,6402,6,0,6
+"754","South Florida","American",NA,1,4,3,9,34,0,0,6
+"755","Southern California","Pac-12",NA,5,0,9,3,9994,52,52,6
+"756","Southern Methodist","American",NA,2,2,6,6,7382,37,0,6
+"757","Southern Mississippi","Sun Belt","West",2,2,5,7,2848,2,0,6
+"758","Stanford","Pac-12",NA,1,3,3,9,82,0,0,6
+"759","Syracuse","ACC","Atlantic",5,0,8,4,9876,5,5,6
+"760","Temple","American",NA,2,3,4,8,951,0,0,6
+"761","Tennessee","SEC","East",4,0,8,4,9963,15,15,6
+"762","Texas","Big 12",NA,3,2,6,6,6479,8,0,6
+"763","Texas-El Paso","CUSA","West",3,3,6,6,7689,75,0,6
+"764","Texas-San Antonio","CUSA","West",3,2,8,4,9916,819,0,6
+"765","Texas A&M","SEC","West",3,2,7,5,9109,41,0,6
+"766","Texas Christian","Big 12",NA,4,0,9,3,9931,85,85,6
+"767","Texas State","Sun Belt","West",2,3,5,7,2076,2,0,6
+"768","Texas Tech","Big 12",NA,3,2,6,6,7049,3,0,6
+"769","Toledo","MAC","West",3,2,7,5,9427,237,0,6
+"770","Troy","Sun Belt","West",3,2,7,5,9561,159,0,6
+"771","Tulane","American",NA,4,1,7,5,9450,16,0,6
+"772","Tulsa","American",NA,2,3,6,6,5701,53,0,6
+"773","UCLA","Pac-12",NA,5,0,10,2,9999,448,448,6
+"774","Utah","Pac-12",NA,4,1,9,3,9997,491,0,6
+"775","Utah State","MWC","Mountain",1,4,4,8,1707,32,0,6
+"776","Vanderbilt","SEC","East",3,2,5,7,3415,0,0,6
+"777","Virginia","ACC","Coastal",2,3,5,7,3978,37,0,6
+"778","Virginia Tech","ACC","Coastal",2,3,4,8,1532,3,0,6
+"779","Wake Forest","ACC","Atlantic",4,1,9,3,9993,755,0,6
+"780","Washington","Pac-12",NA,4,1,8,4,9799,24,0,6
+"781","Washington State","Pac-12",NA,4,1,8,4,9896,197,0,6
+"782","West Virginia","Big 12",NA,2,3,4,8,1720,1,0,6
+"783","Western Kentucky","CUSA","East",3,2,8,5,8636,60,0,6
+"784","Western Michigan","MAC","West",2,3,6,6,7282,147,0,6
+"785","Wisconsin","Big Ten","West",2,3,5,7,3850,27,0,6
+"786","Wyoming","MWC","Mountain",3,3,6,6,6650,103,0,6
+"787","Air Force","MWC","Mountain",4,2,8,4,9953,789,0,7
+"788","Akron","MAC","East",1,5,2,10,25,2,0,7
+"789","Alabama","SEC","West",6,0,11,1,10000,1704,1704,7
+"790","Alabama-Birmingham","CUSA","West",3,2,7,5,9281,79,0,7
+"791","Appalachian State","Sun Belt","East",3,3,6,6,7729,80,0,7
+"792","Arizona","Pac-12",NA,3,3,5,7,1750,0,0,7
+"793","Arizona State","Pac-12",NA,2,4,5,7,2132,42,0,7
+"794","Arkansas","SEC","West",3,3,6,6,7700,235,0,7
+"795","Arkansas State","Sun Belt","West",2,4,4,8,980,5,0,7
+"796","Army","Ind",NA,1,4,5,7,4072,131,0,7
+"797","Auburn","SEC","West",3,3,5,7,3572,0,0,7
+"798","Ball State","MAC","West",3,3,6,6,5955,31,0,7
+"799","Baylor","Big 12",NA,3,2,7,5,9129,185,0,7
+"800","Boise State","MWC","Mountain",4,2,8,4,9830,358,0,7
+"801","Boston College","ACC","Atlantic",2,4,4,8,271,0,0,7
+"802","Bowling Green","MAC","East",2,4,4,8,463,1,0,7
+"803","Brigham Young","Ind",NA,4,2,8,4,9913,524,0,7
+"804","Buffalo","MAC","East",3,3,7,5,8710,441,0,7
+"805","California","Pac-12",NA,3,2,6,6,7690,23,0,7
+"806","Central Florida","American",NA,4,1,8,4,9963,269,0,7
+"807","Central Michigan","MAC","West",1,5,5,7,1998,313,0,7
+"808","Charlotte","CUSA","East",1,5,3,9,10,0,0,7
+"809","Cincinnati","American",NA,5,1,10,2,10000,2422,0,7
+"810","Clemson","ACC","Atlantic",6,0,11,1,10000,2149,2149,7
+"811","Coastal Carolina","Sun Belt","East",6,0,11,1,10000,2107,2107,7
+"812","Colorado","Pac-12",NA,0,5,1,11,0,0,0,7
+"813","Colorado State","MWC","Mountain",1,4,3,9,108,0,0,7
+"814","Connecticut","Ind",NA,3,4,5,7,4135,111,0,7
+"815","Duke","ACC","Coastal",4,2,6,6,8188,21,0,7
+"816","East Carolina","American",NA,3,3,5,7,4724,7,0,7
+"817","Eastern Michigan","MAC","West",4,2,8,4,9725,348,0,7
+"818","Florida","SEC","East",4,2,6,6,8147,13,0,7
+"819","Florida Atlantic","CUSA","East",2,4,4,8,1213,15,0,7
+"820","Florida International","CUSA","East",2,3,4,8,1003,1,0,7
+"821","Florida State","ACC","Atlantic",4,2,7,5,9360,103,0,7
+"822","Fresno State","MWC","West",1,4,5,7,3101,106,0,7
+"823","Georgia","SEC","East",6,0,11,1,10000,3295,3295,7
+"824","Georgia Southern","Sun Belt","East",3,3,6,6,6655,97,0,7
+"825","Georgia State","Sun Belt","East",2,4,5,7,4853,245,0,7
+"826","Georgia Tech","ACC","Coastal",3,3,5,7,3793,3,0,7
+"827","Hawaii","MWC","West",1,5,3,10,39,2,0,7
+"828","Houston","American",NA,3,3,7,5,9210,422,0,7
+"829","Illinois","Big Ten","West",5,1,9,3,9992,170,0,7
+"830","Indiana","Big Ten","East",3,3,4,8,1564,0,0,7
+"831","Iowa","Big Ten","West",3,3,6,6,7434,20,0,7
+"832","Iowa State","Big 12",NA,3,3,6,6,5861,11,0,7
+"833","James Madison","Sun Belt","East",5,0,8,3,9842,55,55,7
+"834","Kansas","Big 12",NA,5,1,7,5,8511,2,0,7
+"835","Kansas State","Big 12",NA,5,1,8,4,9938,90,0,7
+"836","Kent State","MAC","East",2,4,5,7,3260,52,0,7
+"837","Kentucky","SEC","East",4,2,8,4,9789,193,0,7
+"838","Liberty","Ind",NA,5,1,9,3,10000,636,0,7
+"839","Louisiana","Sun Belt","West",2,3,6,6,7561,152,0,7
+"840","Louisiana-Monroe","Sun Belt","West",2,4,4,8,321,2,0,7
+"841","Louisiana State","SEC","West",4,2,6,6,7891,19,0,7
+"842","Louisiana Tech","CUSA","West",2,3,5,7,3301,4,0,7
+"843","Louisville","ACC","Atlantic",3,3,6,6,5574,10,0,7
+"844","Marshall","Sun Belt","East",3,2,6,6,6608,19,0,7
+"845","Maryland","Big Ten","East",4,2,7,5,9723,116,0,7
+"846","Massachusetts","Ind",NA,1,5,3,9,23,1,0,7
+"847","Memphis","American",NA,4,2,8,4,9773,247,0,7
+"848","Miami (FL)","ACC","Coastal",2,3,5,7,3024,4,0,7
+"849","Miami (OH)","MAC","East",3,3,7,5,9564,1360,0,7
+"850","Michigan","Big Ten","East",6,0,11,1,10000,1448,1448,7
+"851","Michigan State","Big Ten","East",2,4,5,7,1241,3,0,7
+"852","Middle Tennessee State","CUSA","East",3,3,7,5,8622,340,0,7
+"853","Minnesota","Big Ten","West",4,1,8,4,9980,185,0,7
+"854","Mississippi","SEC","West",6,0,10,2,10000,610,610,7
+"855","Mississippi State","SEC","West",5,1,8,4,9993,19,0,7
+"856","Missouri","SEC","East",2,4,5,7,2219,13,0,7
+"857","Navy","American",NA,2,3,4,8,1407,0,0,7
+"858","Nebraska","Big Ten","West",3,3,5,7,2110,1,0,7
+"859","Nevada","MWC","West",2,4,5,7,2007,32,0,7
+"860","Nevada-Las Vegas","MWC","West",4,2,7,5,9150,27,0,7
+"861","New Mexico","MWC","Mountain",2,4,4,8,481,2,0,7
+"862","New Mexico State","Ind",NA,1,5,3,8,4,4,0,7
+"863","North Carolina","ACC","Coastal",5,1,8,4,9957,140,0,7
+"864","North Carolina State","ACC","Atlantic",5,1,9,3,9998,568,0,7
+"865","North Texas","CUSA","West",3,3,6,6,6462,12,0,7
+"866","Northern Illinois","MAC","West",1,5,3,9,238,15,0,7
+"867","Northwestern","Big Ten","West",1,5,1,11,0,0,0,7
+"868","Notre Dame","Ind",NA,3,2,8,4,9963,747,0,7
+"869","Ohio","MAC","East",3,3,6,6,6126,50,0,7
+"870","Ohio State","Big Ten","East",6,0,11,1,10000,1699,1699,7
+"871","Oklahoma","Big 12",NA,3,3,6,6,5017,35,0,7
+"872","Oklahoma State","Big 12",NA,5,0,10,2,10000,714,714,7
+"873","Old Dominion","Sun Belt","East",2,3,4,8,1311,0,0,7
+"874","Oregon","Pac-12",NA,5,1,9,3,9999,1167,0,7
+"875","Oregon State","Pac-12",NA,4,2,8,4,9742,325,0,7
+"876","Penn State","Big Ten","East",5,0,10,2,9999,346,346,7
+"877","Pittsburgh","ACC","Coastal",4,2,8,4,9780,463,0,7
+"878","Purdue","Big Ten","West",4,2,8,4,9951,597,0,7
+"879","Rice","CUSA","West",3,2,7,5,8128,32,0,7
+"880","Rutgers","Big Ten","East",3,3,5,7,1564,2,0,7
+"881","San Diego State","MWC","West",3,3,6,6,7274,185,0,7
+"882","San Jose State","MWC","West",4,1,8,3,9964,641,0,7
+"883","South Alabama","Sun Belt","West",4,1,9,3,9981,783,0,7
+"884","South Carolina","SEC","East",4,2,7,5,9462,94,0,7
+"885","South Florida","American",NA,1,5,3,9,31,2,0,7
+"886","Southern California","Pac-12",NA,6,0,10,2,10000,182,182,7
+"887","Southern Methodist","American",NA,2,3,6,6,5802,88,0,7
+"888","Southern Mississippi","Sun Belt","West",2,3,4,8,1899,1,0,7
+"889","Stanford","Pac-12",NA,1,4,2,10,15,0,0,7
+"890","Syracuse","ACC","Atlantic",5,0,8,4,9886,1,1,7
+"891","Temple","American",NA,2,3,4,8,945,0,0,7
+"892","Tennessee","SEC","East",5,0,10,2,10000,159,159,7
+"893","Texas","Big 12",NA,4,2,7,5,9348,93,0,7
+"894","Texas-El Paso","CUSA","West",3,4,6,6,5574,89,0,7
+"895","Texas-San Antonio","CUSA","West",4,2,8,4,9985,1259,0,7
+"896","Texas A&M","SEC","West",3,3,7,5,9030,420,0,7
+"897","Texas Christian","Big 12",NA,5,0,9,3,9999,217,217,7
+"898","Texas State","Sun Belt","West",3,3,6,6,5828,25,0,7
+"899","Texas Tech","Big 12",NA,3,3,6,6,7101,66,0,7
+"900","Toledo","MAC","West",4,2,8,4,9934,677,0,7
+"901","Troy","Sun Belt","West",4,2,8,4,9834,235,0,7
+"902","Tulane","American",NA,5,1,8,4,9939,83,0,7
+"903","Tulsa","American",NA,2,4,5,7,2198,27,0,7
+"904","UCLA","Pac-12",NA,6,0,10,2,10000,871,871,7
+"905","Utah","Pac-12",NA,4,2,8,4,9982,814,0,7
+"906","Utah State","MWC","Mountain",2,4,5,7,3812,96,0,7
+"907","Vanderbilt","SEC","East",3,3,5,7,1510,0,0,7
+"908","Virginia","ACC","Coastal",2,4,4,8,1013,13,0,7
+"909","Virginia Tech","ACC","Coastal",2,4,4,8,1170,2,0,7
+"910","Wake Forest","ACC","Atlantic",5,1,9,3,9997,720,0,7
+"911","Washington","Pac-12",NA,4,2,7,5,9377,32,0,7
+"912","Washington State","Pac-12",NA,4,2,8,4,9753,408,0,7
+"913","West Virginia","Big 12",NA,2,3,4,8,1801,0,0,7
+"914","Western Kentucky","CUSA","East",3,3,7,6,7921,171,0,7
+"915","Western Michigan","MAC","West",2,4,5,7,2788,39,0,7
+"916","Wisconsin","Big Ten","West",3,3,6,6,6269,117,0,7
+"917","Wyoming","MWC","Mountain",4,3,7,5,8874,436,0,7
+"918","Air Force","MWC","Mountain",5,2,9,3,10000,2790,0,8
+"919","Akron","MAC","East",1,6,2,10,1,1,0,8
+"920","Alabama","SEC","West",6,1,10,2,10000,2409,0,8
+"921","Alabama-Birmingham","CUSA","West",4,2,7,5,9256,58,0,8
+"922","Appalachian State","Sun Belt","East",3,3,6,6,7604,86,0,8
+"923","Arizona","Pac-12",NA,3,4,4,8,1091,4,0,8
+"924","Arizona State","Pac-12",NA,2,4,4,8,1843,39,0,8
+"925","Arkansas","SEC","West",4,3,7,5,9585,1093,0,8
+"926","Arkansas State","Sun Belt","West",2,5,4,8,368,24,0,8
+"927","Army","Ind",NA,2,4,5,7,4500,141,0,8
+"928","Auburn","SEC","West",3,4,5,7,2706,11,0,8
+"929","Ball State","MAC","West",4,3,6,6,7978,80,0,8
+"930","Baylor","Big 12",NA,3,3,6,6,7570,159,0,8
+"931","Boise State","MWC","Mountain",4,2,8,4,9872,337,0,8
+"932","Boston College","ACC","Atlantic",2,4,4,8,321,0,0,8
+"933","Bowling Green","MAC","East",3,4,5,7,1543,6,0,8
+"934","Brigham Young","Ind",NA,4,3,7,5,9494,379,0,8
+"935","Buffalo","MAC","East",4,3,7,5,9631,693,0,8
+"936","California","Pac-12",NA,3,3,5,7,4282,7,0,8
+"937","Central Florida","American",NA,5,1,9,3,9987,323,0,8
+"938","Central Michigan","MAC","West",2,5,5,7,3303,624,0,8
+"939","Charlotte","CUSA","East",1,6,3,9,5,5,0,8
+"940","Cincinnati","American",NA,5,1,10,2,10000,2197,0,8
+"941","Clemson","ACC","Atlantic",7,0,11,1,10000,3637,3637,8
+"942","Coastal Carolina","Sun Belt","East",6,1,9,3,10000,1208,0,8
+"943","Colorado","Pac-12",NA,1,5,2,10,11,0,0,8
+"944","Colorado State","MWC","Mountain",1,5,3,9,4,1,0,8
+"945","Connecticut","Ind",NA,3,5,5,7,2384,275,0,8
+"946","Duke","ACC","Coastal",4,3,6,6,6109,26,0,8
+"947","East Carolina","American",NA,4,3,6,6,7007,25,0,8
+"948","Eastern Michigan","MAC","West",4,3,6,6,7049,85,0,8
+"949","Florida","SEC","East",4,3,6,6,5090,8,0,8
+"950","Florida Atlantic","CUSA","East",3,4,5,7,2490,56,0,8
+"951","Florida International","CUSA","East",2,4,4,8,669,2,0,8
+"952","Florida State","ACC","Atlantic",4,3,7,5,8885,179,0,8
+"953","Fresno State","MWC","West",2,4,6,6,6337,579,0,8
+"954","Georgia","SEC","East",7,0,11,1,10000,3410,3410,8
+"955","Georgia Southern","Sun Belt","East",4,3,6,6,8386,109,0,8
+"956","Georgia State","Sun Belt","East",2,4,5,7,5020,276,0,8
+"957","Georgia Tech","ACC","Coastal",3,3,5,7,3864,1,0,8
+"958","Hawaii","MWC","West",2,5,4,9,209,13,0,8
+"959","Houston","American",NA,3,3,7,5,9206,402,0,8
+"960","Illinois","Big Ten","West",6,1,9,3,10000,415,0,8
+"961","Indiana","Big Ten","East",3,4,4,8,442,3,0,8
+"962","Iowa","Big Ten","West",3,3,6,6,7798,35,0,8
+"963","Iowa State","Big 12",NA,3,4,5,7,4617,43,0,8
+"964","James Madison","Sun Belt","East",5,1,7,4,9677,60,0,8
+"965","Kansas","Big 12",NA,5,2,6,6,7634,5,0,8
+"966","Kansas State","Big 12",NA,5,1,8,4,9952,106,0,8
+"967","Kent State","MAC","East",2,5,5,7,2364,280,0,8
+"968","Kentucky","SEC","East",5,2,8,4,9988,378,0,8
+"969","Liberty","Ind",NA,6,1,9,3,10000,558,0,8
+"970","Louisiana","Sun Belt","West",3,3,7,5,9387,627,0,8
+"971","Louisiana-Monroe","Sun Belt","West",2,5,4,8,161,6,0,8
+"972","Louisiana State","SEC","West",5,2,7,5,9820,121,0,8
+"973","Louisiana Tech","CUSA","West",2,4,5,7,2241,21,0,8
+"974","Louisville","ACC","Atlantic",3,3,6,6,5800,10,0,8
+"975","Marshall","Sun Belt","East",3,3,5,7,3717,13,0,8
+"976","Maryland","Big Ten","East",5,2,8,4,9981,247,0,8
+"977","Massachusetts","Ind",NA,1,6,2,10,0,0,0,8
+"978","Memphis","American",NA,4,3,7,5,9517,377,0,8
+"979","Miami (FL)","ACC","Coastal",3,3,6,6,6281,15,0,8
+"980","Miami (OH)","MAC","East",3,4,6,6,8132,1144,0,8
+"981","Michigan","Big Ten","East",7,0,11,1,10000,2044,2044,8
+"982","Michigan State","Big Ten","East",3,4,5,7,2226,6,0,8
+"983","Middle Tennessee State","CUSA","East",3,4,6,6,6342,418,0,8
+"984","Minnesota","Big Ten","West",4,2,8,4,9921,415,0,8
+"985","Mississippi","SEC","West",7,0,10,2,10000,642,642,8
+"986","Mississippi State","SEC","West",5,2,7,5,9989,45,0,8
+"987","Missouri","SEC","East",2,4,5,7,1682,8,0,8
+"988","Navy","American",NA,2,4,4,8,628,0,0,8
+"989","Nebraska","Big Ten","West",3,4,5,7,1658,7,0,8
+"990","Nevada","MWC","West",2,5,4,8,421,28,0,8
+"991","Nevada-Las Vegas","MWC","West",4,3,6,6,6992,17,0,8
+"992","New Mexico","MWC","Mountain",2,5,3,9,48,1,0,8
+"993","New Mexico State","Ind",NA,2,5,3,8,6,6,0,8
+"994","North Carolina","ACC","Coastal",6,1,9,3,10000,491,0,8
+"995","North Carolina State","ACC","Atlantic",5,2,8,4,9992,661,0,8
+"996","North Texas","CUSA","West",4,3,6,6,8043,22,0,8
+"997","Northern Illinois","MAC","West",2,5,5,7,2571,405,0,8
+"998","Northwestern","Big Ten","West",1,5,1,11,0,0,0,8
+"999","Notre Dame","Ind",NA,3,3,7,5,9368,421,0,8
+"1000","Ohio","MAC","East",4,3,7,5,9083,302,0,8
+"1001","Ohio State","Big Ten","East",6,0,11,1,10000,1734,1734,8
+"1002","Oklahoma","Big 12",NA,4,3,6,6,6742,102,0,8
+"1003","Oklahoma State","Big 12",NA,5,1,9,3,9999,1247,0,8
+"1004","Old Dominion","Sun Belt","East",3,3,6,6,6808,62,0,8
+"1005","Oregon","Pac-12",NA,5,1,9,3,9995,1113,0,8
+"1006","Oregon State","Pac-12",NA,5,2,8,4,9985,775,0,8
+"1007","Penn State","Big Ten","East",5,1,9,3,10000,1437,0,8
+"1008","Pittsburgh","ACC","Coastal",4,2,8,4,9700,336,0,8
+"1009","Purdue","Big Ten","West",5,2,8,4,9995,769,0,8
+"1010","Rice","CUSA","West",3,3,6,6,6138,21,0,8
+"1011","Rutgers","Big Ten","East",3,3,5,7,1471,2,0,8
+"1012","San Diego State","MWC","West",3,3,6,6,7708,245,0,8
+"1013","San Jose State","MWC","West",4,2,7,4,9882,850,0,8
+"1014","South Alabama","Sun Belt","West",5,1,9,3,9993,766,0,8
+"1015","South Carolina","SEC","East",4,2,7,5,9504,101,0,8
+"1016","South Florida","American",NA,1,6,2,10,4,4,0,8
+"1017","Southern California","Pac-12",NA,6,1,9,3,10000,804,0,8
+"1018","Southern Methodist","American",NA,3,3,6,6,7156,135,0,8
+"1019","Southern Mississippi","Sun Belt","West",3,3,5,7,2556,3,0,8
+"1020","Stanford","Pac-12",NA,2,4,4,8,352,0,0,8
+"1021","Syracuse","ACC","Atlantic",6,0,9,3,10000,36,36,8
+"1022","Temple","American",NA,2,4,4,8,773,7,0,8
+"1023","Tennessee","SEC","East",6,0,10,2,10000,461,461,8
+"1024","Texas","Big 12",NA,5,2,7,5,9762,164,0,8
+"1025","Texas-El Paso","CUSA","West",3,4,6,6,5907,91,0,8
+"1026","Texas-San Antonio","CUSA","West",5,2,9,3,9999,1768,0,8
+"1027","Texas A&M","SEC","West",3,3,7,5,9017,400,0,8
+"1028","Texas Christian","Big 12",NA,6,0,10,2,10000,583,583,8
+"1029","Texas State","Sun Belt","West",3,4,5,7,4906,116,0,8
+"1030","Texas Tech","Big 12",NA,3,3,6,6,7126,67,0,8
+"1031","Toledo","MAC","West",5,2,8,4,9993,1214,0,8
+"1032","Troy","Sun Belt","West",5,2,8,4,9950,267,0,8
+"1033","Tulane","American",NA,6,1,9,3,10000,163,0,8
+"1034","Tulsa","American",NA,2,4,5,7,2216,32,0,8
+"1035","UCLA","Pac-12",NA,6,0,10,2,10000,987,987,8
+"1036","Utah","Pac-12",NA,5,2,9,3,9997,1135,0,8
+"1037","Utah State","MWC","Mountain",3,4,6,6,5373,202,0,8
+"1038","Vanderbilt","SEC","East",3,4,4,8,1398,10,0,8
+"1039","Virginia","ACC","Coastal",2,4,4,8,1187,17,0,8
+"1040","Virginia Tech","ACC","Coastal",2,5,4,8,139,5,0,8
+"1041","Wake Forest","ACC","Atlantic",5,1,9,3,9996,885,0,8
+"1042","Washington","Pac-12",NA,5,2,7,5,9805,35,0,8
+"1043","Washington State","Pac-12",NA,4,3,7,5,9375,831,0,8
+"1044","West Virginia","Big 12",NA,3,3,5,7,3770,7,0,8
+"1045","Western Kentucky","CUSA","East",4,3,8,5,9540,675,0,8
+"1046","Western Michigan","MAC","West",2,5,4,8,221,17,0,8
+"1047","Wisconsin","Big Ten","West",3,4,5,7,4231,143,0,8
+"1048","Wyoming","MWC","Mountain",4,3,7,5,8628,378,0,8
+"1049","Air Force","MWC","Mountain",5,3,8,4,10000,3160,0,9
+"1050","Akron","MAC","East",1,7,2,10,0,9,0,9
+"1051","Alabama","SEC","West",7,1,10,2,10000,3032,0,9
+"1052","Alabama-Birmingham","CUSA","West",4,3,7,5,8903,101,0,9
+"1053","Appalachian State","Sun Belt","East",4,3,7,5,9326,271,0,9
+"1054","Arizona","Pac-12",NA,3,4,4,8,1193,3,0,9
+"1055","Arizona State","Pac-12",NA,2,5,4,8,787,91,0,9
+"1056","Arkansas","SEC","West",4,3,7,5,9520,1080,0,9
+"1057","Arkansas State","Sun Belt","West",2,6,4,8,267,267,0,9
+"1058","Army","Ind",NA,3,4,6,6,5566,167,0,9
+"1059","Auburn","SEC","West",3,4,5,7,2854,14,0,9
+"1060","Ball State","MAC","West",4,4,6,6,5081,141,0,9
+"1061","Baylor","Big 12",NA,4,3,6,6,8111,216,0,9
+"1062","Boise State","MWC","Mountain",5,2,9,3,9995,1600,0,9
+"1063","Boston College","ACC","Atlantic",2,5,4,8,141,10,0,9
+"1064","Bowling Green","MAC","East",4,4,5,7,4577,37,0,9
+"1065","Brigham Young","Ind",NA,4,4,6,6,8639,860,0,9
+"1066","Buffalo","MAC","East",5,3,8,4,9973,1423,0,9
+"1067","California","Pac-12",NA,3,4,5,7,1274,5,0,9
+"1068","Central Florida","American",NA,5,2,8,4,9912,287,0,9
+"1069","Central Michigan","MAC","West",2,6,4,8,727,727,0,9
+"1070","Charlotte","CUSA","East",1,7,2,10,0,7,0,9
+"1071","Cincinnati","American",NA,6,1,10,2,10000,4174,0,9
+"1072","Clemson","ACC","Atlantic",8,0,11,1,10000,4023,4023,9
+"1073","Coastal Carolina","Sun Belt","East",6,1,9,3,10000,850,0,9
+"1074","Colorado","Pac-12",NA,1,6,2,10,1,1,0,9
+"1075","Colorado State","MWC","Mountain",2,5,3,9,27,0,0,9
+"1076","Connecticut","Ind",NA,3,5,5,7,2178,242,0,9
+"1077","Duke","ACC","Coastal",5,3,7,5,9662,364,0,9
+"1078","East Carolina","American",NA,5,3,7,5,9407,164,0,9
+"1079","Eastern Michigan","MAC","West",5,3,7,5,9311,437,0,9
+"1080","Florida","SEC","East",4,3,6,6,4993,14,0,9
+"1081","Florida Atlantic","CUSA","East",3,5,4,8,1339,161,0,9
+"1082","Florida International","CUSA","East",3,4,5,7,1671,8,0,9
+"1083","Florida State","ACC","Atlantic",4,3,7,5,9160,297,0,9
+"1084","Fresno State","MWC","West",3,4,6,6,8245,1365,0,9
+"1085","Georgia","SEC","East",7,0,11,1,10000,3574,3574,9
+"1086","Georgia Southern","Sun Belt","East",5,3,7,5,9790,654,0,9
+"1087","Georgia State","Sun Belt","East",2,5,5,7,2524,387,0,9
+"1088","Georgia Tech","ACC","Coastal",3,4,4,8,738,0,0,9
+"1089","Hawaii","MWC","West",2,6,4,9,12,12,0,9
+"1090","Houston","American",NA,4,3,7,5,9925,1020,0,9
+"1091","Illinois","Big Ten","West",6,1,9,3,10000,476,0,9
+"1092","Indiana","Big Ten","East",3,5,4,8,107,2,0,9
+"1093","Iowa","Big Ten","West",3,4,6,6,7333,399,0,9
+"1094","Iowa State","Big 12",NA,3,4,5,7,4392,37,0,9
+"1095","James Madison","Sun Belt","East",5,2,6,5,8043,16,0,9
+"1096","Kansas","Big 12",NA,5,3,6,6,6948,16,0,9
+"1097","Kansas State","Big 12",NA,5,2,8,4,9936,379,0,9
+"1098","Kent State","MAC","East",3,5,5,7,2708,293,0,9
+"1099","Kentucky","SEC","East",5,2,8,4,9979,388,0,9
+"1100","Liberty","Ind",NA,7,1,10,2,10000,1127,0,9
+"1101","Louisiana","Sun Belt","West",4,3,7,5,9488,712,0,9
+"1102","Louisiana-Monroe","Sun Belt","West",2,6,3,9,43,43,0,9
+"1103","Louisiana State","SEC","West",6,2,8,4,10000,592,0,9
+"1104","Louisiana Tech","CUSA","West",2,5,4,8,625,24,0,9
+"1105","Louisville","ACC","Atlantic",4,3,6,6,8551,37,0,9
+"1106","Marshall","Sun Belt","East",4,3,6,6,7942,174,0,9
+"1107","Maryland","Big Ten","East",6,2,8,4,10000,202,0,9
+"1108","Massachusetts","Ind",NA,1,6,2,10,0,0,0,9
+"1109","Memphis","American",NA,4,4,7,5,9215,1265,0,9
+"1110","Miami (FL)","ACC","Coastal",3,4,5,7,2007,9,0,9
+"1111","Miami (OH)","MAC","East",3,5,5,7,3997,826,0,9
+"1112","Michigan","Big Ten","East",7,0,11,1,10000,1820,1820,9
+"1113","Michigan State","Big Ten","East",3,4,5,7,2234,8,0,9
+"1114","Middle Tennessee State","CUSA","East",3,4,6,6,6520,383,0,9
+"1115","Minnesota","Big Ten","West",4,3,7,5,9818,954,0,9
+"1116","Mississippi","SEC","West",7,1,9,3,10000,531,0,9
+"1117","Mississippi State","SEC","West",5,3,7,5,9995,553,0,9
+"1118","Missouri","SEC","East",3,4,5,7,2348,9,0,9
+"1119","Navy","American",NA,2,5,3,9,51,0,0,9
+"1120","Nebraska","Big Ten","West",3,4,5,7,1641,4,0,9
+"1121","Nevada","MWC","West",2,6,3,9,19,19,0,9
+"1122","Nevada-Las Vegas","MWC","West",4,4,6,6,6669,274,0,9
+"1123","New Mexico","MWC","Mountain",2,6,3,9,2,2,0,9
+"1124","New Mexico State","Ind",NA,2,5,3,8,3,3,0,9
+"1125","North Carolina","ACC","Coastal",6,1,9,3,10000,426,0,9
+"1126","North Carolina State","ACC","Atlantic",5,2,8,4,9986,534,0,9
+"1127","North Texas","CUSA","West",4,4,6,6,7523,161,0,9
+"1128","Northern Illinois","MAC","West",2,6,5,7,1168,1168,0,9
+"1129","Northwestern","Big Ten","West",1,6,1,11,0,0,0,9
+"1130","Notre Dame","Ind",NA,4,3,7,5,9657,535,0,9
+"1131","Ohio","MAC","East",5,3,7,5,9744,605,0,9
+"1132","Ohio State","Big Ten","East",7,0,11,1,10000,1944,1944,9
+"1133","Oklahoma","Big 12",NA,4,3,6,6,6550,81,0,9
+"1134","Oklahoma State","Big 12",NA,6,1,10,2,10000,2098,0,9
+"1135","Old Dominion","Sun Belt","East",3,4,5,7,3029,53,0,9
+"1136","Oregon","Pac-12",NA,6,1,10,2,10000,2118,0,9
+"1137","Oregon State","Pac-12",NA,6,2,8,4,10000,761,0,9
+"1138","Penn State","Big Ten","East",6,1,10,2,10000,2250,0,9
+"1139","Pittsburgh","ACC","Coastal",4,3,7,5,9033,443,0,9
+"1140","Purdue","Big Ten","West",5,3,8,4,9959,1006,0,9
+"1141","Rice","CUSA","West",4,3,6,6,8712,107,0,9
+"1142","Rutgers","Big Ten","East",4,3,5,7,2162,1,0,9
+"1143","San Diego State","MWC","West",4,3,7,5,9541,738,0,9
+"1144","San Jose State","MWC","West",4,2,7,4,9897,843,0,9
+"1145","South Alabama","Sun Belt","West",5,2,8,4,9948,590,0,9
+"1146","South Carolina","SEC","East",5,2,8,4,9922,225,0,9
+"1147","South Florida","American",NA,1,6,2,10,2,2,0,9
+"1148","Southern California","Pac-12",NA,6,1,9,3,10000,982,0,9
+"1149","Southern Methodist","American",NA,3,4,6,6,5320,204,0,9
+"1150","Southern Mississippi","Sun Belt","West",4,3,6,6,6845,41,0,9
+"1151","Stanford","Pac-12",NA,3,4,4,8,1014,3,0,9
+"1152","Syracuse","ACC","Atlantic",6,1,9,3,10000,234,0,9
+"1153","Temple","American",NA,2,5,3,9,59,1,0,9
+"1154","Tennessee","SEC","East",7,0,10,2,10000,409,409,9
+"1155","Texas","Big 12",NA,5,3,7,5,9626,743,0,9
+"1156","Texas-El Paso","CUSA","West",4,4,6,6,7546,132,0,9
+"1157","Texas-San Antonio","CUSA","West",6,2,9,3,10000,2138,0,9
+"1158","Texas A&M","SEC","West",3,4,6,6,8105,1081,0,9
+"1159","Texas Christian","Big 12",NA,7,0,10,2,10000,998,998,9
+"1160","Texas State","Sun Belt","West",3,5,5,7,1240,100,0,9
+"1161","Texas Tech","Big 12",NA,4,3,7,5,8814,162,0,9
+"1162","Toledo","MAC","West",5,3,8,4,9968,2313,0,9
+"1163","Troy","Sun Belt","West",6,2,9,3,10000,1330,0,9
+"1164","Tulane","American",NA,7,1,9,3,10000,301,0,9
+"1165","Tulsa","American",NA,3,4,5,7,4746,89,0,9
+"1166","UCLA","Pac-12",NA,6,1,10,2,10000,2791,0,9
+"1167","Utah","Pac-12",NA,5,2,9,3,10000,1024,0,9
+"1168","Utah State","MWC","Mountain",3,5,5,7,3556,440,0,9
+"1169","Vanderbilt","SEC","East",3,5,4,8,524,19,0,9
+"1170","Virginia","ACC","Coastal",3,4,6,6,5059,283,0,9
+"1171","Virginia Tech","ACC","Coastal",2,5,4,8,94,2,0,9
+"1172","Wake Forest","ACC","Atlantic",6,1,9,3,10000,731,0,9
+"1173","Washington","Pac-12",NA,6,2,8,4,10000,214,0,9
+"1174","Washington State","Pac-12",NA,4,3,7,5,9247,732,0,9
+"1175","West Virginia","Big 12",NA,3,4,5,7,1889,7,0,9
+"1176","Western Kentucky","CUSA","East",5,3,9,4,9879,1041,0,9
+"1177","Western Michigan","MAC","West",3,5,5,7,1980,222,0,9
+"1178","Wisconsin","Big Ten","West",4,4,6,6,7452,665,0,9
+"1179","Wyoming","MWC","Mountain",5,3,7,5,9640,657,0,9
