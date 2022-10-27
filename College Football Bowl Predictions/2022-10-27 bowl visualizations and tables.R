@@ -6,6 +6,10 @@ library(tidyverse)
 
 weekly_forecast <- read.csv('~/GitHub/Sports/College Football Bowl Predictions/Data/CFB Game Predictions.csv')
 
+max_week <- max(weekly_forecast$wk)
+
+filter_weekly_forecast <- dplyr::filter(weekly_forecast, wk == max_week)
+
 # how many teams will make a bowl?
 
 bowl_eligible_teams <- weekly_forecast %>%
