@@ -5,9 +5,15 @@ library(gt)
 library(tidyverse)
 library(glue)
 
+setwd("~/GitHub/Sports/College Football Bowl Predictions/Summary Charts")
+
 weekly_forecast <- read.csv('~/GitHub/Sports/College Football Bowl Predictions/Data/CFB Game Predictions.csv')
 
 max_week <- max(weekly_forecast$wk)
+l_week <- max_week-1
+
+latest_week_label <- paste0('Week ', max_week)
+last_week_label <- paste0('Week ', l_week)
 
 filter_weekly_forecast <- dplyr::filter(weekly_forecast, wk == max_week)
 
@@ -16,7 +22,7 @@ schools <- unique(weekly_forecast$school)
 
 for(g in schools){
   
-print(g)
+  print(g)
   
   filter_school <- weekly_forecast %>%
     filter(school == g) %>%
@@ -82,13 +88,21 @@ print(g)
 
 # which teams have seen their bowl odds improve or worsen the most?
 
+nor_percent <- function(.x) {
+  glue::glue("{.x}%")
+}
+
+plus_percent <- function(.x) {
+  glue::glue("+{.x}%")
+}
+
 weekly_forecast %>%
   select(-X) %>%
   group_by(school) %>%
   mutate(
-         prior_bowl = lag(bowl_times)/10000,
-         bowl_change = (bowl_times-lag(bowl_times))/10000,
-         bowl_times = bowl_times/10000) %>%
+    prior_bowl = lag(bowl_times)/10000,
+    bowl_change = (bowl_times-lag(bowl_times))/10000,
+    bowl_times = bowl_times/10000) %>%
   filter(wk == 9) %>%
   ungroup() %>%
   mutate(desc_rank = dense_rank(desc(bowl_change)),
@@ -110,6 +124,14 @@ weekly_forecast %>%
          prior_bowl,
          bowl_times,
          bowl_change) %>%
+  mutate(prior_bowl = round(prior_bowl*100, 3),
+         bowl_times = round(bowl_times*100, 3),
+         bowl_change = round(bowl_change*100, 3)) %>%
+rename(`Current Record` = current_record,
+       `Predicted Record` = predicted_record,
+       !!last_week_label := prior_bowl,
+       !!latest_week_label := bowl_times,
+       change = bowl_change) %>%
   gt() %>%
   # 
   tab_options(
@@ -130,6 +152,43 @@ weekly_forecast %>%
     ),
     locations = cells_column_labels(everything())
   ) %>%
-  tab_options(table.font.names = "Fira Code Light",
-              table.font.size = 12)
+  tab_options(table.font.names = "IBM Plex Sans",
+              table.font.size = 12) %>%
+  fmt(columns = c(5, 6),
+      fns = nor_percent)  %>%
+  fmt(columns = c(7),
+      rows = change < 0,
+      fns = nor_percent) %>%
+  fmt(columns = c(7),
+      rows = change > 0,
+      fns = plus_percent) %>%
+  tab_style(
+    style = list(
+      cell_text(color = "darkorange",
+                weight = 'bold')
+    ),
+    locations = cells_body(
+      columns = c(7),
+      rows = change < 0
+    )
+  ) %>%
+  tab_style(
+    style = list(
+      cell_text(color = "steelblue",
+                weight = 'bold')
+    ),
+    locations = cells_body(
+      columns = c(7),
+      rows = change > 0
+    )
+  ) %>%
+  tab_header(
+    title = md(glue("**Biggest Movers based on Change in Bowl Odds**"))
+  ) %>%
+  tab_source_note(
+    source_note = glue('Predicted records are calculated using ELO ratings that score each team based on factors such as home-field advantage, margin of victory, and quality of opponent. At the end of each season, school ratings regress partially to the value of their respective conference. Teams new to FBS begin with an ELO rating of 1500. Games are simulated 10,000 times and averaged to simulate potential wins and losses.')
+  ) %>%
+  tab_source_note(
+    source_note = glue("Code by Alex Elfering | Source: College Football Reference | Model Inspired by FiveThirtyEight")
+  )
 
