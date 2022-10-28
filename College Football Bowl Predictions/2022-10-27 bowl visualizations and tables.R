@@ -190,5 +190,6 @@ rename(`Current Record` = current_record,
   ) %>%
   tab_source_note(
     source_note = glue("Code by Alex Elfering | Source: College Football Reference | Model Inspired by FiveThirtyEight")
-  )
+  ) %>%
+  gtsave('bowl updates.png')
 
