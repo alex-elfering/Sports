@@ -11,54 +11,6 @@ max_week <- max(weekly_forecast$wk)
 
 filter_weekly_forecast <- dplyr::filter(weekly_forecast, wk == max_week)
 
-# how many teams will make a bowl?
-
-bowl_eligible_teams <- weekly_forecast %>%
-  mutate(bowl_team = ifelse(avg_wins/(avg_wins + avg_loses) >= 0.5, 1, 0)) %>%
-  group_by(wk) %>%
-  summarise(bowl_teams = sum(bowl_team)) %>%
-  ungroup()
-
-bowl_eligible_teams %>%
-  ggplot() + 
-  geom_line(mapping = aes(x = wk,
-                          y = bowl_teams),
-            color = 'darkorange',
-            size = 1) +
-  geom_point(mapping = aes(x = wk,
-                           y = bowl_teams),
-             color = 'darkorange',
-             size = 2) +
-  labs(title = 'Total Likely Bowl Teams',
-       subtitle = 'Teams likely to win at least six games during the regular season',
-       caption = 'Code and visualization by Alex Elfering | Source: College Football Reference',
-       x = '',
-       y = '') +
-  scale_x_continuous(limits = c(1,9),
-                     breaks = seq(1, 9, 2),
-                     labels = seq(1, 9, 2)) +
-  theme(plot.title = element_text(face = 'bold', size = 14),
-        plot.subtitle = element_text(face = 'bold', size = 12),
-        legend.position = 'top',
-        legend.background=element_blank(),
-        legend.key=element_blank(),
-        legend.text = element_text(size = 12),
-        plot.title.position = "plot",
-        plot.caption.position =  "plot",
-        plot.caption = element_text(size = 12),
-        axis.title = element_text(size = 12),
-        axis.text = element_text(size = 12, color = '#969696'),
-        axis.text.x.bottom = element_text(size = 12, color = 'black'),
-        axis.line.y = element_blank(),
-        axis.ticks.y = element_blank(),
-        strip.text = ggplot2::element_text(size = 12, hjust = 0, face = 'bold', color = 'black'),
-        strip.background = element_rect(fill = NA),
-        panel.background = ggplot2::element_blank(),
-        axis.line = element_line(colour = "#222222", linetype = "solid"),
-        panel.grid.major.y = element_line(colour = "gray75", linetype = "dashed"),
-        panel.grid.major.x = element_blank()) 
-
-
 # bowl odds by team
 schools <- unique(weekly_forecast$school)
 
@@ -94,9 +46,9 @@ print(g)
          y = '') +
     scale_y_continuous(limits = c(0,1),
                        labels = scales::percent) +
-    scale_x_continuous(limits = c(1,9),
-                       breaks = seq(1, 9, 2),
-                       labels = seq(1, 9, 2)) +
+    scale_x_continuous(limits = c(1,max_week),
+                       breaks = seq(1, max_week, 2),
+                       labels = seq(1, max_week, 2)) +
     theme(plot.title = element_text(face = 'bold', size = 16),
           plot.subtitle = element_text(size = 12),
           legend.position = 'top',
