@@ -61,7 +61,7 @@ season_wk_ranks <- full_elo_df %>%
   arrange(team_a,
           wk) %>%
   group_by(team_a) %>%
-  complete(wk = seq.int(1, 9, 1)) %>%
+  complete(wk = seq.int(1, 10, 1)) %>%
   bind_rows(pre_ratings) %>%
   arrange(wk) %>%
   fill(season) %>%
@@ -114,7 +114,7 @@ season_results <- fbs_schedule %>%
             loses = sum(loses)) %>%
   ungroup() %>%
   group_by(school) %>%
-  complete(wk = seq(1, 9)) %>%
+  complete(wk = seq(1, 10)) %>%
   replace(is.na(.), 0) %>%
   mutate(roll_wins = cumsum(wins),
          roll_loses = cumsum(loses)) %>%
