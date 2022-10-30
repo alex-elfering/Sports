@@ -150,7 +150,7 @@ overall_table <- final_conf_table %>%
   ) %>%
   tab_header(
     title = md(glue("**{i} Game Predictions**")),
-    subtitle = glue("{season_vari} Season as of Week #{j}")
+    subtitle = glue("{season_vari} Season as of Week #{max_iter_wk}")
   ) %>%
   tab_source_note(
     source_note = glue('Predicted records are calculated using ELO ratings that score each team based on factors such as home-field advantage, margin of victory, and quality of opponent. At the end of each season, school ratings regress partially to the value of their respective conference. Teams new to FBS begin with an ELO rating of 1500. Games are simulated {n_times} times and averaged to simulate potential wins and losses.')
@@ -734,7 +734,7 @@ add_black_table <- add_gray_table %>%
       rows = `13` >= 1
     )
   ) %>%
-  gtsave(glue("{i} Week#{j} game predictions.png"), vwidth = 1100)
+  gtsave(glue("{i} Week#{max_iter_wk} game predictions.png"), vwidth = 1100)
 }else{
   
 range_wins_table <- finishes_out_table %>%
@@ -1223,5 +1223,5 @@ add_black_table <- add_gray_table %>%
       rows = `12` >= 1
     )
   ) %>%
-  gtsave(glue("{i} Week#{j} game predictions.png"), vwidth = 1100)}
+  gtsave(glue("{i} Week#{max_iter_wk} game predictions.png"), vwidth = 1100)}
 }

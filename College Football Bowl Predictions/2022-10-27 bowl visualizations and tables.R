@@ -103,7 +103,7 @@ weekly_forecast %>%
     prior_bowl = lag(bowl_times)/10000,
     bowl_change = (bowl_times-lag(bowl_times))/10000,
     bowl_times = bowl_times/10000) %>%
-  filter(wk == 9) %>%
+  filter(wk == 10) %>%
   ungroup() %>%
   mutate(desc_rank = dense_rank(desc(bowl_change)),
          asc_rank = dense_rank(bowl_change)) %>%
