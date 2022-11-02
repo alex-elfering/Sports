@@ -146,6 +146,7 @@ conf_post <- bind_rows(conf_champ_winner, conf_champ_loser) %>%
   bind_rows(complete_bowls) %>%
   inner_join(weeks_post)
 
+colnames(conf_post) <- tolower(colnames(conf_post))
 
 write.csv(conf_post, '~/GitHub/Sports/College Football Schedule Scrapping/Data/Post Season and Championships.csv')
 
