@@ -12,7 +12,7 @@ test_scores <- list.files('~/GitHub/Sports/College Football ELO Model/Testing/Te
 test_scores_df <- as.data.frame(rbindlist(lapply(test_scores, fread)))
 
 brier_scores <- test_scores_df %>%
-  filter(wins == 1) %>%
+  #filter(wins == 1) %>%
   mutate(brier = ifelse(wins == 1, brier, NA)) %>%
   separate(group, into = c('lower', 'upper'), sep = ',') %>%
   mutate(lower = as.numeric(gsub('\\(', '', lower)),
@@ -21,7 +21,7 @@ brier_scores <- test_scores_df %>%
            k_val,
            home_adv,
            regress_val) %>%
-  summarise(brier_mean_overall = mean(brier)) %>%
+  summarise(brier_mean_overall = mean(brier, na.rm = TRUE)) %>%
   ungroup() %>%
   arrange(brier_mean_overall)
 
