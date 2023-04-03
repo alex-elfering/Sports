@@ -11,8 +11,6 @@ schools_url <- 'https://www.sports-reference.com/cfb/schools/'
 
 schools <- read_html(schools_url)
 
-change_school_names(schools_list, school, school) 
-
 schools_list <- schools %>% 
   html_table(fill = TRUE) %>%
   as.data.frame() %>%
@@ -50,35 +48,74 @@ schools_list <- schools %>%
   rename(school_code = school) %>%
   mutate(school_url = paste('https://www.sports-reference.com/cfb/schools/',school_code,'/',seasons,'-schedule.html', sep = ''))
 
+Sys.sleep(60)
+
 # pull schedules for each school  ----
+counter <- 1
 school_seasons_schedule_list <- list()
 for(i in schools_list$school_url){
-  
-  tag_used <- schools_list %>%
-    filter(school_url == i)
-  
-  tryCatch({
-    schedules <- read_html(i)
-    schedules_list <- schedules %>% html_table(fill = TRUE)
+  if(counter %% 19 == 0){
+    Sys.sleep(60)
+    tag_used <- schools_list %>%
+      filter(school_url == i)
     
-    if(length(schedules_list) == 1){
-      cfb_item <- as.data.frame(schedules_list[1]) %>% mutate(tag = tag_used$school_code)
-    }else if(length(schedules_list) == 2){
-      cfb_item <- as.data.frame(schedules_list[2]) %>% mutate(tag = tag_used$school_code)
+    tryCatch({
+      schedules <- read_html(i)
+      schedules_list <- schedules %>% html_table(fill = TRUE)
+      
+      if(length(schedules_list) == 1){
+        cfb_item <- as.data.frame(schedules_list[1]) %>% mutate(tag = tag_used$school_code)
+      }else if(length(schedules_list) == 2){
+        cfb_item <- as.data.frame(schedules_list[2]) %>% mutate(tag = tag_used$school_code)
+      }
+      
+      print(i)
+      print(cfb_item) 
+      
+      school_seasons_schedule_list[[i]] <- cfb_item
+      
+    }, error=function(e){})
+    
+    counter <-counter + 1 
+    print(counter)
+    
     }
+  else{
+    counter <-counter + 1 
+    print(counter)
     
-    print(i)
-    print(cfb_item) 
+    tag_used <- schools_list %>%
+      filter(school_url == i)
     
-    school_seasons_schedule_list[[i]] <- cfb_item
+    tryCatch({
+      schedules <- read_html(i)
+      schedules_list <- schedules %>% html_table(fill = TRUE)
+      
+      if(length(schedules_list) == 1){
+        cfb_item <- as.data.frame(schedules_list[1]) %>% mutate(tag = tag_used$school_code)
+      }else if(length(schedules_list) == 2){
+        cfb_item <- as.data.frame(schedules_list[2]) %>% mutate(tag = tag_used$school_code)
+      }
+      
+      print(i)
+      print(cfb_item) 
+      
+      school_seasons_schedule_list[[i]] <- cfb_item
+      
+    }, error=function(e){})
     
-  }, error=function(e){})
-  
-}
+    }
+  }
 
 # pull the weeks for each season  ----
+Sys.sleep(60)
+counter <- 1
 seasons_dates_list <- list()
 for(i in season_var){
+  if(counter %% 19 == 0){
+    Sys.sleep(60)
+    tag_used <- schools_list %>%
+      filter(school_url == i)
   
   tryCatch({
     
@@ -101,13 +138,54 @@ for(i in season_var){
     seasons_dates_list[[i]] <- seasons_dates
     
   }, error=function(e){})
-  
+    counter <-counter + 1 
+    print(counter)
+    
+  }  else{
+    counter <-counter + 1 
+    print(counter)
+    
+    tag_used <- schools_list %>%
+      filter(school_url == i)
+    
+    tryCatch({
+      
+      seasons_url <- glue('https://www.sports-reference.com/cfb/years/{i}-schedule.html')
+      
+      schedules <- read_html(seasons_url)
+      schedule_season <- schedules %>% html_table(fill = TRUE)
+      
+      seasons_dates <- schedule_season[1] %>%
+        as.data.frame() %>%
+        mutate(Season = i) %>%
+        select(Season,
+               Wk,
+               Date) %>%
+        distinct() %>%
+        filter(Date != 'Date')
+      
+      print(seasons_dates)
+      
+      seasons_dates_list[[i]] <- seasons_dates
+      
+    }, error=function(e){})
+    
+  }
 }
 
 # pull the conferences by school for each season  ----
+Sys.sleep(60)
+counter <- 1
 school_conf_list <- list()
 for(i in season_var){
-  
+  if(counter %% 19 == 0){
+    Sys.sleep(60)
+    tag_used <- schools_list %>%
+      filter(school_url == i)
+    
+    counter <-counter + 1 
+    print(counter)
+    
   tryCatch({
     
     seasons_url <- glue('https://www.sports-reference.com/cfb/years/{i}-ratings.html')
@@ -131,8 +209,45 @@ for(i in season_var){
              School != 'School')
     
     school_conf_list[[i]] <- school_conf_div
+    print(school_conf_div)
     
   }, error=function(e){})
+    
+  }  else{
+    counter <-counter + 1 
+    print(counter)
+    
+    tag_used <- schools_list %>%
+      filter(school_url == i)
+    
+    tryCatch({
+      
+      seasons_url <- glue('https://www.sports-reference.com/cfb/years/{i}-ratings.html')
+      
+      schedules <- read_html(seasons_url)
+      ratings_df <- schedules %>% 
+        html_table(fill = TRUE) %>%
+        as.data.frame() %>%
+        select(2, 3)
+      
+      colnames(ratings_df) <- gsub(" ", "_", as.character(ratings_df[1,]))
+      
+      school_conf_div <- ratings_df %>%
+        slice(-1) %>%
+        select(School,
+               Conf) %>%
+        separate(Conf, into = c('Conf', 'Div'),sep = '\\(') %>%
+        mutate(Div = gsub('\\)', '', Div)) %>%
+        mutate(Season = i) %>%
+        filter(School != '',
+               School != 'School')
+      
+      school_conf_list[[i]] <- school_conf_div
+      print(school_conf_div)
+      
+    }, error=function(e){})
+    
+  }
   
 }
 
@@ -239,16 +354,19 @@ winning_games <- full_cfb_schedule %>%
          AwayAdv = case_when(Location == '' ~ adv*-1,
                              Location == '@' ~ adv,
                              Location == 'N' ~ 0)) %>%
-  filter(Pts > Opp) %>%
+  mutate(unique_id = paste0(Season, Wk, School, Opponent)) %>%
+  mutate(unique_id = gsub(' ', '', unique_id)) %>%
+  filter(unique_id %in% list_unique) %>%
   arrange(Year,
           Month,
           Day) %>%
-  as.tibble()
+  as.tibble() %>%
+  select(-unique_id)
 
 colnames(full_cfb_schedule) <- tolower(colnames(full_cfb_schedule))
 colnames(winning_games) <- tolower(colnames(winning_games))
 colnames(conferences) <- tolower(colnames(conferences))
 
-write.csv(conferences, '~/GitHub/Sports/College Football Schedule Scrapping/Data/Conferences.csv')
-write.csv(full_cfb_schedule, '~/GitHub/Sports/College Football Schedule Scrapping/Data/FBS Full Schedule.csv')
-write.csv(winning_games, '~/GitHub/Sports/College Football Schedule Scrapping/Data/FBS Winning Games.csv')
+write.csv(conferences, 'C:/Users/alexe/OneDrive/Desktop/Conferences.csv')
+write.csv(full_cfb_schedule, 'C:/Users/alexe/OneDrive/Desktop/FBS Full Schedule.csv')
+write.csv(winning_games, 'C:/Users/alexe/OneDrive/Desktop/FBS Winning Games.csv')

@@ -21,8 +21,8 @@ full_elo_df <- read.csv('~/GitHub/Sports/College Football ELO Model/Data/FullELO
 conferences <- read.csv('~/GitHub/Sports/College Football Schedule Scrapping/Data/Conferences.csv') %>% select(-1)
 
 # variables and functions ----
-season_vari <- 2022
-n_times <- 10000
+season_vari <- 2010
+n_times <- 100
 
 # establish data frames to create the forecast  ----
 filter_schedule <- fbs_schedule %>%
@@ -105,16 +105,18 @@ season_ratings <- season_wk_ranks %>%
          rating= elo_a)
 
 season_results <- fbs_schedule %>%
+  #filter(school == 'Iowa') %>%
   filter(season == season_vari) %>%
   mutate(wins = ifelse(pts > opp, 1, 0),
-         loses = ifelse(pts < opp, 1, 0)) %>%
+         loses = ifelse(pts < opp, 1, 0),
+         wk = as.numeric(wk)) %>%
   group_by(school,
            wk) %>%
   summarise(wins = sum(wins),
             loses = sum(loses)) %>%
   ungroup() %>%
   group_by(school) %>%
-  complete(wk = seq(1, 11)) %>%
+  complete(wk = seq(1, 13)) %>%
   replace(is.na(.), 0) %>%
   mutate(roll_wins = cumsum(wins),
          roll_loses = cumsum(loses)) %>%
@@ -134,7 +136,7 @@ max_forecast_wk <- full_elo_df %>%
 week_forecast <- list()
 total_wins_list <- list()
 six_wins_list <- list()
-for(i in 1:max_forecast_wk){
+for(i in 1:9){
   
   current_week <- season_results %>%
     filter(wk == i) %>%
@@ -145,6 +147,7 @@ for(i in 1:max_forecast_wk){
     select(-wk)
   
   test <- filter_schedule %>%
+    mutate(wk = as.numeric(wk)) %>%
     filter(wk > i) %>%
     select(-pts,
            -opp) %>%

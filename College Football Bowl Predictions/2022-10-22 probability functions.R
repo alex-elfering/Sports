@@ -21,6 +21,7 @@ probability <- function(df){
     mutate(wins = ifelse(wins == 1, 0, 1))
   
   df_results_bind <- bind_rows(df_select, df_reverse) %>%
+    #filter(school == 'Iowa') %>%
     arrange(school,
             wk) %>%
     group_by(school) %>%
@@ -29,7 +30,7 @@ probability <- function(df){
     ungroup() %>%
     mutate(losses = games-wins) %>%
     select(-games) %>%
-    inner_join(conferences %>% filter(season == 2022),
+    inner_join(conferences %>% filter(season == season_vari),
                by = c('school' = 'school')) %>%
     left_join(current_week,
                by = c('school' = 'school')) %>%

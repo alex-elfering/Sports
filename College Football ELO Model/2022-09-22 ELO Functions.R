@@ -23,9 +23,8 @@ change_school_names <- function(df, column_name, new_name){
 
 elo_week_update <- function(df, week_int = i, team_adv = 75, opp_adv = -75, k_val = 30){
   
-  week_season <- df %>%
+  week_season <- use_season %>%
     filter(wk == i) %>%
-    #filter(School == 'Nebraska') %>%
     left_join(use_elo_df,
               by = c('school' = 'school')) %>%
     rename(school_elo = rating) %>%
@@ -87,7 +86,7 @@ team_elo_scores <- function(df){
     mutate(index = row_number()) %>%
     filter(index == max(index)) %>%
     ungroup() %>%
-    arrange(desc(rating))
+    arrange(desc(rating)) 
   
   #print(new_ratings)
   

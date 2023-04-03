@@ -1,20 +1,21 @@
-# creating a table to rank college football teams based on the College Football ELO Model
+# ELOレーティング上位25チーム
 
 library(tidyverse)
 library(glue)
 library(gt)
 library(htmltools)
+#install.packages('webshot2')
 
 options(scipen = 999)
 
-setwd('~/GitHub/Sports/College Football ELO Ranking Tables')
+setwd('C:/Users/alexe/OneDrive/Desktop')
 
 # load the elo model and schedule data
-full_elo_df <- read.csv('~/GitHub/Sports/College Football ELO Model/Data/FullELODF.csv') %>% select(-1)
-conferences <- read.csv('~/GitHub/Sports/College Football Schedule Scrapping/Data/Conferences.csv') %>% select(-1)
-fbs_schedule <- read.csv('~/GitHub/Sports/College Football Schedule Scrapping/Data/FBS Full Schedule.csv') %>% select(-1)
+full_elo_df <- read.csv('C:/Users/alexe/OneDrive/Desktop/FullELODF.csv') %>% select(-1)
+conferences <- read.csv('C:/Users/alexe/OneDrive/Desktop/Conferences.csv') %>% select(-1)
+fbs_schedule <- read.csv('C:/Users/alexe/OneDrive/Desktop/FBS Full Schedule.csv') %>% select(-1)
 
-season_var <- 2022
+season_var <- 1950
 
 # what is the latest week in the season selected? 
 season_wk <- full_elo_df %>%
@@ -23,6 +24,8 @@ season_wk <- full_elo_df %>%
   select(wk) %>%
   slice(1) %>%
   as.numeric()
+
+#season_wk <-16
 
 season_label <- season_wk-1
 
@@ -37,6 +40,7 @@ plus_symbol <- function(.x) {
 
 # what games have been played for each team and who is next?
 latest_results <- fbs_schedule %>%
+ # filter(school == 'Georgia') %>%
   filter(wk == season_wk,
          season == season_var) %>%
   select(wk, 
@@ -46,7 +50,10 @@ latest_results <- fbs_schedule %>%
          opponent,
          location) %>%
   filter(!is.na(pts)) %>%
-  mutate(result = ifelse(pts > opp, 'W', 'L'),
+  mutate(result = case_when(pts == opp ~ 'T',
+                            pts > opp ~ 'W',
+                            pts < opp ~ 'L'),
+         #result = ifelse(pts > opp, 'W', 'L'),
          result_label = paste(result, ' ', location, ' ', opponent, ' ', pts, '-', opp, sep = '')) %>%
   select(school,
          result_label)
@@ -66,6 +73,7 @@ next_match <- fbs_schedule %>%
 
 # calculate rankings by week for the season
 pre_ratings <- full_elo_df %>%
+  #filter(team_a == 'Colorado') %>%
   inner_join(conferences,
              by = c('season' = 'season',
                     'team_a' = 'school')) %>%
@@ -74,7 +82,8 @@ pre_ratings <- full_elo_df %>%
   filter(wk == min(wk)) %>%
   ungroup() %>%
   mutate(pre_elo = case_when(pts > opp ~ elo_a-elo_adj,
-                             pts < opp ~ elo_a+elo_adj)) %>%
+                             pts < opp ~ elo_a+elo_adj,
+                             pts == opp ~ elo_a)) %>%
   mutate(wk = 0) %>%
   select(season,
          wk,
@@ -82,7 +91,8 @@ pre_ratings <- full_elo_df %>%
          elo_a = pre_elo) %>%
   mutate(rank = dense_rank(desc(elo_a)),
          wins = 0,
-         loses = 0)
+         loses = 0,
+         ties = 0)
 
 season_wk_ranks <- full_elo_df %>%
   filter(season == season_var) %>%
@@ -90,7 +100,9 @@ season_wk_ranks <- full_elo_df %>%
          wk,
          team_a,
          elo_a,
-         elo_adj) %>%
+         elo_adj,
+         pts, 
+         opp) %>%
   arrange(team_a,
           wk) %>%
   group_by(team_a) %>%
@@ -99,13 +111,16 @@ season_wk_ranks <- full_elo_df %>%
   arrange(wk) %>%
   fill(season) %>%
   fill(elo_a) %>%
-  mutate(wins = ifelse(elo_a > lag(elo_a) & wk != 0, 1, 0),
-         loses = ifelse(elo_a < lag(elo_a) & wk != 0,1, 0),
+  mutate(wins = ifelse(pts > opp & wk != 0, 1, 0),
+         loses = ifelse(pts < opp & wk != 0,1, 0),
+         ties = ifelse(pts == opp & wk != 0,1, 0),
          elo_adj = elo_a - lag(elo_a)) %>%
-  fill(loses, .direction = 'up') %>%
-  fill(wins, .direction = 'up') %>%
+  mutate(wins = ifelse(is.na(wins), 0, wins),
+         loses = ifelse(is.na(loses), 0 , loses),
+         ties = ifelse(is.na(ties), 0, ties)) %>%
   mutate(roll_wins = cumsum(wins),
-         roll_loses = cumsum(loses)) %>%
+         roll_loses = cumsum(loses),
+         roll_ties = cumsum(ties)) %>%
   ungroup() %>%
   group_by(wk) %>%
   mutate(rank = dense_rank(desc(elo_a))) %>%
@@ -121,7 +136,9 @@ season_wk_ranks <- full_elo_df %>%
   arrange(wk,
           rank) %>%
   unite(conf, c('conf', 'div'), sep = ' ', na.rm = TRUE) %>%
-  unite(record, c('roll_wins', 'roll_loses'), sep = '-') %>%
+  mutate(roll_ties = ifelse(roll_ties == 0, NA, roll_ties)) %>%
+  unite(record, c('roll_wins', 'roll_loses', roll_ties), na.rm = TRUE, sep = '-') %>%
+  #filter(team_a == 'Michigan State') %>%
   select(wk,
          team_a,
          conf,
@@ -139,7 +156,7 @@ almost <- season_wk_ranks %>%
   mutate(index = row_number()) %>%
   pivot_wider(names_from = index,
               values_from = team_a) %>%
-  unite(team_almost, c(1:10), sep = ', ')
+  unite(team_almost, c(1:9), sep = ', ')
 
 teams_almost <- as.character(almost$team_almost)
 
@@ -174,11 +191,13 @@ teams_ranked <- season_wk_ranks %>%
          `Game Result` = result_label,
          `Next Match` = next_label) 
 
+teams_ranked %>% as.data.frame()
+
 teams_ranked %>%
   gt() %>%
   tab_header(
-    title = md("**College Football ELO Rankings**"),
-    subtitle = glue("Top 25 teams sorted by ELO rating | {season_var} Season as of Week #{season_label}")
+    title = md("**カレッジフットボール**"),
+    subtitle = glue("ELOレーティング上位25チーム | {season_var} Season as of Week #{season_label}")
   ) %>%
   tab_source_note(
     source_note = glue('Almost: {teams_almost}')
@@ -281,15 +300,14 @@ teams_ranked %>%
       rows = `Change from Prior Week` > 0
     )
   ) %>%
-  tab_options(table.font.names = "IBM Plex Sans",
+  tab_options(table.font.names = "Noto Sans JP",
               table.font.size = 12) %>%
   fmt("Change from Prior Week", 
       rows = `Change from Prior Week` > 0, 
       fns = plus_symbol) %>%
   fmt("Jump from Prior Week", 
       rows = `Jump from Prior Week` > 0, 
-      fns = plus_symbol) %>% 
-  gtsave("Top 25 ELO Rankings.png")
+      fns = plus_symbol)
 
 
 

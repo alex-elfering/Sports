@@ -11,11 +11,11 @@ options(scipen = 999)
 setwd('~/GitHub/Sports/College Football ELO Ranking Tables')
 
 # load the elo model and schedule data
-full_elo_df <- read.csv('~/GitHub/Sports/College Football ELO Model/Data/FullELODF.csv') %>% select(-1)
-conferences <- read.csv('~/GitHub/Sports/College Football Schedule Scrapping/Data/Conferences.csv') %>% select(-1)
-fbs_schedule <- read.csv('~/GitHub/Sports/College Football Schedule Scrapping/Data/FBS Full Schedule.csv') %>% select(-1)
+full_elo_df <- read.csv('C:/Users/alexe/OneDrive/Desktop/FullELODF.csv') %>% select(-1)
+conferences <- read.csv('C:/Users/alexe/OneDrive/Desktop/Conferences.csv') %>% select(-1)
+fbs_schedule <- read.csv('C:/Users/alexe/OneDrive/Desktop/FBS Full Schedule.csv') %>% select(-1)
 
-season_var <- 2022
+season_var <- 2003
 
 # what is the latest week in the season selected? 
 season_wk <- full_elo_df %>%

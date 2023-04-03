@@ -26,6 +26,8 @@ week_games <- list()
 season_games <- list()
 for(a in season_var){
   
+  #a <- 2013
+  
   use_season <- winning_games %>%
     mutate(wk = as.numeric(wk),
            loses = ifelse(pts < opp, 1, 0),
@@ -37,9 +39,9 @@ for(a in season_var){
   
   for(i in beg_week:end_week){
     
-    #i <- 1
+   # i <- 1
     
-    if(i == 1 & a == 1869){
+    if(i == 1 & a == min(season_var)){
       use_elo_df <- init_ratings
     }else{
       use_elo_df <- new_ratings
@@ -51,11 +53,8 @@ for(a in season_var){
     
     if(i == end_week){
       
-      #print('Regress happens')
-      
       season_conf <- conferences %>%
         filter(season == a) %>%
-        #mutate(Conf = trim(Conf)) %>%
         select(school,
                conf)
       
@@ -120,5 +119,5 @@ full_elo_df <- elo_df %>%
                               location == 'N' ~ 'N')) %>%
   bind_rows(elo_df) 
 
-write.csv(elo_df, '~/GitHub/Sports/College Football ELO Model/Data/ELODF.csv')
-write.csv(full_elo_df, '~/GitHub/Sports/College Football ELO Model/Data/FullELODF.csv')
+write.csv(elo_df, 'C:/Users/alexe/OneDrive/Desktop/ELODF.csv')
+write.csv(full_elo_df, 'C:/Users/alexe/OneDrive/Desktop/FullELODF.csv')
