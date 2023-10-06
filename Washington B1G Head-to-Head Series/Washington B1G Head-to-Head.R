@@ -1,0 +1,153 @@
+# rivalry series
+
+# install.packages("ggplot2")
+library(ggplot2)
+# install.packages("ggbeeswarm")
+library(ggbeeswarm)
+library(ggtext)
+library(tidyverse)
+library(ggrepel)
+
+source('C:/Users/alexe/OneDrive/Desktop/College Footbal Data Scrapping/CFB Parent Variables.R')
+
+matches <- 20
+
+team_series <- full_cfb_schedule |>
+  filter(opp_conf == 'Big Ten') |>
+  distinct(opponent)
+
+filter_sched <- full_cfb_schedule |>
+  filter(school == 'Washington',
+         opponent %in% team_series$opponent) |>
+  mutate(series = paste('', opponent, sep = ' vs ')) |>
+  mutate(margin = pts-opp) |>
+  dplyr::mutate(group_cat = case_when(pts > opp ~ 'team_one',
+                                      pts < opp ~ 'team_two',
+                                      TRUE ~ 'team_tied')) |>
+  dplyr::mutate(margin_group = case_when(margin >= 28 ~ 28,
+                                         margin <= -28 ~ -28,
+                                         TRUE ~ as.numeric(margin))) |>
+  filter(!is.na(pts)) |>
+  arrange(desc(season)) |>
+  group_by(series) |>
+  # filter(row_number() <= matches) |>
+  ungroup()
+
+opponent_series <- filter_sched |>
+  group_by(opponent) |>
+  mutate(wins = ifelse(pts > opp, 1, 0),
+         loses = ifelse(pts < opp, 1, 0),
+         ties = ifelse(pts == opp, 1, NA)) |>
+  summarise(last_met = max(season),
+            wins = sum(wins),
+            loses = sum(loses),
+            ties = sum(ties, na.rm = T)) |>
+  ungroup() |>
+  arrange(desc(last_met))
+
+series_order <- opponent_series |>
+  mutate(#opponent = factor(opponent, levels = opponent_series$opponent),
+         ties = ifelse(ties == 0, NA, ties)) |>
+  unite(opp_record, c('wins', 'loses', 'ties'), sep ='-', na.rm = T) |>
+  mutate(opp_record = paste(opponent, ' (', opp_record, ')', sep = ''))
+
+rival_series <- filter_sched |>
+  #mutate(opponent = factor(opponent, levels = opponent_series$opponent)) |>
+  group_by(opponent) |>
+  mutate(latest_meet = ifelse(season == max(season), 1, 0)) |>
+  ungroup() |>
+  inner_join(opponent_series) |>
+  mutate(#opponent = factor(opponent, levels = series_order$opponent),
+         ties = ifelse(ties == 0, NA, ties)) |>
+  unite(opp_record, c('wins', 'loses', 'ties'), sep ='-', na.rm = T) |>
+  mutate(opp_record = paste(opponent, ' (', opp_record, ')', sep = '')) |>
+  mutate(opp_record = factor(opp_record, levels = series_order$opp_record))
+
+# Basic beeswarm plot in ggplot2
+
+ggplot() +
+  geom_hline(yintercept = 0,
+             color = 'gray75',
+             linetype = 'solid') +
+  geom_beeswarm(rival_series, 
+                mapping = aes(x = opponent, 
+                              y = margin_group,
+                              color = ifelse(latest_meet == 1, 'black', 'white')),
+                cex = 17,
+                size = 7,
+                seed = 42) +
+  geom_beeswarm(rival_series, 
+                mapping = aes(x = opponent, 
+                              y = margin_group, 
+                              color = group_cat),
+                cex = 17,
+                size = 6,
+                seed = 42) +
+  #geom_label_repel(data = rival_series, 
+  #                 mapping = aes(x = opponent, 
+  #                               y = margin_group,
+  #                               label = season),
+  #                 position=position_beeswarm(),
+  #                 box.padding = 2, 
+  #                 seed = 42) +
+  scale_color_manual(values = c('team_one' = '#542788',
+                                'team_tied' = 'gray80',
+                                'team_two' = '#b35806',
+                                'black' = 'black',
+                                'white' = 'white'),
+                     labels = c('Washington Wins',
+                                'Game Tied',
+                                'Opponent Wins')) +
+  coord_flip() +
+  scale_y_continuous(limits = c(-28,28),
+                     breaks = seq(-28,28,7),
+                     labels = c("+4 TD", "", "", "1 TD", 'TIED',"1 TD", "", "", '+4 TD'))  +
+  facet_wrap(~opp_record,
+             scales = 'free',
+             ncol = 4) +
+  labs(title = 'Washington Huskies B1G Football Head-to-Head Records',
+       subtitle = "<span style = 'font-size:15pt'>All-time <b><span style = 'color:#542788;'>Washington Victories</span></b> vs <b><span style = 'color:#b35806;'>Opponent Victories</span></b></span>",
+       color = '',
+       caption = '\nVisualization by Alex Elfering; Source: College Football-Reference\nInspired by "College Football History" by Sam Epley') +
+  theme(
+    plot.title = element_text(size = 22, 
+                              face = 'bold',
+                              #hjust = 0.5, 
+                              family = 'Noto Sans'),
+    plot.subtitle = element_markdown(),
+    plot.caption = element_text(size = 12,
+                                family = 'Noto Sans',
+                                color = 'gray30',
+                                hjust = 0),
+    axis.title =  ggplot2::element_blank(),
+    axis.text.x = element_text(size = 10, 
+                               face = 'bold', 
+                               color = 'gray30',
+                               #face= bold_label,
+                               family = 'Noto Sans'),
+    axis.text.y = element_blank(),
+    strip.text = ggplot2::element_text(size = 12, 
+                                       face = 'bold',
+                                       hjust = 0.5, 
+                                       family = 'Noto Sans'),
+    plot.title.position = "plot", 
+    plot.caption.position = 'plot',
+    legend.position = 'none',
+    panel.spacing.x = unit(3, "lines"),
+    legend.background=element_blank(),
+    legend.key=element_blank(),
+    legend.text = element_text(size = 16),
+    legend.title = element_text(size = 12),
+    axis.line.x.bottom = element_line(color = 'gray30'),
+    axis.line.y.left = element_blank(),
+    axis.ticks.y= ggplot2::element_blank(), 
+    axis.ticks.x = ggplot2::element_blank(),
+    strip.background = element_rect(fill = NA),
+    #plot.background = element_rect(fill = "transparent", color = NA),
+    panel.background = element_rect(fill = 'white'),
+    panel.grid.minor.y = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.x = element_line(color = 'gray80', linetype = 'dashed')) 
+
+ggsave(file = glue('C:/Users/alexe/OneDrive/Desktop/lopsided rivalries.png'), dpi = 300,  width = 22, height = 10, units = c('in'))
