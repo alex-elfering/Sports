@@ -150,4 +150,4 @@ ggplot() +
     panel.grid.minor.x = element_blank(),
     panel.grid.major.x = element_line(color = 'gray80', linetype = 'dashed')) 
 
-ggsave(file = glue('C:/Users/alexe/OneDrive/Desktop/lopsided rivalries.png'), dpi = 300,  width = 22, height = 10, units = c('in'))
+ggsave(file = glue('C:/Users/alexe/OneDrive/Documents/GitHub/Sports/Washington B1G Head-to-Head Series/Washington B1G Record.png'), dpi = 300,  width = 22, height = 10, units = c('in'))
