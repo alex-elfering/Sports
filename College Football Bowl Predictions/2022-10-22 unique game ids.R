@@ -15,8 +15,8 @@ counter <- 1
 seasons_list <- list()
 for(i in season_var){
   
-  if(counter %% 19 == 0){
-    Sys.sleep(60)
+  if(counter %% 17 == 0){
+    Sys.sleep(120)
     tag_used <- schools_list %>%
       filter(school_url == i)
     
