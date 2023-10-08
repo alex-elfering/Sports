@@ -17,7 +17,7 @@ team_series <- full_cfb_schedule |>
   distinct(opponent)
 
 filter_sched <- full_cfb_schedule |>
-  filter(school == 'Washington',
+  filter(school == 'Arizona State',
          opponent %in% team_series$opponent) |>
   mutate(series = paste('', opponent, sep = ' vs ')) |>
   mutate(margin = pts-opp) |>
@@ -44,6 +44,9 @@ opponent_series <- filter_sched |>
             ties = sum(ties, na.rm = T)) |>
   ungroup() |>
   arrange(desc(last_met))
+
+opponent_series |>
+  summarise_if(is.numeric,sum)
 
 series_order <- opponent_series |>
   mutate(#opponent = factor(opponent, levels = opponent_series$opponent),
@@ -108,7 +111,7 @@ ggplot() +
   labs(title = 'Washington Huskies B1G Football Head-to-Head Records',
        subtitle = "<span style = 'font-size:15pt'>All-time <b><span style = 'color:#542788;'>Washington Victories</span></b> vs <b><span style = 'color:#b35806;'>Opponent Victories</span></b></span>",
        color = '',
-       caption = '\nVisualization by Alex Elfering; Source: College Football-Reference\nInspired by "College Football History" by Sam Epley') +
+       caption = '\nVisualization by Alex Elfering; Source: College Football-Reference\nInspired by "College Football Rivalry History" by Sam Epley') +
   theme(
     plot.title = element_text(size = 22, 
                               face = 'bold',
@@ -150,4 +153,4 @@ ggplot() +
     panel.grid.minor.x = element_blank(),
     panel.grid.major.x = element_line(color = 'gray80', linetype = 'dashed')) 
 
-ggsave(file = glue('C:/Users/alexe/OneDrive/Documents/GitHub/Sports/Washington B1G Head-to-Head Series/Washington B1G Record.png'), dpi = 300,  width = 22, height = 10, units = c('in'))
+#ggsave(file = glue('C:/Users/alexe/OneDrive/Documents/GitHub/Sports/Washington B1G Head-to-Head Series/Washington B1G Record.png'), dpi = 300,  width = 22, height = 10, units = c('in'))
