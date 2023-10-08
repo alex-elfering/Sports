@@ -17,7 +17,7 @@ team_series <- full_cfb_schedule |>
   distinct(opponent)
 
 filter_sched <- full_cfb_schedule |>
-  filter(school == 'Arizona State',
+  filter(school == 'Washington',
          opponent %in% team_series$opponent) |>
   mutate(series = paste('', opponent, sep = ' vs ')) |>
   mutate(margin = pts-opp) |>
