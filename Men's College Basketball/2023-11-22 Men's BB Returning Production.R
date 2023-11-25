@@ -27,7 +27,9 @@ clean_player_index <- player_index |>
          ast,
          stl,
          blk,
-         pts) |>
+         pts) 
+
+player_metric_summary <- clean_player_index |>
   pivot_longer(cols = -c('player',
                          'season',
                          'schl',
@@ -42,9 +44,12 @@ clean_player_index <- player_index |>
            metric) |>
   summarise(values = sum(values, na.rm = T))
 
-clean_player_index |>
-  distinct(schl)
-
+total_games_player <- clean_player_index |>
+  group_by(season,
+           player) |>
+  summarise(total_games = n())
+  
+  
 #roster ----
 player_roster <- read.csv('C:/Users/alexe/OneDrive/Documents/Sports Analysis/MBB Returning Production/player roster.csv')
 
@@ -76,5 +81,19 @@ schl_wl_record <- player_index |>
            result) |>
   summarise(games = n_distinct(date)) |>
   ungroup()
+
+# what is the returning production  ----
+
+player_ratio_metric <- player_metric_summary |>
+  group_by(schl,
+           season,
+           metric) |>
+  mutate(total = sum(values),
+         pct_total = values/total) |>
+  ungroup() |>
+  left_join(total_games_player) |>
+  mutate(avg_val = values/total_games,
+         next_season = season + 1) |>
+  filter(season != 2023)
 
 
