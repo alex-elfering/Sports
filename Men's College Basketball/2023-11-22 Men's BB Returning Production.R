@@ -58,6 +58,7 @@ school_name_capitalized <- player_roster |>
   mutate(school_name = case_when(schl == 'loyola-il' ~ 'Loyola (IL)',
                                  schl == 'miami-oh' ~ 'Miami (OH)',
                                  schl == 'illinois-chicago' ~ 'Illinois-Chicago',
+                                 schl == 'iupui' ~ 'IUPUI',
                                  TRUE ~ tools::toTitleCase(gsub('-', ' ', schl))))
 
 clean_roster <- player_roster |>
@@ -95,5 +96,22 @@ player_ratio_metric <- player_metric_summary |>
   mutate(avg_val = values/total_games,
          next_season = season + 1) |>
   filter(season != 2023)
+
+
+mbb_returning_production <- player_ratio_metric |>
+  inner_join(clean_roster,
+             by = c('next_season' = 'season',
+                    'player' = 'player',
+                    'schl' = 'school_name')) |>
+  rename(next_class = class) |>
+  left_join(clean_roster,
+             by = c('season' = 'season',
+                    'player' = 'player',
+                    'schl' = 'school_name')) |>
+  filter(!is.na(class))
+
+
+
+
 
 
