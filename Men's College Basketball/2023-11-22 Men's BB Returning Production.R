@@ -111,7 +111,13 @@ mbb_returning_production <- player_ratio_metric |>
   filter(!is.na(class))
 
 
+# school & season dimension table ----
+season_schools <- mbb_returning_production |>
+  distinct(schl,
+           season)
 
+# data export ----
 
-
-
+read.csv(mbb_returning_production, "C:/Users/alexe/OneDrive/Documents/GitHub/Sports/Men's College Basketball/Returning Production/MBB Returning Production Midwest Schools.csv")
+read.csv(season_schools, "C:/Users/alexe/OneDrive/Documents/GitHub/Sports/Men's College Basketball/Returning Production/season_schools.csv")
+read.csv(schl_wl_record, "C:/Users/alexe/OneDrive/Documents/GitHub/Sports/Men's College Basketball/Returning Production/schl_wl_record.csv")
