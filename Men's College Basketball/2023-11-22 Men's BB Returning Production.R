@@ -62,4 +62,19 @@ clean_roster <- player_roster |>
          school_name,
          class)
 
+# what are each win's w-l record per season ----
+schl_wl_record <- player_index |>
+  mutate(date = ymd(date),
+         season = ifelse(month(date) >= 1 & month(date) <= 4, year(date)-1, year(date))) |>
+  select(season,
+         schl,
+         result = x_2,
+         date) |>
+  filter(season != 2023) |>
+  group_by(season,
+           schl,
+           result) |>
+  summarise(games = n_distinct(date)) |>
+  ungroup()
+
 
