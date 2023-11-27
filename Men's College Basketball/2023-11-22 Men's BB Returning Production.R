@@ -21,13 +21,17 @@ clean_player_index <- player_index |>
          gs,
          mp,
          fg,
+         fga,
          x2p,
+         x2pa,
          x3p,
+         x3pa,
          trb,
          ast,
          stl,
          blk,
-         pts) 
+         pts,
+         pf) 
 
 player_metric_summary <- clean_player_index |>
   pivot_longer(cols = -c('player',
@@ -64,6 +68,7 @@ school_name_capitalized <- player_roster |>
 clean_roster <- player_roster |>
   left_join(school_name_capitalized) |>
   select(player,
+         pos,
          season,
          school_name,
          class)
@@ -76,7 +81,7 @@ schl_wl_record <- player_index |>
          schl,
          result = x_2,
          date) |>
-  filter(season != 2023) |>
+  #filter(season != 2023) |>
   group_by(season,
            schl,
            result) |>
@@ -93,12 +98,16 @@ player_ratio_metric <- player_metric_summary |>
          pct_total = values/total) |>
   ungroup() |>
   left_join(total_games_player) |>
-  mutate(avg_val = values/total_games,
-         next_season = season + 1) |>
-  filter(season != 2023)
+  mutate(avg_val = ifelse(metric == 'gs', values, values/total_games ),
+         avg_label = case_when(round(avg_val, 1) < 1 & round(avg_val, 1) > 0 ~ '< 1', 
+                           avg_val == 0 ~ '-',
+                           TRUE ~ as.character(round(avg_val,1))),
+         next_season = season + 1) #|>
+  #filter(season != 2023)
 
 
 mbb_returning_production <- player_ratio_metric |>
+  #filter(next_season == 2023) |>
   inner_join(clean_roster,
              by = c('next_season' = 'season',
                     'player' = 'player',
@@ -108,13 +117,15 @@ mbb_returning_production <- player_ratio_metric |>
              by = c('season' = 'season',
                     'player' = 'player',
                     'schl' = 'school_name')) |>
+  rename(pos = pos.x,
+         next_pos = pos.y) |>
   filter(!is.na(class))
 
 
 # school & season dimension table ----
 season_schools <- mbb_returning_production |>
   distinct(schl,
-           season)
+           next_season)
 
 # data export ----
 
