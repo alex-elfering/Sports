@@ -148,710 +148,721 @@
 "147","Kent State",2022
 "148","Milwaukee",2015
 "149","Kent State",2018
-"150","Northern Illinois",2011
-"151","Northern Illinois",2013
-"152","Cleveland State",2019
-"153","Cleveland State",2020
-"154","Cleveland State",2021
-"155","Illinois",2019
-"156","Wright State",2016
-"157","Oral Roberts",2017
-"158","Green Bay",2011
-"159","Green Bay",2012
-"160","Green Bay",2013
-"161","Valparaiso",2014
-"162","Valparaiso",2015
-"163","Valparaiso",2016
-"164","Wisconsin",2018
-"165","Wisconsin",2019
-"166","Wisconsin",2020
-"167","Akron",2011
-"168","South Dakota State",2019
-"169","Butler",2012
-"170","Butler",2013
-"171","Butler",2014
-"172","Oklahoma State",2013
-"173","Oklahoma State",2014
-"174","Notre Dame",2011
-"175","Chicago State",2017
-"176","Cincinnati",2011
-"177","Cincinnati",2012
-"178","Tulsa",2017
-"179","Tulsa",2018
-"180","Wright State",2021
-"181","Memphis",2019
-"182","Memphis",2020
-"183","Memphis",2021
-"184","Memphis",2022
-"185","Northwestern",2011
-"186","Northwestern",2012
-"187","Memphis",2017
-"188","Creighton",2021
-"189","Northwestern",2013
-"190","Northwestern",2014
-"191","Northwestern",2015
-"192","Creighton",2013
-"193","Denver",2011
-"194","Milwaukee",2016
-"195","Milwaukee",2017
-"196","Notre Dame",2023
-"197","IUPUI",2011
-"198","Green Bay",2014
-"199","Akron",2020
-"200","Akron",2021
-"201","Missouri State",2017
-"202","Indiana",2018
-"203","Indiana",2019
-"204","Indiana",2020
-"205","Iowa State",2022
-"206","Oklahoma",2020
-"207","Illinois State",2022
-"208","Missouri State",2023
-"209","Michigan State",2014
-"210","Michigan State",2015
-"211","Michigan State",2016
-"212","Akron",2023
-"213","Belmont",2015
-"214","Belmont",2016
-"215","Belmont",2017
-"216","Green Bay",2020
-"217","IUPUI",2023
-"218","Milwaukee",2019
-"219","Milwaukee",2020
-"220","Minnesota",2017
-"221","Minnesota",2018
-"222","Ohio State",2014
-"223","Northern Illinois",2018
-"224","South Dakota State",2014
-"225","Miami (OH)",2023
-"226","Central Michigan",2011
-"227","Illinois",2021
-"228","Minnesota",2012
-"229","Minnesota",2013
-"230","Minnesota",2014
-"231","Toledo",2023
-"232","Ohio State",2017
-"233","Ohio State",2018
-"234","Ohio State",2019
-"235","Drake",2020
-"236","Iowa",2011
-"237","Butler",2015
-"238","Butler",2016
-"239","Michigan",2014
-"240","Michigan",2015
-"241","Oklahoma",2011
-"242","Oklahoma",2012
-"243","Chicago State",2020
-"244","Chicago State",2021
-"245","North Dakota State",2022
-"246","North Dakota State",2023
-"247","Butler",2011
-"248","Eastern Michigan",2021
-"249","Eastern Michigan",2022
-"250","Eastern Michigan",2023
-"251","Kansas",2013
-"252","Evansville",2011
-"253","Evansville",2012
-"254","Wright State",2019
-"255","Wright State",2020
-"256","Milwaukee",2023
-"257","Oklahoma State",2015
-"258","Southern Illinois",2013
-"259","Southern Illinois",2014
-"260","Southern Illinois",2015
-"261","Iowa State",2012
-"262","Memphis",2013
-"263","Illinois State",2011
-"264","Illinois State",2012
-"265","Missouri",2013
-"266","Northern Illinois",2022
-"267","Southern Illinois",2021
-"268","Missouri State",2012
-"269","Chicago State",2016
-"270","Bradley",2014
-"271","Northwestern",2020
-"272","Chicago State",2018
-"273","Bowling Green State",2013
-"274","Bowling Green State",2014
-"275","Northern Iowa",2011
-"276","Northern Iowa",2012
-"277","Purdue",2012
-"278","Illinois-Chicago",2011
-"279","Indiana",2021
-"280","Indiana",2022
-"281","Indiana",2023
-"282","Bowling Green State",2023
-"283","Northern Kentucky",2013
-"284","Northern Kentucky",2014
-"285","Drake",2019
-"286","Robert Morris",2011
-"287","Robert Morris",2012
-"288","Robert Morris",2013
-"289","Tulsa",2022
-"290","Kent State",2019
-"291","Murray State",2018
-"292","Murray State",2019
-"293","Pittsburgh",2018
-"294","Pittsburgh",2019
-"295","Eastern Michigan",2012
-"296","Eastern Michigan",2013
-"297","Bradley",2011
-"298","Cleveland State",2017
-"299","Detroit Mercy",2019
-"300","Detroit Mercy",2020
-"301","Detroit Mercy",2021
-"302","Detroit Mercy",2022
-"303","Bradley",2016
-"304","Evansville",2022
-"305","Creighton",2011
-"306","Nebraska",2017
-"307","Cleveland State",2012
-"308","Cleveland State",2013
-"309","Cleveland State",2014
-"310","Detroit Mercy",2013
-"311","Detroit Mercy",2014
-"312","Detroit Mercy",2015
-"313","Memphis",2011
-"314","Ohio",2017
-"315","Ohio",2014
-"316","Ohio",2015
-"317","Ohio",2016
-"318","Kansas State",2020
-"319","Eastern Michigan",2011
-"320","Drake",2018
-"321","Bradley",2020
-"322","Bowling Green State",2016
-"323","Bowling Green State",2017
-"324","Bowling Green State",2018
-"325","Chicago State",2011
-"326","Bradley",2019
-"327","Bradley",2021
-"328","Tulsa",2021
-"329","Tulsa",2023
-"330","Southern Illinois",2016
-"331","Pittsburgh",2011
-"332","Pittsburgh",2014
-"333","Chicago State",2013
-"334","Creighton",2022
-"335","Wichita State",2018
-"336","Wichita State",2019
-"337","Youngstown State",2011
-"338","Toledo",2014
-"339","Loyola (IL)",2017
-"340","Central Michigan",2021
-"341","Buffalo",2011
-"342","Buffalo",2012
-"343","Buffalo",2013
-"344","Milwaukee",2013
-"345","Iowa",2019
-"346","Iowa",2020
-"347","Kansas State",2016
-"348","Notre Dame",2013
-"349","Notre Dame",2014
-"350","Notre Dame",2015
-"351","Creighton",2012
-"352","Creighton",2014
-"353","Illinois",2014
-"354","Michigan",2018
-"355","Central Michigan",2018
-"356","Indiana",2012
-"357","Indiana",2013
-"358","Minnesota",2011
-"359","Central Michigan",2012
-"360","Central Michigan",2013
-"361","Central Michigan",2014
-"362","Oklahoma",2014
-"363","Oklahoma",2015
-"364","Iowa State",2011
-"365","Memphis",2014
-"366","Northern Iowa",2018
-"367","Wichita State",2017
-"368","Western Michigan",2012
-"369","Missouri State",2014
-"370","Missouri State",2015
-"371","Missouri State",2016
-"372","South Dakota",2015
-"373","South Dakota",2016
-"374","South Dakota",2017
-"375","Central Michigan",2015
-"376","Notre Dame",2016
-"377","Notre Dame",2017
-"378","Oklahoma State",2020
-"379","Oklahoma State",2021
-"380","Oklahoma State",2022
-"381","Memphis",2015
-"382","Illinois",2020
-"383","IUPUI",2021
-"384","North Dakota",2023
-"385","Valparaiso",2018
-"386","Minnesota",2015
-"387","Miami (OH)",2018
-"388","Miami (OH)",2019
-"389","Kansas State",2017
-"390","Kansas State",2018
-"391","Ball State",2022
-"392","Ball State",2023
-"393","Creighton",2023
-"394","South Dakota State",2016
-"395","South Dakota State",2017
-"396","South Dakota State",2018
-"397","Loyola (IL)",2011
-"398","Loyola (IL)",2012
-"399","Valparaiso",2012
-"400","Denver",2023
-"401","Wisconsin",2011
-"402","Wisconsin",2012
-"403","Wisconsin",2013
-"404","Wisconsin",2021
-"405","Ball State",2020
-"406","Ball State",2021
-"407","Valparaiso",2020
-"408","Valparaiso",2021
-"409","Valparaiso",2022
-"410","Loyola (IL)",2015
-"411","Loyola (IL)",2016
-"412","Ohio",2020
-"413","Ohio",2021
-"414","Loyola (IL)",2023
-"415","Belmont",2020
-"416","Belmont",2021
-"417","Belmont",2022
-"418","Drake",2012
-"419","Wichita State",2011
-"420","Ohio",2019
-"421","Miami (OH)",2020
-"422","Northern Iowa",2015
-"423","Northern Iowa",2016
-"424","Northern Iowa",2017
-"425","Nebraska",2013
-"426","Nebraska",2014
-"427","Nebraska",2015
-"428","North Dakota",2020
-"429","North Dakota",2021
-"430","Oklahoma",2022
-"431","Ball State",2015
-"432","Loyola (IL)",2013
-"433","Miami (OH)",2012
-"434","Miami (OH)",2013
-"435","North Dakota",2017
-"436","North Dakota",2018
-"437","Nebraska",2023
-"438","Youngstown State",2012
-"439","Eastern Michigan",2016
-"440","Drake",2014
-"441","Denver",2012
-"442","Buffalo",2016
-"443","Pittsburgh",2023
-"444","Ball State",2019
-"445","Belmont",2013
-"446","Michigan",2011
-"447","Michigan",2012
-"448","Oklahoma",2021
-"449","Northwestern",2023
-"450","Toledo",2019
-"451","Toledo",2020
-"452","Ball State",2013
-"453","Ball State",2014
-"454","Valparaiso",2013
-"455","Youngstown State",2013
-"456","Youngstown State",2014
-"457","Youngstown State",2015
-"458","Illinois State",2014
-"459","Kansas",2022
-"460","North Dakota State",2021
-"461","Northwestern",2021
-"462","Northwestern",2022
-"463","South Dakota",2021
-"464","IUPUI",2022
-"465","Eastern Michigan",2019
-"466","Northern Iowa",2022
-"467","Northern Iowa",2023
-"468","Ohio State",2023
-"469","Illinois-Chicago",2021
-"470","Loyola (IL)",2022
-"471","Purdue",2023
-"472","North Dakota",2022
-"473","Oklahoma",2018
-"474","Oklahoma",2019
-"475","Minnesota",2019
-"476","Minnesota",2023
-"477","Illinois-Chicago",2020
-"478","South Dakota",2018
-"479","South Dakota",2019
-"480","Oklahoma State",2017
-"481","South Dakota",2012
-"482","South Dakota",2013
-"483","Indiana State",2013
-"484","Bowling Green State",2015
-"485","Oral Roberts",2013
-"486","Murray State",2011
-"487","Murray State",2012
-"488","IUPUI",2019
-"489","Illinois",2022
-"490","Indiana State",2015
-"491","Indiana State",2016
-"492","Indiana State",2017
-"493","Eastern Michigan",2015
-"494","Purdue",2021
-"495","Purdue",2022
-"496","Illinois",2011
-"497","Illinois",2012
-"498","Western Michigan",2011
-"499","Tulsa",2020
-"500","Nebraska",2011
-"501","Youngstown State",2023
-"502","Tulsa",2013
-"503","Tulsa",2014
-"504","Tulsa",2015
-"505","Nebraska",2012
-"506","Kansas",2014
-"507","Kansas",2015
-"508","Youngstown State",2017
-"509","South Dakota State",2011
-"510","South Dakota State",2012
-"511","South Dakota State",2013
-"512","Central Michigan",2016
-"513","Northern Kentucky",2016
-"514","Chicago State",2023
-"515","Michigan",2017
-"516","Bowling Green State",2022
-"517","Youngstown State",2016
-"518","Denver",2013
-"519","Denver",2014
-"520","Kent State",2011
-"521","Kent State",2012
-"522","Murray State",2023
-"523","Miami (OH)",2014
-"524","Miami (OH)",2015
-"525","Kansas State",2014
-"526","Kansas State",2015
-"527","Central Michigan",2022
-"528","Central Michigan",2023
-"529","Oklahoma State",2012
-"530","Murray State",2016
-"531","Murray State",2017
-"532","Buffalo",2018
-"533","Buffalo",2019
-"534","Buffalo",2020
-"535","Buffalo",2021
-"536","Indiana State",2018
-"537","Indiana State",2019
-"538","Wisconsin",2014
-"539","Missouri",2019
-"540","Oklahoma State",2023
-"541","Missouri State",2013
-"542","Loyola (IL)",2018
-"543","Denver",2015
-"544","Milwaukee",2018
-"545","North Dakota",2015
-"546","Chicago State",2022
-"547","Western Michigan",2016
-"548","Wichita State",2020
-"549","Eastern Michigan",2018
-"550","Oklahoma",2013
-"551","Wichita State",2015
-"552","Oklahoma",2016
-"553","Murray State",2013
-"554","Buffalo",2017
-"555","Drake",2015
-"556","Drake",2017
-"557","Nebraska",2022
-"558","Green Bay",2022
-"559","Belmont",2014
-"560","Bowling Green State",2019
-"561","Bowling Green State",2020
-"562","Belmont",2018
-"563","Missouri State",2011
-"564","Purdue",2016
-"565","Bradley",2017
-"566","Oral Roberts",2023
-"567","Bowling Green State",2021
-"568","Indiana State",2020
-"569","Illinois-Chicago",2023
-"570","Evansville",2023
-"571","Indiana State",2022
-"572","North Dakota State",2018
-"573","North Dakota State",2019
-"574","Pittsburgh",2015
-"575","Pittsburgh",2016
-"576","Iowa State",2018
-"577","Illinois",2015
-"578","Oklahoma State",2018
-"579","Oklahoma State",2019
-"580","Murray State",2014
-"581","Robert Morris",2019
-"582","Pittsburgh",2012
-"583","Pittsburgh",2013
-"584","Kansas State",2023
-"585","Cincinnati",2018
-"586","Michigan",2013
-"587","Wichita State",2012
-"588","Indiana State",2011
-"589","North Dakota State",2014
-"590","Oral Roberts",2021
-"591","Oral Roberts",2022
-"592","Kansas",2016
-"593","Kansas State",2021
-"594","Green Bay",2015
-"595","Purdue",2017
-"596","Purdue",2018
-"597","North Dakota",2016
-"598","Northern Kentucky",2017
-"599","Iowa State",2019
-"600","Iowa State",2020
-"601","Iowa State",2021
-"602","Wisconsin",2022
-"603","Wisconsin",2023
-"604","Iowa",2023
-"605","Kansas State",2019
-"606","Michigan State",2017
-"607","Michigan State",2018
-"608","Central Michigan",2017
-"609","Green Bay",2021
-"610","North Dakota",2014
-"611","Wichita State",2013
-"612","Akron",2019
-"613","Robert Morris",2018
-"614","Green Bay",2016
-"615","South Dakota State",2023
-"616","South Dakota",2011
-"617","Cincinnati",2023
-"618","Detroit Mercy",2011
-"619","Wichita State",2021
-"620","Murray State",2020
-"621","Northern Iowa",2013
-"622","Ball State",2011
-"623","Ball State",2012
-"624","Northern Kentucky",2022
-"625","Southern Illinois",2022
-"626","Notre Dame",2019
-"627","Robert Morris",2023
-"628","Eastern Michigan",2020
-"629","Northern Illinois",2020
-"630","North Dakota State",2013
-"631","Oral Roberts",2018
-"632","Kent State",2013
-"633","Kent State",2014
-"634","Kent State",2015
-"635","Kent State",2023
-"636","Youngstown State",2022
-"637","Kansas",2018
-"638","Kansas",2019
-"639","Kansas",2020
-"640","Kansas",2021
-"641","Cincinnati",2020
-"642","Northern Kentucky",2018
-"643","Wright State",2014
-"644","Youngstown State",2020
-"645","Evansville",2016
-"646","Creighton",2019
-"647","Creighton",2020
-"648","Kansas",2012
-"649","Chicago State",2019
-"650","Oklahoma",2017
-"651","Buffalo",2015
-"652","Loyola (IL)",2014
-"653","Indiana",2011
-"654","Milwaukee",2011
-"655","Milwaukee",2012
-"656","Butler",2022
-"657","Cincinnati",2022
-"658","Ohio State",2020
-"659","Chicago State",2014
-"660","Kansas",2017
-"661","Illinois-Chicago",2017
-"662","Green Bay",2019
-"663","Milwaukee",2014
-"664","Creighton",2016
-"665","Detroit Mercy",2017
-"666","Detroit Mercy",2018
-"667","Northern Kentucky",2015
-"668","Northern Kentucky",2023
-"669","Indiana",2014
-"670","Indiana",2015
-"671","Wichita State",2016
-"672","Valparaiso",2023
-"673","South Dakota State",2015
-"674","Bradley",2022
-"675","Iowa",2018
-"676","Butler",2023
-"677","Drake",2023
-"678","Iowa State",2023
-"679","Indiana State",2021
-"680","Michigan",2023
-"681","Cincinnati",2015
-"682","Central Michigan",2019
-"683","Notre Dame",2021
-"684","Notre Dame",2022
-"685","Akron",2017
-"686","Wichita State",2022
-"687","Memphis",2016
-"688","Miami (OH)",2022
-"689","Buffalo",2022
-"690","Indiana",2017
-"691","Missouri",2015
-"692","Oral Roberts",2020
-"693","Murray State",2022
-"694","Purdue",2011
-"695","Ohio",2011
-"696","Ohio",2012
-"697","Notre Dame",2018
-"698","Kansas State",2013
-"699","Tulsa",2011
-"700","IUPUI",2018
-"701","Drake",2021
-"702","Drake",2022
-"703","Michigan",2016
-"704","Robert Morris",2017
-"705","Drake",2013
-"706","Miami (OH)",2021
-"707","Evansville",2018
-"708","Kansas",2023
-"709","Evansville",2017
-"710","South Dakota",2022
-"711","Oral Roberts",2011
-"712","Oral Roberts",2012
-"713","Notre Dame",2020
-"714","Wright State",2015
-"715","Iowa State",2014
-"716","Cleveland State",2016
-"717","Youngstown State",2021
-"718","Valparaiso",2019
-"719","Akron",2018
-"720","Kent State",2020
-"721","Southern Illinois",2012
-"722","Illinois State",2016
-"723","Illinois State",2017
-"724","Murray State",2021
-"725","Missouri State",2019
-"726","Missouri State",2020
-"727","Tulsa",2019
-"728","Illinois State",2023
-"729","Wichita State",2014
-"730","Miami (OH)",2017
-"731","Youngstown State",2019
-"732","Bradley",2018
-"733","Bradley",2013
-"734","Southern Illinois",2011
-"735","Ohio State",2016
-"736","Northern Illinois",2023
-"737","Cincinnati",2021
-"738","Green Bay",2017
-"739","Cincinnati",2013
-"740","Cleveland State",2018
-"741","Creighton",2017
-"742","Creighton",2018
-"743","Oklahoma State",2016
-"744","Missouri State",2021
-"745","Missouri State",2022
-"746","Milwaukee",2021
-"747","Cleveland State",2022
-"748","Toledo",2011
-"749","Kent State",2016
-"750","Northern Iowa",2014
-"751","Illinois State",2015
-"752","Iowa State",2016
-"753","Nebraska",2021
-"754","Valparaiso",2017
-"755","Evansville",2019
-"756","Evansville",2020
-"757","Central Michigan",2020
-"758","Indiana State",2014
-"759","Illinois-Chicago",2016
-"760","Illinois-Chicago",2018
-"761","IUPUI",2012
-"762","IUPUI",2013
-"763","Iowa State",2017
-"764","Bradley",2015
-"765","Detroit Mercy",2012
-"766","Ohio",2018
-"767","Denver",2021
-"768","Cleveland State",2023
-"769","North Dakota State",2011
-"770","Missouri",2020
-"771","Toledo",2018
-"772","Bradley",2012
-"773","Ohio State",2021
-"774","Nebraska",2016
-"775","Kansas",2011
-"776","IUPUI",2014
-"777","IUPUI",2020
-"778","Evansville",2021
-"779","Robert Morris",2021
-"780","Robert Morris",2022
-"781","Akron",2022
-"782","Notre Dame",2012
-"783","Minnesota",2021
-"784","Valparaiso",2011
-"785","Ohio State",2022
-"786","Northern Illinois",2017
-"787","Northern Illinois",2019
-"788","Memphis",2018
-"789","South Dakota",2023
-"790","Illinois-Chicago",2022
-"791","Ball State",2016
-"792","Ball State",2017
-"793","Oklahoma State",2011
-"794","Toledo",2016
-"795","North Dakota State",2012
-"796","Minnesota",2020
-"797","Illinois-Chicago",2015
-"798","Youngstown State",2018
-"799","Cincinnati",2016
-"800","Cincinnati",2017
-"801","Cincinnati",2014
-"802","Creighton",2015
-"803","Iowa State",2013
-"804","Kent State",2021
-"805","Nebraska",2018
-"806","Illinois-Chicago",2019
-"807","Western Michigan",2022
-"808","Butler",2017
-"809","Green Bay",2018
-"810","Michigan",2022
-"811","Wichita State",2023
-"812","Illinois State",2018
-"813","Buffalo",2023
-"814","Ball State",2018
-"815","Kansas State",2022
-"816","Western Michigan",2023
-"817","Ohio State",2015
-"818","Toledo",2017
-"819","Indiana State",2012
-"820","Oklahoma",2023
-"821","Detroit Mercy",2023
-"822","Kansas State",2011
-"823","Indiana",2016
-"824","Denver",2020
-"825","Tulsa",2012
-"826","Minnesota",2022
-"827","Chicago State",2015
-"828","Missouri State",2018
-"829","Missouri",2011
-"830","Cincinnati",2019
-"831","Buffalo",2014
-"832","Missouri",2021
-"833","Denver",2022
-"834","North Dakota State",2020
-"835","Memphis",2023
-"836","Indiana State",2023
-"837","Murray State",2015
-"838","Missouri",2014
-"839","Ohio",2013
-"840","Pittsburgh",2017
-"841","Toledo",2015
-"842","Eastern Michigan",2017
-"843","Illinois",2013
-"844","Toledo",2013
-"845","Missouri",2022
-"846","Eastern Michigan",2014
-"847","Illinois State",2013
-"848","South Dakota",2020
-"849","Southern Illinois",2020
-"850","Milwaukee",2022
-"851","Illinois State",2019
-"852","Tulsa",2016
-"853","Missouri",2012
-"854","Green Bay",2023
-"855","Nebraska",2019
-"856","Nebraska",2020
+"150","Omaha",2022
+"151","Northern Illinois",2011
+"152","Northern Illinois",2013
+"153","Cleveland State",2019
+"154","Cleveland State",2020
+"155","Cleveland State",2021
+"156","Illinois",2019
+"157","Wright State",2016
+"158","Oral Roberts",2017
+"159","Green Bay",2011
+"160","Green Bay",2012
+"161","Green Bay",2013
+"162","Valparaiso",2014
+"163","Valparaiso",2015
+"164","Valparaiso",2016
+"165","Wisconsin",2018
+"166","Wisconsin",2019
+"167","Wisconsin",2020
+"168","Akron",2011
+"169","Omaha",2016
+"170","Omaha",2017
+"171","South Dakota State",2019
+"172","Butler",2012
+"173","Butler",2013
+"174","Butler",2014
+"175","Oklahoma State",2013
+"176","Oklahoma State",2014
+"177","Notre Dame",2011
+"178","Chicago State",2017
+"179","Cincinnati",2011
+"180","Cincinnati",2012
+"181","Tulsa",2017
+"182","Tulsa",2018
+"183","Wright State",2021
+"184","Memphis",2019
+"185","Memphis",2020
+"186","Memphis",2021
+"187","Memphis",2022
+"188","Northwestern",2011
+"189","Northwestern",2012
+"190","Memphis",2017
+"191","Creighton",2021
+"192","Northwestern",2013
+"193","Northwestern",2014
+"194","Northwestern",2015
+"195","Creighton",2013
+"196","Omaha",2013
+"197","Denver",2011
+"198","Milwaukee",2016
+"199","Milwaukee",2017
+"200","Notre Dame",2023
+"201","IUPUI",2011
+"202","Green Bay",2014
+"203","Akron",2020
+"204","Akron",2021
+"205","Missouri State",2017
+"206","Indiana",2018
+"207","Indiana",2019
+"208","Indiana",2020
+"209","Iowa State",2022
+"210","Oklahoma",2020
+"211","Illinois State",2022
+"212","Missouri State",2023
+"213","Michigan State",2014
+"214","Michigan State",2015
+"215","Michigan State",2016
+"216","Akron",2023
+"217","Belmont",2015
+"218","Belmont",2016
+"219","Belmont",2017
+"220","Green Bay",2020
+"221","IUPUI",2023
+"222","Milwaukee",2019
+"223","Milwaukee",2020
+"224","Minnesota",2017
+"225","Minnesota",2018
+"226","Ohio State",2014
+"227","Northern Illinois",2018
+"228","South Dakota State",2014
+"229","Miami (OH)",2023
+"230","Central Michigan",2011
+"231","Illinois",2021
+"232","Minnesota",2012
+"233","Minnesota",2013
+"234","Minnesota",2014
+"235","Toledo",2023
+"236","Ohio State",2017
+"237","Ohio State",2018
+"238","Ohio State",2019
+"239","Drake",2020
+"240","Iowa",2011
+"241","Butler",2015
+"242","Butler",2016
+"243","Michigan",2014
+"244","Michigan",2015
+"245","Oklahoma",2011
+"246","Oklahoma",2012
+"247","Chicago State",2020
+"248","Chicago State",2021
+"249","North Dakota State",2022
+"250","North Dakota State",2023
+"251","Butler",2011
+"252","Eastern Michigan",2021
+"253","Eastern Michigan",2022
+"254","Eastern Michigan",2023
+"255","Kansas",2013
+"256","Evansville",2011
+"257","Evansville",2012
+"258","Wright State",2019
+"259","Wright State",2020
+"260","Milwaukee",2023
+"261","Oklahoma State",2015
+"262","Southern Illinois",2013
+"263","Southern Illinois",2014
+"264","Southern Illinois",2015
+"265","Iowa State",2012
+"266","Memphis",2013
+"267","Illinois State",2011
+"268","Illinois State",2012
+"269","Missouri",2013
+"270","Northern Illinois",2022
+"271","Southern Illinois",2021
+"272","Missouri State",2012
+"273","Chicago State",2016
+"274","Bradley",2014
+"275","Northwestern",2020
+"276","Chicago State",2018
+"277","Bowling Green State",2013
+"278","Bowling Green State",2014
+"279","Northern Iowa",2011
+"280","Northern Iowa",2012
+"281","Purdue",2012
+"282","Illinois-Chicago",2011
+"283","Indiana",2021
+"284","Indiana",2022
+"285","Indiana",2023
+"286","Bowling Green State",2023
+"287","Northern Kentucky",2013
+"288","Northern Kentucky",2014
+"289","Drake",2019
+"290","Robert Morris",2011
+"291","Robert Morris",2012
+"292","Robert Morris",2013
+"293","Tulsa",2022
+"294","Kent State",2019
+"295","Murray State",2018
+"296","Murray State",2019
+"297","Pittsburgh",2018
+"298","Pittsburgh",2019
+"299","Eastern Michigan",2012
+"300","Eastern Michigan",2013
+"301","Bradley",2011
+"302","Cleveland State",2017
+"303","Detroit Mercy",2019
+"304","Detroit Mercy",2020
+"305","Detroit Mercy",2021
+"306","Detroit Mercy",2022
+"307","Bradley",2016
+"308","Evansville",2022
+"309","Creighton",2011
+"310","Nebraska",2017
+"311","Cleveland State",2012
+"312","Cleveland State",2013
+"313","Cleveland State",2014
+"314","Detroit Mercy",2013
+"315","Detroit Mercy",2014
+"316","Detroit Mercy",2015
+"317","Memphis",2011
+"318","Ohio",2017
+"319","Ohio",2014
+"320","Ohio",2015
+"321","Ohio",2016
+"322","Kansas State",2020
+"323","Eastern Michigan",2011
+"324","Drake",2018
+"325","Bradley",2020
+"326","Bowling Green State",2016
+"327","Bowling Green State",2017
+"328","Bowling Green State",2018
+"329","Chicago State",2011
+"330","Bradley",2019
+"331","Bradley",2021
+"332","Tulsa",2021
+"333","Tulsa",2023
+"334","Southern Illinois",2016
+"335","Pittsburgh",2011
+"336","Pittsburgh",2014
+"337","Chicago State",2013
+"338","Creighton",2022
+"339","Wichita State",2018
+"340","Wichita State",2019
+"341","Youngstown State",2011
+"342","Toledo",2014
+"343","Loyola (IL)",2017
+"344","Central Michigan",2021
+"345","Buffalo",2011
+"346","Buffalo",2012
+"347","Buffalo",2013
+"348","Milwaukee",2013
+"349","Iowa",2019
+"350","Iowa",2020
+"351","Kansas State",2016
+"352","Notre Dame",2013
+"353","Notre Dame",2014
+"354","Notre Dame",2015
+"355","Creighton",2012
+"356","Creighton",2014
+"357","Illinois",2014
+"358","Michigan",2018
+"359","Central Michigan",2018
+"360","Indiana",2012
+"361","Indiana",2013
+"362","Minnesota",2011
+"363","Central Michigan",2012
+"364","Central Michigan",2013
+"365","Central Michigan",2014
+"366","Oklahoma",2014
+"367","Oklahoma",2015
+"368","Iowa State",2011
+"369","Memphis",2014
+"370","Northern Iowa",2018
+"371","Wichita State",2017
+"372","Western Michigan",2012
+"373","Missouri State",2014
+"374","Missouri State",2015
+"375","Missouri State",2016
+"376","South Dakota",2015
+"377","South Dakota",2016
+"378","South Dakota",2017
+"379","Central Michigan",2015
+"380","Notre Dame",2016
+"381","Notre Dame",2017
+"382","Oklahoma State",2020
+"383","Oklahoma State",2021
+"384","Oklahoma State",2022
+"385","Memphis",2015
+"386","Omaha",2018
+"387","Omaha",2019
+"388","Omaha",2020
+"389","Illinois",2020
+"390","IUPUI",2021
+"391","North Dakota",2023
+"392","Valparaiso",2018
+"393","Minnesota",2015
+"394","Miami (OH)",2018
+"395","Miami (OH)",2019
+"396","Kansas State",2017
+"397","Kansas State",2018
+"398","Ball State",2022
+"399","Ball State",2023
+"400","Creighton",2023
+"401","South Dakota State",2016
+"402","South Dakota State",2017
+"403","South Dakota State",2018
+"404","Loyola (IL)",2011
+"405","Loyola (IL)",2012
+"406","Valparaiso",2012
+"407","Denver",2023
+"408","Wisconsin",2011
+"409","Wisconsin",2012
+"410","Wisconsin",2013
+"411","Wisconsin",2021
+"412","Ball State",2020
+"413","Ball State",2021
+"414","Valparaiso",2020
+"415","Valparaiso",2021
+"416","Valparaiso",2022
+"417","Loyola (IL)",2015
+"418","Loyola (IL)",2016
+"419","Ohio",2020
+"420","Ohio",2021
+"421","Loyola (IL)",2023
+"422","Belmont",2020
+"423","Belmont",2021
+"424","Belmont",2022
+"425","Drake",2012
+"426","Wichita State",2011
+"427","Ohio",2019
+"428","Miami (OH)",2020
+"429","Northern Iowa",2015
+"430","Northern Iowa",2016
+"431","Northern Iowa",2017
+"432","Nebraska",2013
+"433","Nebraska",2014
+"434","Nebraska",2015
+"435","North Dakota",2020
+"436","North Dakota",2021
+"437","Oklahoma",2022
+"438","Ball State",2015
+"439","Loyola (IL)",2013
+"440","Miami (OH)",2012
+"441","Miami (OH)",2013
+"442","North Dakota",2017
+"443","North Dakota",2018
+"444","Nebraska",2023
+"445","Youngstown State",2012
+"446","Eastern Michigan",2016
+"447","Drake",2014
+"448","Denver",2012
+"449","Buffalo",2016
+"450","Pittsburgh",2023
+"451","Ball State",2019
+"452","Belmont",2013
+"453","Michigan",2011
+"454","Michigan",2012
+"455","Oklahoma",2021
+"456","Northwestern",2023
+"457","Toledo",2019
+"458","Toledo",2020
+"459","Ball State",2013
+"460","Ball State",2014
+"461","Valparaiso",2013
+"462","Youngstown State",2013
+"463","Youngstown State",2014
+"464","Youngstown State",2015
+"465","Illinois State",2014
+"466","Kansas",2022
+"467","North Dakota State",2021
+"468","Northwestern",2021
+"469","Northwestern",2022
+"470","South Dakota",2021
+"471","IUPUI",2022
+"472","Eastern Michigan",2019
+"473","Northern Iowa",2022
+"474","Northern Iowa",2023
+"475","Ohio State",2023
+"476","Illinois-Chicago",2021
+"477","Loyola (IL)",2022
+"478","Purdue",2023
+"479","North Dakota",2022
+"480","Oklahoma",2018
+"481","Oklahoma",2019
+"482","Minnesota",2019
+"483","Minnesota",2023
+"484","Illinois-Chicago",2020
+"485","South Dakota",2018
+"486","South Dakota",2019
+"487","Oklahoma State",2017
+"488","South Dakota",2012
+"489","South Dakota",2013
+"490","Indiana State",2013
+"491","Bowling Green State",2015
+"492","Oral Roberts",2013
+"493","Murray State",2011
+"494","Murray State",2012
+"495","IUPUI",2019
+"496","Illinois",2022
+"497","Indiana State",2015
+"498","Indiana State",2016
+"499","Indiana State",2017
+"500","Eastern Michigan",2015
+"501","Purdue",2021
+"502","Purdue",2022
+"503","Illinois",2011
+"504","Illinois",2012
+"505","Western Michigan",2011
+"506","Tulsa",2020
+"507","Nebraska",2011
+"508","Youngstown State",2023
+"509","Tulsa",2013
+"510","Tulsa",2014
+"511","Tulsa",2015
+"512","Nebraska",2012
+"513","Kansas",2014
+"514","Kansas",2015
+"515","Youngstown State",2017
+"516","South Dakota State",2011
+"517","South Dakota State",2012
+"518","South Dakota State",2013
+"519","Central Michigan",2016
+"520","Northern Kentucky",2016
+"521","Chicago State",2023
+"522","Michigan",2017
+"523","Bowling Green State",2022
+"524","Youngstown State",2016
+"525","Denver",2013
+"526","Denver",2014
+"527","Kent State",2011
+"528","Kent State",2012
+"529","Murray State",2023
+"530","Miami (OH)",2014
+"531","Miami (OH)",2015
+"532","Kansas State",2014
+"533","Kansas State",2015
+"534","Central Michigan",2022
+"535","Central Michigan",2023
+"536","Oklahoma State",2012
+"537","Murray State",2016
+"538","Murray State",2017
+"539","Buffalo",2018
+"540","Buffalo",2019
+"541","Buffalo",2020
+"542","Buffalo",2021
+"543","Indiana State",2018
+"544","Indiana State",2019
+"545","Wisconsin",2014
+"546","Missouri",2019
+"547","Oklahoma State",2023
+"548","Missouri State",2013
+"549","Loyola (IL)",2018
+"550","Denver",2015
+"551","Milwaukee",2018
+"552","North Dakota",2015
+"553","Chicago State",2022
+"554","Western Michigan",2016
+"555","Wichita State",2020
+"556","Eastern Michigan",2018
+"557","Oklahoma",2013
+"558","Wichita State",2015
+"559","Omaha",2014
+"560","Oklahoma",2016
+"561","Murray State",2013
+"562","Buffalo",2017
+"563","Drake",2015
+"564","Drake",2017
+"565","Nebraska",2022
+"566","Green Bay",2022
+"567","Belmont",2014
+"568","Bowling Green State",2019
+"569","Bowling Green State",2020
+"570","Belmont",2018
+"571","Missouri State",2011
+"572","Purdue",2016
+"573","Bradley",2017
+"574","Oral Roberts",2023
+"575","Bowling Green State",2021
+"576","Indiana State",2020
+"577","Illinois-Chicago",2023
+"578","Evansville",2023
+"579","Indiana State",2022
+"580","North Dakota State",2018
+"581","North Dakota State",2019
+"582","Pittsburgh",2015
+"583","Pittsburgh",2016
+"584","Iowa State",2018
+"585","Illinois",2015
+"586","Oklahoma State",2018
+"587","Oklahoma State",2019
+"588","Murray State",2014
+"589","Robert Morris",2019
+"590","Pittsburgh",2012
+"591","Pittsburgh",2013
+"592","Kansas State",2023
+"593","Cincinnati",2018
+"594","Michigan",2013
+"595","Wichita State",2012
+"596","Indiana State",2011
+"597","North Dakota State",2014
+"598","Oral Roberts",2021
+"599","Oral Roberts",2022
+"600","Kansas",2016
+"601","Kansas State",2021
+"602","Green Bay",2015
+"603","Purdue",2017
+"604","Purdue",2018
+"605","North Dakota",2016
+"606","Northern Kentucky",2017
+"607","Iowa State",2019
+"608","Iowa State",2020
+"609","Iowa State",2021
+"610","Wisconsin",2022
+"611","Wisconsin",2023
+"612","Iowa",2023
+"613","Kansas State",2019
+"614","Michigan State",2017
+"615","Michigan State",2018
+"616","Central Michigan",2017
+"617","Green Bay",2021
+"618","North Dakota",2014
+"619","Wichita State",2013
+"620","Akron",2019
+"621","Robert Morris",2018
+"622","Green Bay",2016
+"623","South Dakota State",2023
+"624","South Dakota",2011
+"625","Cincinnati",2023
+"626","Detroit Mercy",2011
+"627","Wichita State",2021
+"628","Murray State",2020
+"629","Northern Iowa",2013
+"630","Ball State",2011
+"631","Ball State",2012
+"632","Northern Kentucky",2022
+"633","Southern Illinois",2022
+"634","Notre Dame",2019
+"635","Robert Morris",2023
+"636","Eastern Michigan",2020
+"637","Northern Illinois",2020
+"638","North Dakota State",2013
+"639","Oral Roberts",2018
+"640","Kent State",2013
+"641","Kent State",2014
+"642","Kent State",2015
+"643","Kent State",2023
+"644","Youngstown State",2022
+"645","Kansas",2018
+"646","Kansas",2019
+"647","Kansas",2020
+"648","Kansas",2021
+"649","Cincinnati",2020
+"650","Northern Kentucky",2018
+"651","Wright State",2014
+"652","Youngstown State",2020
+"653","Evansville",2016
+"654","Creighton",2019
+"655","Creighton",2020
+"656","Kansas",2012
+"657","Chicago State",2019
+"658","Oklahoma",2017
+"659","Buffalo",2015
+"660","Loyola (IL)",2014
+"661","Indiana",2011
+"662","Milwaukee",2011
+"663","Milwaukee",2012
+"664","Butler",2022
+"665","Cincinnati",2022
+"666","Ohio State",2020
+"667","Chicago State",2014
+"668","Kansas",2017
+"669","Illinois-Chicago",2017
+"670","Green Bay",2019
+"671","Milwaukee",2014
+"672","Creighton",2016
+"673","Detroit Mercy",2017
+"674","Detroit Mercy",2018
+"675","Northern Kentucky",2015
+"676","Northern Kentucky",2023
+"677","Indiana",2014
+"678","Indiana",2015
+"679","Wichita State",2016
+"680","Valparaiso",2023
+"681","South Dakota State",2015
+"682","Bradley",2022
+"683","Iowa",2018
+"684","Butler",2023
+"685","Drake",2023
+"686","Iowa State",2023
+"687","Indiana State",2021
+"688","Michigan",2023
+"689","Cincinnati",2015
+"690","Central Michigan",2019
+"691","Notre Dame",2021
+"692","Notre Dame",2022
+"693","Akron",2017
+"694","Wichita State",2022
+"695","Memphis",2016
+"696","Miami (OH)",2022
+"697","Buffalo",2022
+"698","Indiana",2017
+"699","Missouri",2015
+"700","Oral Roberts",2020
+"701","Murray State",2022
+"702","Purdue",2011
+"703","Ohio",2011
+"704","Ohio",2012
+"705","Notre Dame",2018
+"706","Kansas State",2013
+"707","Tulsa",2011
+"708","IUPUI",2018
+"709","Drake",2021
+"710","Drake",2022
+"711","Michigan",2016
+"712","Robert Morris",2017
+"713","Drake",2013
+"714","Miami (OH)",2021
+"715","Evansville",2018
+"716","Kansas",2023
+"717","Evansville",2017
+"718","South Dakota",2022
+"719","Oral Roberts",2011
+"720","Oral Roberts",2012
+"721","Notre Dame",2020
+"722","Wright State",2015
+"723","Iowa State",2014
+"724","Cleveland State",2016
+"725","Omaha",2015
+"726","Youngstown State",2021
+"727","Valparaiso",2019
+"728","Akron",2018
+"729","Kent State",2020
+"730","Southern Illinois",2012
+"731","Illinois State",2016
+"732","Illinois State",2017
+"733","Murray State",2021
+"734","Missouri State",2019
+"735","Missouri State",2020
+"736","Tulsa",2019
+"737","Illinois State",2023
+"738","Wichita State",2014
+"739","Miami (OH)",2017
+"740","Youngstown State",2019
+"741","Bradley",2018
+"742","Bradley",2013
+"743","Omaha",2021
+"744","Southern Illinois",2011
+"745","Ohio State",2016
+"746","Northern Illinois",2023
+"747","Cincinnati",2021
+"748","Green Bay",2017
+"749","Cincinnati",2013
+"750","Cleveland State",2018
+"751","Creighton",2017
+"752","Creighton",2018
+"753","Oklahoma State",2016
+"754","Missouri State",2021
+"755","Missouri State",2022
+"756","Milwaukee",2021
+"757","Cleveland State",2022
+"758","Toledo",2011
+"759","Kent State",2016
+"760","Northern Iowa",2014
+"761","Illinois State",2015
+"762","Iowa State",2016
+"763","Nebraska",2021
+"764","Valparaiso",2017
+"765","Evansville",2019
+"766","Evansville",2020
+"767","Central Michigan",2020
+"768","Indiana State",2014
+"769","Illinois-Chicago",2016
+"770","Illinois-Chicago",2018
+"771","IUPUI",2012
+"772","IUPUI",2013
+"773","Iowa State",2017
+"774","Bradley",2015
+"775","Detroit Mercy",2012
+"776","Ohio",2018
+"777","Denver",2021
+"778","Cleveland State",2023
+"779","North Dakota State",2011
+"780","Missouri",2020
+"781","Toledo",2018
+"782","Bradley",2012
+"783","Ohio State",2021
+"784","Nebraska",2016
+"785","Kansas",2011
+"786","IUPUI",2014
+"787","IUPUI",2020
+"788","Evansville",2021
+"789","Robert Morris",2021
+"790","Robert Morris",2022
+"791","Akron",2022
+"792","Notre Dame",2012
+"793","Minnesota",2021
+"794","Valparaiso",2011
+"795","Ohio State",2022
+"796","Northern Illinois",2017
+"797","Northern Illinois",2019
+"798","Memphis",2018
+"799","South Dakota",2023
+"800","Illinois-Chicago",2022
+"801","Ball State",2016
+"802","Ball State",2017
+"803","Omaha",2023
+"804","Oklahoma State",2011
+"805","Toledo",2016
+"806","North Dakota State",2012
+"807","Minnesota",2020
+"808","Illinois-Chicago",2015
+"809","Youngstown State",2018
+"810","Cincinnati",2016
+"811","Cincinnati",2017
+"812","Cincinnati",2014
+"813","Creighton",2015
+"814","Iowa State",2013
+"815","Kent State",2021
+"816","Nebraska",2018
+"817","Illinois-Chicago",2019
+"818","Western Michigan",2022
+"819","Butler",2017
+"820","Green Bay",2018
+"821","Michigan",2022
+"822","Wichita State",2023
+"823","Illinois State",2018
+"824","Buffalo",2023
+"825","Ball State",2018
+"826","Kansas State",2022
+"827","Western Michigan",2023
+"828","Ohio State",2015
+"829","Toledo",2017
+"830","Indiana State",2012
+"831","Oklahoma",2023
+"832","Detroit Mercy",2023
+"833","Kansas State",2011
+"834","Indiana",2016
+"835","Denver",2020
+"836","Tulsa",2012
+"837","Minnesota",2022
+"838","Chicago State",2015
+"839","Missouri State",2018
+"840","Missouri",2011
+"841","Cincinnati",2019
+"842","Buffalo",2014
+"843","Missouri",2021
+"844","Denver",2022
+"845","North Dakota State",2020
+"846","Memphis",2023
+"847","Indiana State",2023
+"848","Murray State",2015
+"849","Missouri",2014
+"850","Ohio",2013
+"851","Pittsburgh",2017
+"852","Toledo",2015
+"853","Eastern Michigan",2017
+"854","Illinois",2013
+"855","Toledo",2013
+"856","Missouri",2022
+"857","Eastern Michigan",2014
+"858","Illinois State",2013
+"859","South Dakota",2020
+"860","Southern Illinois",2020
+"861","Milwaukee",2022
+"862","Illinois State",2019
+"863","Tulsa",2016
+"864","Missouri",2012
+"865","Green Bay",2023
+"866","Nebraska",2019
+"867","Nebraska",2020

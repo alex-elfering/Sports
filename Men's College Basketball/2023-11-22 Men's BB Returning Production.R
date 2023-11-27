@@ -63,6 +63,7 @@ school_name_capitalized <- player_roster |>
                                  schl == 'miami-oh' ~ 'Miami (OH)',
                                  schl == 'illinois-chicago' ~ 'Illinois-Chicago',
                                  schl == 'iupui' ~ 'IUPUI',
+                                 schl == 'nebraska-omaha' ~ 'Omaha',
                                  TRUE ~ tools::toTitleCase(gsub('-', ' ', schl))))
 
 clean_roster <- player_roster |>
