@@ -68,7 +68,7 @@ player_games <- clean_player_index |>
   summarise(total_games = n_distinct(date),
          total_starts = sum(as.numeric(gs)),
          total_min = sum(as.numeric(mp))) |>
-  ungroup |>
+  ungroup() |>
   mutate(next_season = season + 1)
 
 player_stats <- clean_player_index |>
@@ -95,3 +95,9 @@ player_stats <- clean_player_index |>
   ungroup() |>
   #arrange(desc(pct_total)) |>
   mutate(next_season = season + 1)
+
+# data export ----
+
+write.csv(player_games, "C:/Users/alexe/OneDrive/Documents/GitHub/Sports/MBB/Returning Production/player_games.csv")
+write.csv(player_stats, "C:/Users/alexe/OneDrive/Documents/GitHub/Sports/MBB/Returning Production/player_stats.csv")
+write.csv(clean_roster, "C:/Users/alexe/OneDrive/Documents/GitHub/Sports/MBB/Returning Production/clean_roster.csv")
