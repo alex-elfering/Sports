@@ -6,6 +6,26 @@ library(lubridate)
 library(tidylog)
 library(janitor)
 
+#roster ----
+player_roster <- read.csv('C:/Users/alexe/OneDrive/Documents/Sports Analysis/MBB Returning Production/player roster.csv')
+
+school_name_capitalized <- player_roster |>
+  distinct(schl) |>
+  mutate(school_name = case_when(schl == 'loyola-il' ~ 'Loyola (IL)',
+                                 schl == 'miami-oh' ~ 'Miami (OH)',
+                                 schl == 'illinois-chicago' ~ 'Illinois-Chicago',
+                                 schl == 'iupui' ~ 'IUPUI',
+                                 schl == 'nebraska-omaha' ~ 'Omaha',
+                                 TRUE ~ tools::toTitleCase(gsub('-', ' ', schl))))
+
+clean_roster <- player_roster |>
+  left_join(school_name_capitalized) |>
+  select(player,
+         pos,
+         season,
+         school_name,
+         class)
+
 # player index  ----
 player_index <- read.csv('C:/Users/alexe/OneDrive/Documents/Sports Analysis/MBB Returning Production/player game stats.csv')
 
