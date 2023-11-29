@@ -69,3 +69,9 @@ playing_stats <- clean_player_index |>
             gs = sum(as.numeric(gs)),
             mp = sum(as.numeric(mp))) |>
   ungroup()
+
+# data export ----
+
+write.csv(clean_roster, "C:/Users/alexe/OneDrive/Documents/GitHub/Sports/MBB/Field Goal Comparison/roster.csv")
+write.csv(shooting_stats, "C:/Users/alexe/OneDrive/Documents/GitHub/Sports/MBB/Field Goal Comparison/shooting stats.csv")
+write.csv(playing_stats, "C:/Users/alexe/OneDrive/Documents/GitHub/Sports/MBB/Field Goal Comparison/playing time.csv")
