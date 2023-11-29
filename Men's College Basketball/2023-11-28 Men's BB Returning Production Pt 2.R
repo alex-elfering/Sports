@@ -66,8 +66,8 @@ player_games <- clean_player_index |>
   #mutate(mp = as.numeric(mp),
   #       gs = as.numeric(gs)) |>
   summarise(total_games = n_distinct(date),
-         total_starts = sum(as.numeric(gs)),
-         total_min = sum(as.numeric(mp))) |>
+            total_starts = sum(as.numeric(gs), na.rm = T),
+            total_min = sum(as.numeric(mp), na.rm = T)) |>
   ungroup() |>
   mutate(next_season = season + 1)
 
