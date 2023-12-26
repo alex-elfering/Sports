@@ -9,6 +9,9 @@ library(janitor)
 #roster ----
 player_roster <- read.csv('C:/Users/alexe/OneDrive/Documents/Sports Analysis/MBB Returning Production/player roster.csv')
 
+player_roster |>
+  distinct(schl)
+
 school_name_capitalized <- player_roster |>
   distinct(schl) |>
   mutate(school_name = case_when(schl == 'loyola-il' ~ 'Loyola (IL)',
@@ -16,6 +19,8 @@ school_name_capitalized <- player_roster |>
                                  schl == 'illinois-chicago' ~ 'Illinois-Chicago',
                                  schl == 'iupui' ~ 'IUPUI',
                                  schl == 'nebraska-omaha' ~ 'Omaha',
+                                 schl == 'depaul' ~ 'DePaul',
+                                 schl == 'southern-illinois-edwardsville' ~ 'Southern Illinois-Edwardsville',
                                  TRUE ~ tools::toTitleCase(gsub('-', ' ', schl))))
 
 clean_roster <- player_roster |>
@@ -51,7 +56,9 @@ clean_player_index <- player_index |>
          stl,
          blk,
          pts,
-         pf) 
+         pf,
+         ft,
+         fta) 
 
 player_games <- clean_player_index |>
   distinct(player,

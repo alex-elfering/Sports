@@ -1,5 +1,10 @@
 # exploring three-point shooting tendencies
 
+library(tidyverse)
+library(lubridate)
+library(tidylog)
+library(janitor)
+
 #roster ----
 player_roster <- read.csv('C:/Users/alexe/OneDrive/Documents/Sports Analysis/MBB Returning Production/player roster.csv')
 
@@ -66,9 +71,22 @@ playing_stats <- clean_player_index |>
            season,
            schl) |>
   summarise(games = n(),
-            gs = sum(as.numeric(gs)),
-            mp = sum(as.numeric(mp))) |>
+            gs = sum(as.numeric(gs, na.rm = T)),
+            mp = sum(as.numeric(mp, na.rm = T))) |>
   ungroup()
+
+shooting_stats |>
+  pivot_wider(#cols = -c('season',
+              #          'player',
+              #          schl),
+              names_from = 'stat',
+              values_from = 'value') |>
+  mutate(true_shooting = round((pts/(2 * (fga + (0.44 * fta)) ))*100,2) ) |>
+  inner_join(playing_stats) |>
+  arrange(desc(x3pa)) |>
+  filter(fga >= 10,
+         x3pa > x2pa,
+         season == 2023)
 
 # data export ----
 
