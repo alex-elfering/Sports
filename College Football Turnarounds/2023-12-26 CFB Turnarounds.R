@@ -12,6 +12,7 @@ library(glue)
 school_games <- read.csv("C:/Users/alexe/OneDrive/Documents/Sports Analysis/school_games_conf.csv")
 
 n <- 10
+top_n <- 15
 
 school_season_results <- school_games |>
   filter(!is.na(school_conf)) |>
@@ -69,7 +70,7 @@ school_trends <- roll_school_trends |>
   filter(row_number() == min(row_number())) |>
   ungroup() |>
   as.data.frame() |>
-  filter(dense_rank(desc(roll_win_pct_change)) <= 20) |>
+  filter(dense_rank(desc(roll_win_pct_change)) <= top_n) |>
   mutate(prior_begin = min_season-n,
          prior_end = season-n) |>
   unite(period, c('min_season', 'season'), sep = '-') |>
@@ -138,7 +139,7 @@ school_trends |>
                                        'roll_win_pct_change'))
   ) |>
   tab_header(
-    title = md("**20 Biggest Turnarounds in FBS College Football Turnarounds**"),
+    title = md(glue("**{top_n} Biggest Turnarounds in FBS College Football Turnarounds**")),
     subtitle = glue("Comparing Winning Percentage over {n} seasons compared to {n} seasons prior")
   ) |>
   cols_label(
