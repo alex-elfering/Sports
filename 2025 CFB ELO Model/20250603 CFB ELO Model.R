@@ -9,6 +9,9 @@ library(rvest)
 library(stringi)
 library(glue)
 
+# pull in functions ----
+source("~/GitHub/Sports/2025 CFB ELO Model/20250603 CFB ELO Functions.R")
+
 # data sources ----
 winning_games <- read.csv("C:/Users/alexe/OneDrive/Documents/Sports Analysis/2025 CFB Data Modeling/Data Sources/unique cfb games.csv") |>
   distinct() |>
