@@ -1,0 +1,61 @@
+library(tidyverse)
+library(here)
+source(here("20250603 CFB ELO Functions.R"))
+
+# ---- Load data ----
+all_schools <- winning_games$school
+all_opponents <- winning_games$opponent
+
+init_ratings <- tibble(school = unique(c(all_schools, all_opponents)), rating = 1500)
+
+season_vector <- 1872:2024
+all_weekly_elo <- list()
+final_ratings <- init_ratings
+
+for (season in season_vector) {
+  
+  season_data <- winning_games %>%
+    filter(season == !!season) %>%
+    mutate(
+      wk = as.integer(wk),
+      wins = ifelse(pts > opp, 1, 0),
+      loses = ifelse(pts < opp, 1, 0),
+      ties = ifelse(pts == opp, 1, 0)
+    )
+  
+  beg_week <- min(season_data$wk, na.rm = TRUE)
+  end_week <- max(season_data$wk, na.rm = TRUE)
+  
+  for (wk in beg_week:end_week) {
+    week_update <- elo_week_update(
+      df = season_data,
+      use_elo_df = final_ratings,
+      week_int = wk,
+      team_adv = 50,
+      k_val = 40
+    )
+    
+    final_ratings <- team_elo_scores(df = week_update, use_elo_df = final_ratings)
+    
+    all_weekly_elo[[paste0(season, "_", wk)]] <- final_ratings %>%
+      mutate(season = season, week = wk)
+  }
+  
+  # End-of-season regression
+  season_conf <- conf_df %>% filter(season == season) %>% select(school, conf)
+  regressed <- regress_ratings(conf_df = season_conf, df = final_ratings, regress_val = 0.4)
+  
+  final_ratings <- regressed %>% select(school, rating = regress_rating)
+}
+
+# ---- Save snapshot ----
+weekly_elo_df <- bind_rows(all_weekly_elo) %>%
+  arrange(season, week, desc(rating))
+
+elo_snapshot <- list(
+  ratings = final_ratings,
+  last_season = tibble(school = final_ratings$school, last_season = max(season_vector)),
+  weekly_history = weekly_elo_df
+)
+
+saveRDS(elo_snapshot, here("data", "state", "elo_snapshot.rds"))

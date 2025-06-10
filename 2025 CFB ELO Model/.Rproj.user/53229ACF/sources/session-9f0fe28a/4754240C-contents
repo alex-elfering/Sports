@@ -1,0 +1,33 @@
+library(dplyr)
+library(readxl)
+
+# Load and prepare
+game_df <- readxl::read_excel('C:/Users/alexe/OneDrive/Desktop/movies to watch.xlsx')
+game_df <- game_df %>%
+  mutate(Score = runif(n(), 100, 500) / runif(n(), 2, 10))
+
+counter <- 0
+
+repeat {
+  counter <- counter + 1
+  counter_val <- 100 - counter
+  
+  sampled_games <- game_df %>%
+    sample_n(counter_val)
+  
+  iters <- 100 + sample(1:100, 1)
+  
+  all_samples <- replicate(
+    iters,
+    sample(sampled_games$Movies, 1, prob = sampled_games$Score),
+    simplify = TRUE
+  )
+  
+  result_df <- as.data.frame(table(all_samples)) %>%
+    rename(Movies = all_samples, n = Freq) %>%
+    arrange(desc(n)) %>%
+    mutate(n_pct = round((n / sum(n)) * 100, 1))
+  
+  print(result_df)
+  if (max(result_df$n_pct) > 50) break
+}

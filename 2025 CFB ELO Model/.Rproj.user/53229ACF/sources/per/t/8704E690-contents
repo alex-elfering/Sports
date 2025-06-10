@@ -2,6 +2,7 @@
 # generates historical ELO ratings for each CFB team in FBS
 # HUGE THANKS TO https://www.sports-reference.com/ for providing the data
 
+library(here)
 # pull in functions ----
 source(here("20250603 CFB ELO Functions.R"))
 
@@ -131,8 +132,6 @@ full_elo_df <- elo_df |>
   mutate(result = case_when(pts > opp ~ 'W',
                             pts < opp ~ 'L',
                             pts == opp ~ 'T'))
-
-full_regress_scores <- rbindlist(season_regress_ratings)
 
 write.csv(full_regress_scores, "C:/Users/alexe/OneDrive/Documents/Sports Analysis/CFB ELO Model/full_regress_scores.csv")
 write.csv(elo_df, "C:/Users/alexe/OneDrive/Documents/Sports Analysis/CFB ELO Model/unique_elo_df.csv")
