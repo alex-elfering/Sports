@@ -8,6 +8,11 @@ library(stringi)
 library(glue)
 library(here)
 
+# Configuration Constants ----
+INITIAL_RATING <- 1500
+HOME_ADVANTAGE <- 50
+REGRESS_AMOUNT <- 0.3
+
 # data sources  ----
 winning_games <- read.csv("C:/Users/alexe/OneDrive/Documents/Sports Analysis/2025 CFB Data Modeling/Data Sources/unique cfb games.csv") |>
   distinct() |>
@@ -19,7 +24,7 @@ winning_games <- read.csv("C:/Users/alexe/OneDrive/Documents/Sports Analysis/202
 
 conf_df <- read.csv("C:/Users/alexe/OneDrive/Documents/Sports Analysis/2025 CFB Data Modeling/Data Sources/school conferences.csv") |> arrange(season) |> select(season, school, conf, div)
 
-# functions ----
+# helper functions ----
 change_school_names <- function(df, column_name, new_name){
   
   column_name = enquo(column_name)
@@ -41,13 +46,29 @@ change_school_names <- function(df, column_name, new_name){
   
 }
 
-elo_week_update <- function(df, use_elo_df, week_int, team_adv = 50, k_val = 30) {
+get_location_adjustment <- function(location, team_adv) {
+  #' Calculate ELO adjustment based on game location (vectorized)
+  #' 
+  #' @param location Game location: '' = home, '@' = away, 'N' = neutral (can be vector)
+  #' @param team_adv Home field advantage value
+  #' @return Numeric adjustment to add to team's ELO
+  
+  case_when(
+    location == '' | is.na(location) ~ team_adv,     # Home advantage
+    location == '@' ~ -team_adv,                      # Away disadvantage
+    location == 'N' ~ 0,                              # Neutral site
+    TRUE ~ 0                                          # Default
+  )
+}
+
+# core ELO functions ----
+elo_week_update <- function(df, use_elo_df, week_int, team_adv = HOME_ADVANTAGE, k_val = 30) {
   #' Update ELO Ratings for One Week
   #'
   #' @param df Game-level data (must include 'wk', 'school', 'opponent', 'pts', 'opp', 'wins', 'loses', 'ties', 'location')
   #' @param use_elo_df Data frame of current ELO ratings (must include 'school' and 'rating')
   #' @param week_int Integer for the week number to calculate
-  #' @param team_adv Home field advantage (default = 75)
+  #' @param team_adv Home field advantage (default = HOME_ADVANTAGE constant)
   #' @param k_val ELO k-factor (default = 30)
   #'
   #' @return A data frame with updated team and opponent ELOs and match results
@@ -57,7 +78,7 @@ elo_week_update <- function(df, use_elo_df, week_int, team_adv = 50, k_val = 30)
     stop("Missing required columns in df")
   }
   
-  # FIX #3: Safety check for empty weeks
+  # Safety check for empty weeks
   week_data <- df |> dplyr::filter(wk == week_int)
   if (nrow(week_data) == 0) {
     message(sprintf("No games found for week %d", week_int))
@@ -70,24 +91,35 @@ elo_week_update <- function(df, use_elo_df, week_int, team_adv = 50, k_val = 30)
     dplyr::left_join(use_elo_df, by = c("opponent" = "school")) |>
     dplyr::rename(opp_elo = rating) |>
     dplyr::mutate(
-      school_elo_adj = dplyr::case_when(
-        location == '' ~ school_elo + team_adv,
-        location == '@' ~ school_elo - team_adv,
-        location == 'N' ~ school_elo
+      # Apply location adjustments using helper function
+      school_elo_adj = school_elo + get_location_adjustment(location, team_adv),
+      opp_elo_adj = opp_elo + get_location_adjustment(
+        case_when(
+          location == '' ~ '@',
+          location == '@' ~ '',
+          TRUE ~ 'N'
+        ), 
+        team_adv
       ),
-      opp_elo_adj = dplyr::case_when(
-        location == '@' ~ opp_elo + team_adv,
-        location == '' ~ opp_elo - team_adv,
-        location == 'N' ~ opp_elo
-      ),
+      
+      # Calculate win probabilities
       m = (school_elo_adj - opp_elo_adj) / 400,
       elo_diff = abs(school_elo_adj - opp_elo_adj),
       ps = round(elo_diff / 25, 1),
       p_opponent = 1 / (1 + 10^m),
       p_team = 1 - p_opponent,
+      
+      # Margin of victory multiplier with diminishing returns for blowouts
+      # Scaled by pre-game ELO difference to reduce impact of expected blowouts
       margin_abs = abs(pts - opp),
-      mov_mult = log(margin_abs + 1) * (2.2 / (elo_diff * 0.001 + 2.2)),
+      ln_margin = log(margin_abs + 1),                    # Logarithmic diminishing returns
+      elo_scaling = 2.2 / (elo_diff * 0.001 + 2.2),      # Reduces impact when big favorite wins big
+      mov_mult = ln_margin * elo_scaling,
+      
+      # Calculate ELO change
       elo_adj = (k_val * mov_mult) * (1 - p_team),
+      
+      # Update ratings based on result
       team_elo_update = dplyr::case_when(
         wins == 1 ~ school_elo + elo_adj,
         ties == 1 ~ school_elo,
@@ -126,12 +158,16 @@ team_elo_scores <- function(df, use_elo_df) {
     dplyr::arrange(desc(rating))
 }
 
-regress_ratings <- function(conf_df, df, regress_val = 0.3) {
+regress_ratings <- function(conf_df, df, regress_val = REGRESS_AMOUNT) {
   #' Regress Ratings Toward Conference Mean
+  #' 
+  #' Prevents rating inflation by regressing each team's rating toward their
+  #' conference mean at season end. Independent teams regress to overall FBS mean.
+  #' Non-FBS teams reset to initial rating.
   #'
   #' @param conf_df Data frame with `school` and `conf` columns
   #' @param df Data frame with `school` and `rating` columns
-  #' @param regress_val Fraction to regress (0–1)
+  #' @param regress_val Fraction to regress toward mean (0–1, default = REGRESS_AMOUNT)
   #'
   #' @return Data frame with regressed ELO ratings
   
@@ -146,7 +182,7 @@ regress_ratings <- function(conf_df, df, regress_val = 0.3) {
       regress_rating = dplyr::case_when(
         conf != "Ind" ~ rating + regress_val * (mean_conf_elo - rating),
         conf == "Ind" ~ rating + regress_val * (overall_mean - rating),
-        is.na(conf) ~ 1500
+        is.na(conf) ~ INITIAL_RATING
       ),
       regressed = 1
     ) |>
