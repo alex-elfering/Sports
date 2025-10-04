@@ -6,7 +6,6 @@ library(ggplot2)
 library(rvest)
 library(stringi)
 library(glue)
-library(here)
 
 # data sources  ----
 winning_games <- read.csv("C:/Users/alexe/OneDrive/Documents/Sports Analysis/2025 CFB Data Modeling/Data Sources/unique cfb games.csv") |>
@@ -41,7 +40,7 @@ change_school_names <- function(df, column_name, new_name){
   
 }
 
-elo_week_update <- function(df, use_elo_df, week_int, team_adv = 50, k_val = 30) {
+elo_week_update <- function(df, use_elo_df, week_int, team_adv = 75, k_val = 30) {
   #' Update ELO Ratings for One Week
   #'
   #' @param df Game-level data (must include 'wk', 'school', 'opponent', 'pts', 'opp', 'wins', 'loses', 'ties', 'location')
@@ -57,14 +56,8 @@ elo_week_update <- function(df, use_elo_df, week_int, team_adv = 50, k_val = 30)
     stop("Missing required columns in df")
   }
   
-  # FIX #3: Safety check for empty weeks
-  week_data <- df |> dplyr::filter(wk == week_int)
-  if (nrow(week_data) == 0) {
-    message(sprintf("No games found for week %d", week_int))
-    return(data.frame())
-  }
-  
-  week_data |>
+  df |>
+    dplyr::filter(wk == week_int) |>
     dplyr::left_join(use_elo_df, by = c("school" = "school")) |>
     dplyr::rename(school_elo = rating) |>
     dplyr::left_join(use_elo_df, by = c("opponent" = "school")) |>
@@ -151,5 +144,6 @@ regress_ratings <- function(conf_df, df, regress_val = 0.3) {
       regressed = 1
     ) |>
     dplyr::select(school, rating, regress_rating, mean_conf_elo, overall_mean, regressed) |>
-    dplyr::arrange(desc(rating))
+    dplyr::arrange(desc(rating)) |>
+    as.data.frame()
 }
