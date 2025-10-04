@@ -12,6 +12,7 @@ library(here)
 INITIAL_RATING <- 1500
 HOME_ADVANTAGE <- 50
 REGRESS_AMOUNT <- 0.3
+K_VALUE <- 30
 
 # data sources  ----
 winning_games <- read.csv("C:/Users/alexe/OneDrive/Documents/Sports Analysis/2025 CFB Data Modeling/Data Sources/unique cfb games.csv") |>
@@ -62,7 +63,7 @@ get_location_adjustment <- function(location, team_adv) {
 }
 
 # core ELO functions ----
-elo_week_update <- function(df, use_elo_df, week_int, team_adv = HOME_ADVANTAGE, k_val = 30) {
+elo_week_update <- function(df, use_elo_df, week_int, team_adv = HOME_ADVANTAGE, k_val = K_VALUE) {
   #' Update ELO Ratings for One Week
   #'
   #' @param df Game-level data (must include 'wk', 'school', 'opponent', 'pts', 'opp', 'wins', 'loses', 'ties', 'location')
