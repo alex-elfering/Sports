@@ -1,0 +1,126 @@
+create_weekly_rankings <- function(full_elo_df) {
+  #' Create week-by-week ELO rankings for all teams across all seasons
+  #' 
+  #' Rankings show each team's ELO entering that week
+  #' 
+  #' @param full_elo_df The output from your ELO model with all games
+  #' @return Data frame with season, week, team, elo, rank, rank_change
+  
+  library(tidyverse)
+  
+  full_elo_df <-full_elo_df |> filter(season == 2024)
+  
+  # Step 1: For each team-week where they played, get their pre and post ELO
+  games_played <- full_elo_df |>
+    mutate(
+      game_result = paste0(result, " vs. ", team_b, " (", pts, "-", opp, ")"),
+      elo_change_from_game = case_when(
+        result == 'W' ~ elo_adj,
+        result == 'L' ~ -elo_adj,
+        result == 'T' ~ 0
+      )
+    ) |>
+    select(season, wk, team = team_a, 
+           elo_entering_week = elo_a,
+           elo_change_from_game,
+           game_result) |>
+    filter(team == 'Iowa')
+  
+  # Step 2: Create complete season-week grid
+  season_bounds <- full_elo_df |>
+    group_by(season) |>
+    summarise(first_wk = min(wk), last_wk = max(wk), .groups = 'drop')
+  
+  all_teams <- full_elo_df |>
+    distinct(season, team = team_a) |>
+    filter(team == 'Iowa') |>
+    left_join(season_bounds, by = "season") |>
+    rowwise() |>
+    reframe(season = season, team = team, wk = first_wk:last_wk)
+  
+  # Step 3: Join and fill
+  weekly_elo <- all_teams |>
+    left_join(games_played, by = c("season", "wk", "team")) |>
+    filter(team == 'Iowa') |>
+    arrange(season, team, wk) |>
+    group_by(season, team) |>
+    mutate(
+      # For each week, determine the ELO used for ranking
+      # If they played: use elo_entering_week
+      # If bye: use the previous week's elo_leaving_week (not filled forward)
+      elo_entering_week = ifelse(is.na(elo_entering_week),lag(elo_entering_week),elo_entering_week),
+      elo_for_ranking = ifelse(is.na(elo_change_from_game), elo_entering_week + 0, elo_entering_week - elo_change_from_game)
+      #elo_for_ranking = case_when(
+        # If they played this week, use their entering ELO
+      #  !is.na(elo_entering_week) ~ elo_entering_week,
+        # If bye week, use previous week's ending ELO
+      #  !is.na(prev_week_ending) ~ prev_week_ending,
+        # If first week and haven't played yet, use their first game's entering ELO
+      #  TRUE ~ first(elo_entering_week[!is.na(elo_entering_week)])
+      ) |>
+    ungroup() |>
+    # Calculate rankings
+    group_by(season, wk) |>
+    mutate(rank = min_rank(desc(elo_for_ranking))) |>
+    ungroup() |>
+    # Add next opponent and changes
+    arrange(season, team, wk) |>
+    group_by(season, team) |>
+    mutate(
+      next_week_opp = lead(next_opp),
+      next_week_info = if_else(is.na(next_week_opp), "Bye Week", 
+                               paste0("vs. ", next_week_opp)),
+      last_result = if_else(is.na(game_result), "Bye Week", game_result),
+      prev_rank = lag(rank),
+      rank_change = prev_rank - rank
+    ) |>
+    ungroup() |>
+    select(season, wk, team, 
+           elo = elo_for_ranking, 
+           rank, rank_change,
+           elo_change = elo_change_from_game,
+           last_result, next_week_info) |>
+    arrange(season, wk, rank)
+  
+  return(weekly_elo)
+}
+
+# Function to get Top 25 for a specific week
+get_top_25 <- function(weekly_rankings, season_num, week_num) {
+  weekly_rankings |>
+    filter(season == season_num, wk == week_num, rank <= 25) |>
+    arrange(rank) |>
+    select(rank, team, elo, rank_change, elo_change, last_result, next_week_info)
+}
+
+# Function to find biggest movers in a week
+get_biggest_movers <- function(weekly_rankings, season_num, week_num, n = 10) {
+  week_data <- weekly_rankings |>
+    filter(season == season_num, wk == week_num, !is.na(rank_change))
+  
+  biggest_up <- week_data |>
+    arrange(desc(rank_change)) |>
+    head(n) |>
+    mutate(direction = "↑") |>
+    select(direction, team, rank, rank_change, elo, elo_change, last_result)
+  
+  biggest_down <- week_data |>
+    arrange(rank_change) |>
+    head(n) |>
+    mutate(direction = "↓") |>
+    select(direction, team, rank, rank_change, elo, elo_change, last_result)
+  
+  list(movers_up = biggest_up, movers_down = biggest_down)
+}
+
+# Function to track a team's season trajectory
+get_team_season_trajectory <- function(weekly_rankings, team_name, season_num) {
+  weekly_rankings |>
+    filter(team == team_name, season == season_num) |>
+    select(wk, rank, elo, rank_change, elo_change, last_result, next_week_info) |>
+    arrange(wk)
+}
+
+# Example usage
+ weekly_rankings <- create_weekly_rankings(full_elo_df)
+ get_team_season_trajectory(weekly_rankings, "Nebraska", 2024)

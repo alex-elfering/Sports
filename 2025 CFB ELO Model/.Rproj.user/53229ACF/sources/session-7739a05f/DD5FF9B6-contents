@@ -74,7 +74,7 @@ for(a in season_vector){
         select(school,
                conf)
       
-      season_regress <- regress_ratings(conf_df = season_conf, df = new_ratings, regress_val = 0.4)
+      season_regress <- regress_ratings(conf_df = season_conf, df = new_ratings)
       
       new_ratings <- season_regress |>
         select(school,
@@ -118,30 +118,6 @@ elo_df <- rbindlist(season_games, fill = TRUE) |>
   arrange(season,
           wk)
 
-calibration_check <- elo_df |>
-  mutate(result = case_when(pts > opp ~ 'W',
-                            pts < opp ~ 'L',
-                            pts == opp ~ 'T')) |>
-  group_by(season, wk) |>
-  summarise(
-    games = n(),
-    expected_wins = sum(p_a, na.rm = TRUE),
-    actual_wins = sum(result == "W", na.rm = TRUE),
-    .groups = "drop"
-  ) |>
-  mutate(
-    win_rate_expected = expected_wins / games,
-    win_rate_actual   = actual_wins / games,
-    diff = win_rate_actual - win_rate_expected
-  ) |>
-  filter(season == 2024) |>
-  as.data.frame()
-
-ggplot(calibration_check, aes(x = wk, y = diff, color = factor(season))) +
-  geom_line() +
-  geom_hline(yintercept = 0, linetype = "dashed") +
-  labs(title = "Elo Calibration Check", y = "Actual - Expected Win Rate")
-
 full_elo_df <- elo_df |>
   distinct() |>
   select(season,
@@ -163,27 +139,9 @@ full_elo_df <- elo_df |>
   bind_rows(elo_df) |>
   mutate(result = case_when(pts > opp ~ 'W',
                             pts < opp ~ 'L',
-                            pts == opp ~ 'T'))
-
-full_elo_df |>
-  mutate(result = case_when(pts > opp ~ 'W',
-                            pts < opp ~ 'L',
                             pts == opp ~ 'T')) |>
-  group_by(season, wk) |>
-  summarise(
-    games = n(),
-    expected_wins = sum(p_a, na.rm = TRUE),
-    actual_wins = sum(result == "W", na.rm = TRUE),
-    .groups = "drop"
-  ) |>
-  mutate(
-    win_rate_expected = expected_wins / games,
-    win_rate_actual   = actual_wins / games,
-    diff = win_rate_actual - win_rate_expected
-  ) |>
-  filter(season == 2024) |>
-  as.data.frame()
+  arrange(season,wk)
 
-write.csv(full_regress_scores, "C:/Users/alexe/OneDrive/Documents/Sports Analysis/CFB ELO Model/full_regress_scores.csv")
+#write.csv(full_regress_scores, "C:/Users/alexe/OneDrive/Documents/Sports Analysis/CFB ELO Model/full_regress_scores.csv")
 write.csv(elo_df, "C:/Users/alexe/OneDrive/Documents/Sports Analysis/CFB ELO Model/unique_elo_df.csv")
 write.csv(full_elo_df, "C:/Users/alexe/OneDrive/Documents/Sports Analysis/CFB ELO Model/full_elo_df.csv")
