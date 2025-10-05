@@ -139,8 +139,9 @@ full_elo_df <- elo_df |>
   bind_rows(elo_df) |>
   mutate(result = case_when(pts > opp ~ 'W',
                             pts < opp ~ 'L',
-                            pts == opp ~ 'T'))
+                            pts == opp ~ 'T')) |>
+  arrange(season,wk)
 
-write.csv(full_regress_scores, "C:/Users/alexe/OneDrive/Documents/Sports Analysis/CFB ELO Model/full_regress_scores.csv")
+#write.csv(full_regress_scores, "C:/Users/alexe/OneDrive/Documents/Sports Analysis/CFB ELO Model/full_regress_scores.csv")
 write.csv(elo_df, "C:/Users/alexe/OneDrive/Documents/Sports Analysis/CFB ELO Model/unique_elo_df.csv")
 write.csv(full_elo_df, "C:/Users/alexe/OneDrive/Documents/Sports Analysis/CFB ELO Model/full_elo_df.csv")

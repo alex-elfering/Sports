@@ -3,24 +3,24 @@
     "path": "~/GitHub/Sports/2025 CFB ELO Model/20250603 CFB ELO Model.R",
     "project_path": "20250603 CFB ELO Model.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "502855744",
     "contents": "",
-    "dirty": true,
+    "dirty": false,
     "created": 1759235803528.0,
     "source_on_save": false,
     "relative_order": 2,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "35,22",
-        "scrollLine": "19"
+        "cursorPosition": "119,0",
+        "scrollLine": "109"
     },
     "folds": "",
-    "lastKnownWriteTime": 1759596324,
+    "lastKnownWriteTime": 1759629919,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1759604469292,
+    "last_content_update": 1759629919579,
     "read_only": false,
     "read_only_alternatives": []
 }

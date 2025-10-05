@@ -17,6 +17,14 @@ new_ratings <- data.frame()
 
 season_vector <- c(1872:2024)
 
+k_dynamic <- function(week) {
+  case_when(
+    week <= 4 ~ 40,  # Early season volatility
+    week <= 8 ~ 30,
+    TRUE ~ 20        # Late season stability
+  )
+}
+
 week_games <- list()
 season_games <- list()
 season_regress_ratings <- list()
@@ -49,7 +57,7 @@ for(a in season_vector){
       use_elo_df = use_elo_df,
       week_int = i,
       team_adv = 50,
-      k_val = 40
+      k_val = k_dynamic(i)
     )
     
     new_ratings <- team_elo_scores(df = week_update, use_elo_df = use_elo_df)
@@ -66,7 +74,7 @@ for(a in season_vector){
         select(school,
                conf)
       
-      season_regress <- regress_ratings(conf_df = season_conf, df = new_ratings, regress_val = 0.4)
+      season_regress <- regress_ratings(conf_df = season_conf, df = new_ratings)
       
       new_ratings <- season_regress |>
         select(school,
@@ -131,8 +139,9 @@ full_elo_df <- elo_df |>
   bind_rows(elo_df) |>
   mutate(result = case_when(pts > opp ~ 'W',
                             pts < opp ~ 'L',
-                            pts == opp ~ 'T'))
+                            pts == opp ~ 'T')) |>
+  arrange(season,wk)
 
-write.csv(full_regress_scores, "C:/Users/alexe/OneDrive/Documents/Sports Analysis/CFB ELO Model/full_regress_scores.csv")
+#write.csv(full_regress_scores, "C:/Users/alexe/OneDrive/Documents/Sports Analysis/CFB ELO Model/full_regress_scores.csv")
 write.csv(elo_df, "C:/Users/alexe/OneDrive/Documents/Sports Analysis/CFB ELO Model/unique_elo_df.csv")
 write.csv(full_elo_df, "C:/Users/alexe/OneDrive/Documents/Sports Analysis/CFB ELO Model/full_elo_df.csv")
