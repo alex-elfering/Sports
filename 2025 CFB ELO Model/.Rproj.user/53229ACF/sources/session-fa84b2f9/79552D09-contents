@@ -6,6 +6,7 @@ library(janitor)    # used for clean_names
 library(rvest)      # HTML scraping
 library(glue)       # used for data clarity while scrapping
 library(stringr)    # used for data cleaning post-scrapping
+library(stringi)
 
 rank_patterns <- paste('\\(', 1:25, '\\)', sep = '')
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
@@ -107,7 +108,7 @@ schools_list <- schools |>
 #}#
 
 #rbindlist(school_seasons_schedule_list, fill = T) |> clean_names() |> write.csv('C:/Users/alexe/OneDrive/Documents/Sports Analysis/full college football notes.csv')
-
+Sys.sleep(30)
 school_dates_wk_list <- list()
 counter <- 0
 for(i in c(c(1869,1870), 1872:2025)){
@@ -141,6 +142,7 @@ for(i in c(c(1869,1870), 1872:2025)){
     print(school_season_unique)
     
     school_dates_wk_list[[i]] <- school_season_unique
+    print(school_season_unique)
     
   }, error=function(e){})
   

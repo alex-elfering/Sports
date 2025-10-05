@@ -3,7 +3,7 @@
     "path": "~/Sports Analysis/2024-04-07 full fbs scrape.R",
     "project_path": null,
     "type": "r_source",
-    "hash": "2752359520",
+    "hash": "1337349304",
     "contents": "",
     "dirty": false,
     "created": 1759619972245.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "149,10",
-        "scrollLine": "139"
+        "cursorPosition": "209,0",
+        "scrollLine": "90"
     },
     "folds": "",
-    "lastKnownWriteTime": 1759619988,
+    "lastKnownWriteTime": 1759663756,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1759619988772,
+    "last_content_update": 1759663756639,
     "read_only": false,
     "read_only_alternatives": []
 }
