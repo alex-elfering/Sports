@@ -3,7 +3,7 @@
     "path": "~/Sports Analysis/2024-04-07 full fbs scrape.R",
     "project_path": null,
     "type": "r_source",
-    "hash": "1337349304",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1759619972245.0,
@@ -12,8 +12,8 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "209,0",
-        "scrollLine": "90"
+        "cursorPosition": "25,26",
+        "scrollLine": "15"
     },
     "folds": "",
     "lastKnownWriteTime": 1759663756,

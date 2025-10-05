@@ -3,9 +3,9 @@
     "path": "~/GitHub/Sports/2025 CFB ELO Model/20251003 ELO Rank Model.R",
     "project_path": "20251003 ELO Rank Model.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "2382974576",
     "contents": "",
-    "dirty": true,
+    "dirty": false,
     "created": 1759662571466.0,
     "source_on_save": false,
     "relative_order": 7,
@@ -13,15 +13,15 @@
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "171,0",
-        "scrollLine": "146"
+        "cursorPosition": "169,47",
+        "scrollLine": "165"
     },
-    "folds": "",
-    "lastKnownWriteTime": 1759629894,
+    "folds": "93|79|110|0|\n",
+    "lastKnownWriteTime": 1759687739,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1759670269547,
+    "last_content_update": 1759687739432,
     "read_only": false,
     "read_only_alternatives": []
 }

@@ -15,7 +15,7 @@ init_ratings <- tibble(school = unique(c(all_opponents, all_schools)),
 use_elo_df <- data.frame()
 new_ratings <- data.frame()
 
-season_vector <- c(1872:2024)
+season_vector <- c(1872:2025)
 
 k_dynamic <- function(week) {
   case_when(
