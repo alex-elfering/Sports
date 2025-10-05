@@ -87,7 +87,7 @@ get_top_25 <- function(weekly_rankings, season_num, week_num) {
   weekly_rankings |>
     filter(season == season_num, wk == week_num, rank <= 25) |>
     arrange(rank) |>
-    select(season, rank, team, elo, rank_change, elo_change, last_result, next_week_info)
+    select(season,wk, rank, team, elo, rank_change, elo_change, last_result, next_week_info)
 }
 
 # Function to find biggest movers in a week
@@ -121,7 +121,19 @@ get_team_season_trajectory <- function(weekly_rankings, team_name, season_num) {
 # function to pull WLT totals for active FBS teams
 get_wlt_totals <- function(full_elo_df,conf_df){
   
-  full_elo_df |>
+  # Step 2: Create complete season-week grid
+  season_bounds <- full_elo_df |>
+    group_by(season) |>
+    summarise(first_wk = min(wk), last_wk = max(wk), .groups = 'drop')
+  
+  all_teams <- full_elo_df |>
+    distinct(season, team = team_a) |>
+    #filter(team == 'Iowa') |>
+    left_join(season_bounds, by = "season") |>
+    rowwise() |>
+    reframe(season = season, team = team, wk = first_wk:last_wk)
+  
+  team_weekly_record <- full_elo_df |>
     inner_join(conf_df,
                by = c('team_a' = 'school',
                       'season' = 'season')) |>
@@ -139,18 +151,29 @@ get_wlt_totals <- function(full_elo_df,conf_df){
     unite(total_record, c('total_w','total_l','total_t'),sep='-',na.rm = T) |>
     select(season,
            wk,
-           team_a,
+           team = team_a,
            conf,
            total_record)
+  
+  all_teams |>
+    left_join(team_weekly_record) |>
+    group_by(team,
+             season) |>
+    fill(conf, .direction = c('down')) |>
+    fill(conf, .direction = c('up')) |>
+    fill(total_record, .direction = c('down')) |>
+    mutate(total_record = ifelse(is.na(total_record),'0-0',total_record))
   
 }
 
 # Example usage
  weekly_rankings <- create_weekly_rankings(full_elo_df)
+ weekly_season_wlt <- get_wlt_totals(full_elo_df,conf_df)
+ 
  get_team_season_trajectory(weekly_rankings, "James Madison", 2024)
  
  get_team_season_trajectory(weekly_rankings, team_name = 'Kansas State',2014)
  
- get_biggest_movers(weekly_rankings,2022,3)
+ get_biggest_movers(weekly_rankings,1999,3)
  
- get_top_25(weekly_rankings,2000,10) |> as.data.frame()
+ get_top_25(weekly_rankings,1998,15) |> as.data.frame() |> inner_join(weekly_season_wlt)
