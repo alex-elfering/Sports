@@ -10,9 +10,9 @@ library(here)
 
 # Configuration Constants ----
 INITIAL_RATING <- 1500
-HOME_ADVANTAGE <- 50
-REGRESS_AMOUNT <- 0.3
-K_VALUE <- 30
+HOME_ADVANTAGE <- 25
+REGRESS_AMOUNT <- 0.4
+K_VALUE <- 50
 
 # data sources  ----
 winning_games <- read.csv("C:/Users/alexe/OneDrive/Documents/Sports Analysis/2025 CFB Data Modeling/Data Sources/unique cfb games.csv") |>

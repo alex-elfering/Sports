@@ -19,9 +19,9 @@ season_vector <- c(1872:2025)
 
 k_dynamic <- function(week) {
   case_when(
-    week <= 4 ~ 40,  # Early season volatility
+    week <= 4 ~ 50,  # Early season volatility
     week <= 8 ~ 30,
-    TRUE ~ 20        # Late season stability
+    TRUE ~ 25        # Late season stability
   )
 }
 

@@ -1,0 +1,441 @@
+library(tidyverse)
+
+# Function to simulate remaining conference games
+simulate_conference_season <- function(weekly_rankings, full_elo_df, conf_df, 
+                                       season_num, current_week, conference_name,
+                                       n_sims = 10000) {
+  #' Simulate remaining conference games and determine championship participants
+  #' 
+  #' @param weekly_rankings Output from create_weekly_rankings()
+  #' @param full_elo_df Full game data with results
+  #' @param conf_df Conference membership data
+  #' @param season_num Season year
+  #' @param current_week Current week number
+  #' @param conference_name Conference to simulate (e.g., "Big Ten")
+  #' @param n_sims Number of simulations (default 10,000)
+  #' @return List with simulation results and championship game probabilities
+  
+  # Get conference teams
+  conf_teams <- conf_df |>
+    filter(season == season_num, conf == conference_name) |>
+    pull(school)
+  
+  # Get all conference games (completed and remaining)
+  conf_games <- full_elo_df |>
+    filter(season == season_num,
+           team_a %in% conf_teams,
+           team_b %in% conf_teams) |>
+    mutate(
+      completed = wk <= current_week,
+      game_id = paste(pmin(team_a, team_b), pmax(team_a, team_b), wk, sep = "_")
+    )
+  
+  # Split into completed and remaining
+  completed_games <- conf_games |> filter(completed)
+  remaining_games <- conf_games |> filter(!completed)
+  
+  # Get current ELOs for remaining games
+  current_elos <- weekly_rankings |>
+    filter(season == season_num, wk == current_week) |>
+    select(team = team, elo)
+  
+  remaining_games <- remaining_games |>
+    left_join(current_elos, by = c("team_a" = "team")) |>
+    rename(elo_a_current = elo) |>
+    left_join(current_elos, by = c("team_b" = "team")) |>
+    rename(elo_b_current = elo) |>
+    mutate(
+      win_prob_a = calculate_win_probability(elo_a_current, elo_b_current, 
+                                             location = location)
+    )
+  
+  cat(sprintf("Simulating %s conference with %d teams\n", 
+              conference_name, length(conf_teams)))
+  cat(sprintf("Completed games: %d, Remaining games: %d\n", 
+              nrow(completed_games), nrow(remaining_games)))
+  
+  # Run simulations
+  championship_participants <- matrix(NA, nrow = n_sims, ncol = 2)
+  sim_records <- list()
+  
+  for(sim in 1:n_sims) {
+    # Simulate remaining games
+    sim_results <- remaining_games |>
+      mutate(
+        team_a_wins = rbinom(n(), 1, win_prob_a),
+        team_b_wins = 1 - team_a_wins
+      )
+    
+    # Combine with completed games
+    all_games <- bind_rows(
+      completed_games |>
+        mutate(team_a_wins = ifelse(result == "W", 1, 0),
+               team_b_wins = ifelse(result == "L", 1, 0)),
+      sim_results |>
+        select(season, wk, team_a, team_b, location, game_id,
+               team_a_wins, team_b_wins)
+    )
+    
+    # Calculate standings
+    standings <- calculate_conference_standings(all_games, conf_teams)
+    
+    # Apply tiebreakers
+    top_two <- determine_championship_game(standings, all_games)
+    
+    championship_participants[sim, ] <- top_two
+    sim_records[[sim]] <- standings
+  }
+  
+  # Summarize results
+  champ_game_freq <- as.data.frame(championship_participants) |>
+    rename(team1 = V1, team2 = V2) |>
+    mutate(matchup = paste(pmin(team1, team2), "vs", pmax(team1, team2))) |>
+    count(matchup, sort = TRUE) |>
+    mutate(probability = n / n_sims)
+  
+  # Individual team probabilities
+  team_probs <- bind_rows(
+    as.data.frame(championship_participants) |> 
+      rename(team = V1),
+    as.data.frame(championship_participants) |> 
+      rename(team = V2)
+  ) |>
+    count(team, sort = TRUE) |>
+    mutate(probability = n / n_sims) |>
+    arrange(desc(probability))
+  
+  return(list(
+    matchup_probabilities = champ_game_freq,
+    team_probabilities = team_probs,
+    remaining_games = remaining_games |> 
+      select(wk, team_a, team_b, location, win_prob_a),
+    sim_records = sim_records
+  ))
+}
+
+# Function to calculate conference standings
+calculate_conference_standings <- function(all_games, conf_teams) {
+  #' Calculate conference win-loss records
+  #' 
+  #' @param all_games Data frame of all conference games with results
+  #' @param conf_teams Vector of team names in conference
+  #' @return Data frame with team records
+  
+  # Team A perspective
+  team_a_records <- all_games |>
+    group_by(team_a) |>
+    summarise(
+      wins = sum(team_a_wins),
+      losses = sum(team_b_wins),
+      .groups = 'drop'
+    ) |>
+    rename(team = team_a)
+  
+  # Team B perspective
+  team_b_records <- all_games |>
+    group_by(team_b) |>
+    summarise(
+      wins = sum(team_b_wins),
+      losses = sum(team_a_wins),
+      .groups = 'drop'
+    ) |>
+    rename(team = team_b)
+  
+  # Combine
+  standings <- bind_rows(team_a_records, team_b_records) |>
+    group_by(team) |>
+    summarise(
+      wins = sum(wins),
+      losses = sum(losses),
+      .groups = 'drop'
+    ) |>
+    mutate(win_pct = wins / (wins + losses)) |>
+    arrange(desc(win_pct), desc(wins))
+  
+  return(standings)
+}
+
+# Function to determine championship game participants with tiebreakers
+determine_championship_game <- function(standings, all_games) {
+  #' Apply tiebreaker rules to determine top 2 teams
+  #' 
+  #' @param standings Conference standings
+  #' @param all_games All conference games with results
+  #' @return Vector of 2 team names
+  
+  # Get top win percentage
+  top_win_pct <- max(standings$win_pct)
+  top_teams <- standings |> filter(win_pct == top_win_pct) |> pull(team)
+  
+  # If only 1 team at top, they're in
+  if(length(top_teams) == 1) {
+    team1 <- top_teams[1]
+    
+    # Get second place
+    second_win_pct <- standings |> 
+      filter(team != team1) |> 
+      pull(win_pct) |> 
+      max()
+    second_teams <- standings |> 
+      filter(win_pct == second_win_pct, team != team1) |> 
+      pull(team)
+    
+    if(length(second_teams) == 1) {
+      return(c(team1, second_teams[1]))
+    } else {
+      team2 <- apply_tiebreakers(second_teams, all_games, standings)
+      return(c(team1, team2))
+    }
+  } else {
+    # Multiple teams tied for first
+    top_two <- apply_tiebreakers(top_teams, all_games, standings, n_select = 2)
+    return(top_two)
+  }
+}
+
+# Function to apply tiebreaker rules
+apply_tiebreakers <- function(tied_teams, all_games, standings, n_select = 1) {
+  #' Apply conference tiebreaker rules
+  #' 
+  #' @param tied_teams Vector of team names that are tied
+  #' @param all_games All conference games
+  #' @param standings Full conference standings
+  #' @param n_select Number of teams to select (default 1)
+  #' @return Vector of team name(s) after tiebreaker
+  
+  if(length(tied_teams) <= n_select) {
+    return(tied_teams[1:n_select])
+  }
+  
+  # Tiebreaker 1: Head-to-head record
+  h2h_results <- apply_head_to_head(tied_teams, all_games)
+  if(!is.null(h2h_results)) {
+    if(length(h2h_results) <= n_select) {
+      return(h2h_results[1:n_select])
+    }
+    tied_teams <- h2h_results
+  }
+  
+  # Tiebreaker 2: Record vs common conference opponents
+  common_opp_results <- apply_common_opponents(tied_teams, all_games)
+  if(!is.null(common_opp_results)) {
+    if(length(common_opp_results) <= n_select) {
+      return(common_opp_results[1:n_select])
+    }
+    tied_teams <- common_opp_results
+  }
+  
+  # Tiebreaker 3: Record vs common opponents by their standing
+  ranked_common_results <- apply_ranked_common_opponents(tied_teams, all_games, standings)
+  if(!is.null(ranked_common_results)) {
+    if(length(ranked_common_results) <= n_select) {
+      return(ranked_common_results[1:n_select])
+    }
+    tied_teams <- ranked_common_results
+  }
+  
+  # Tiebreaker 4: Strength of schedule (opponents' win %)
+  sos_results <- apply_strength_of_schedule(tied_teams, all_games, standings)
+  if(!is.null(sos_results)) {
+    if(length(sos_results) <= n_select) {
+      return(sos_results[1:n_select])
+    }
+    tied_teams <- sos_results
+  }
+  
+  # Final tiebreaker: Random drawing
+  return(sample(tied_teams, size = n_select))
+}
+
+# Tiebreaker 1: Head-to-head
+apply_head_to_head <- function(tied_teams, all_games) {
+  #' Compare head-to-head records among tied teams
+  
+  h2h_games <- all_games |>
+    filter(team_a %in% tied_teams, team_b %in% tied_teams)
+  
+  if(nrow(h2h_games) == 0) return(NULL)
+  
+  h2h_records <- bind_rows(
+    h2h_games |> 
+      group_by(team_a) |>
+      summarise(h2h_wins = sum(team_a_wins), .groups = 'drop') |>
+      rename(team = team_a),
+    h2h_games |>
+      group_by(team_b) |>
+      summarise(h2h_wins = sum(team_b_wins), .groups = 'drop') |>
+      rename(team = team_b)
+  ) |>
+    group_by(team) |>
+    summarise(h2h_wins = sum(h2h_wins), .groups = 'drop') |>
+    arrange(desc(h2h_wins))
+  
+  # Return teams with best head-to-head record
+  best_h2h <- max(h2h_records$h2h_wins)
+  winners <- h2h_records |> filter(h2h_wins == best_h2h) |> pull(team)
+  
+  if(length(winners) < length(tied_teams)) {
+    return(winners)
+  }
+  return(NULL)
+}
+
+# Tiebreaker 2: Common opponents
+apply_common_opponents <- function(tied_teams, all_games) {
+  #' Compare records against common conference opponents
+  
+  # Find common opponents
+  opponents_list <- map(tied_teams, ~{
+    all_games |>
+      filter(team_a == .x | team_b == .x) |>
+      mutate(opponent = ifelse(team_a == .x, team_b, team_a)) |>
+      filter(!opponent %in% tied_teams) |>
+      pull(opponent) |>
+      unique()
+  })
+  
+  common_opps <- Reduce(intersect, opponents_list)
+  
+  if(length(common_opps) == 0) return(NULL)
+  
+  # Calculate records vs common opponents
+  common_records <- map_dfr(tied_teams, ~{
+    team_games <- all_games |>
+      filter((team_a == .x & team_b %in% common_opps) |
+               (team_b == .x & team_a %in% common_opps))
+    
+    wins <- sum(
+      (team_games$team_a == .x & team_games$team_a_wins == 1) |
+        (team_games$team_b == .x & team_games$team_b_wins == 1)
+    )
+    
+    tibble(team = .x, common_wins = wins)
+  }) |>
+    arrange(desc(common_wins))
+  
+  best_record <- max(common_records$common_wins)
+  winners <- common_records |> filter(common_wins == best_record) |> pull(team)
+  
+  if(length(winners) < length(tied_teams)) {
+    return(winners)
+  }
+  return(NULL)
+}
+
+# Tiebreaker 3: Record vs opponents by conference standing
+apply_ranked_common_opponents <- function(tied_teams, all_games, standings) {
+  #' Compare records against common opponents starting with best teams
+  
+  # Get common opponents ranked by standing
+  opponents_list <- map(tied_teams, ~{
+    all_games |>
+      filter(team_a == .x | team_b == .x) |>
+      mutate(opponent = ifelse(team_a == .x, team_b, team_a)) |>
+      filter(!opponent %in% tied_teams) |>
+      pull(opponent) |>
+      unique()
+  })
+  
+  common_opps <- Reduce(intersect, opponents_list)
+  
+  if(length(common_opps) == 0) return(NULL)
+  
+  # Rank common opponents
+  ranked_opps <- standings |>
+    filter(team %in% common_opps) |>
+    arrange(desc(win_pct)) |>
+    pull(team)
+  
+  # Check record against each opponent in order
+  for(opp in ranked_opps) {
+    opp_records <- map_dfr(tied_teams, ~{
+      team_game <- all_games |>
+        filter((team_a == .x & team_b == opp) |
+                 (team_b == .x & team_a == opp))
+      
+      if(nrow(team_game) == 0) return(tibble(team = .x, won = NA))
+      
+      won <- (team_game$team_a == .x & team_game$team_a_wins == 1) |
+        (team_game$team_b == .x & team_game$team_b_wins == 1)
+      
+      tibble(team = .x, won = as.numeric(won))
+    })
+    
+    # If there's a difference, break tie
+    if(length(unique(opp_records$won)) > 1) {
+      winners <- opp_records |> 
+        filter(won == max(won, na.rm = TRUE)) |> 
+        pull(team)
+      return(winners)
+    }
+  }
+  
+  return(NULL)
+}
+
+# Tiebreaker 4: Strength of schedule
+apply_strength_of_schedule <- function(tied_teams, all_games, standings) {
+  #' Compare cumulative win % of all opponents
+  
+  sos_scores <- map_dfr(tied_teams, ~{
+    # Get all opponents
+    opponents <- all_games |>
+      filter(team_a == .x | team_b == .x) |>
+      mutate(opponent = ifelse(team_a == .x, team_b, team_a)) |>
+      pull(opponent) |>
+      unique()
+    
+    # Get their win percentages
+    opp_win_pcts <- standings |>
+      filter(team %in% opponents) |>
+      pull(win_pct)
+    
+    tibble(team = .x, avg_opp_win_pct = mean(opp_win_pcts))
+  }) |>
+    arrange(desc(avg_opp_win_pct))
+  
+  best_sos <- max(sos_scores$avg_opp_win_pct)
+  winners <- sos_scores |> filter(avg_opp_win_pct == best_sos) |> pull(team)
+  
+  return(winners)
+}
+
+# Example usage:
+# ------------------------------------------------------------------------
+# 
+# # Simulate Big Ten championship game
+# big_ten_sim <- simulate_conference_season(
+#   weekly_rankings = weekly_rankings,
+#   full_elo_df = full_elo_df,
+#   conf_df = conf_df,
+#   season_num = 2024,
+#   current_week = 8,
+#   conference_name = "Big Ten",
+#   n_sims = 10000
+# )
+# 
+# # View most likely championship matchups
+# print(big_ten_sim$matchup_probabilities)
+# 
+# # View individual team probabilities
+# print(big_ten_sim$team_probabilities)
+# 
+# # View remaining games
+# print(big_ten_sim$remaining_games)
+# 
+# # Simulate multiple conferences
+# conferences <- c("Big Ten", "SEC", "ACC", "Big 12")
+# 
+# conf_sims <- map(conferences, ~{
+#   simulate_conference_season(weekly_rankings, full_elo_df, conf_df,
+#                             2024, 8, .x, 10000)
+# })
+# names(conf_sims) <- conferences
+# 
+# # Compare top contenders across conferences
+# map_dfr(conferences, ~{
+#   conf_sims[[.x]]$team_probabilities |>
+#     head(4) |>
+#     mutate(conference = .x)
+# }) |>
+#   arrange(conference, desc(probability))

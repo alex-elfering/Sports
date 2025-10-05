@@ -170,13 +170,13 @@ get_wlt_totals <- function(full_elo_df,conf_df){
  weekly_rankings <- create_weekly_rankings(full_elo_df)
  weekly_season_wlt <- get_wlt_totals(full_elo_df,conf_df)
  
- get_team_season_trajectory(weekly_rankings, "Oklahoma State", 2025) |> as.data.frame()
+ get_team_season_trajectory(weekly_rankings, "Iowa State", 2000) |> as.data.frame()
  
  get_team_season_trajectory(weekly_rankings, team_name = 'Kansas State',2014)
  
- get_biggest_movers(weekly_rankings,2025,7)
+ get_biggest_movers(weekly_rankings,2025,1)
  
- get_top_25(weekly_rankings,2025,7) |> as.data.frame() |> inner_join(weekly_season_wlt) |>
+ get_top_25(weekly_rankings,2022,10) |> as.data.frame() |> inner_join(weekly_season_wlt) |>
    select(season,
           wk,
           team,
