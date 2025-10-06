@@ -1,3 +1,42 @@
+# function to create a full schedule for each team each season
+create_full_game_records <- function(winning_games_df = read.csv("C:/Users/alexe/OneDrive/Documents/Sports Analysis/2025 CFB Data Modeling/Data Sources/unique cfb games.csv") |>
+                                       rename(location = var_7,
+                                              school = winner,
+                                              opponent = loser)) {
+  #' Create full game records including both winners and losers perspectives
+  #' 
+  #' @param winning_games_df Data frame with winning team records only
+  #' @return Data frame with both perspectives of each game
+  
+  # Create inverse dataset (losers' perspective)
+  inverse_games <- winning_games_df |>
+    mutate(
+      # Swap teams
+      temp_school = school,
+      school = opponent,
+      opponent = temp_school,
+      # Swap scores
+      temp_pts = pts,
+      pts = opp,
+      opp = temp_pts,
+      # Inverse location
+      location = case_when(
+        is.na(location) | location == '' ~ '@',  # Home becomes Away
+        location == '@' ~ '',                     # Away becomes Home
+        location == 'N' ~ 'N',                   # Neutral stays Neutral
+        TRUE ~ location
+      )
+    ) |>
+    select(-temp_school, -temp_pts)
+  
+  # Combine with original
+  full_games <- bind_rows(winning_games_df, inverse_games) |>
+    arrange(season, wk, date)
+  
+  return(full_games)
+}
+
+# function to rank teams each week based on their ELO per season
 create_weekly_rankings <- function(full_elo_df) {
   #' Create week-by-week ELO rankings for all teams across all seasons
   #' 
@@ -8,7 +47,7 @@ create_weekly_rankings <- function(full_elo_df) {
   
   library(tidyverse)
   
-  #full_elo_df <-full_elo_df |> filter(season == 2024)
+  full_elo_df <-full_elo_df |> filter(season == 2025)
   
   # Step 1: For each team-week where they played, get their pre and post ELO
   games_played <- full_elo_df |>
@@ -27,8 +66,7 @@ create_weekly_rankings <- function(full_elo_df) {
            elo_entering_week = elo_a,
            elo_change_from_game,
            game_result, 
-           next_opp = team_b)# |>
-    #filter(team == 'Iowa')
+           next_opp = team_b)
   
   # Step 2: Create complete season-week grid
   season_bounds <- full_elo_df |>
@@ -37,7 +75,6 @@ create_weekly_rankings <- function(full_elo_df) {
   
   all_teams <- full_elo_df |>
     distinct(season, team = team_a) |>
-    #filter(team == 'Iowa') |>
     left_join(season_bounds, by = "season") |>
     rowwise() |>
     reframe(season = season, team = team, wk = first_wk:last_wk)
@@ -45,7 +82,6 @@ create_weekly_rankings <- function(full_elo_df) {
   # Step 3: Join and fill
   weekly_elo <- all_teams |>
     left_join(games_played, by = c("season", "wk", "team")) |>
-    #filter(team == 'Iowa') |>
     arrange(season, team, wk) |>
     group_by(season, team) |>
     mutate(
