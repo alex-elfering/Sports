@@ -32,9 +32,32 @@ create_full_game_records <- function(winning_games_df = read.csv("C:/Users/alexe
   # Combine with original
   full_games <- bind_rows(winning_games_df, inverse_games) |>
     arrange(season, wk, date) |>
-    select(season,wk,school,opponent)
+    select(season,wk,school,opponent) |>
+    distinct()
   
-  return(full_games)
+  season_wk_parameters <- full_games |>
+    #filter(season == 2025) |>
+    group_by(season) |>
+    summarise(first_wk = min(wk), last_wk = max(wk), .groups = 'drop')
+  
+  game_schedule <- full_games |>
+    #filter(season == 2025,school == 'Minnesota') |>
+    distinct(season,school) |>
+    left_join(season_wk_parameters) |>
+    rowwise() |>
+    reframe(season = season, school = school, wk = 1:last_wk) |>
+    ungroup() |>
+    left_join(full_games) |>
+    mutate(opponent = ifelse(is.na(opponent),'Bye Week',opponent)) |>
+    group_by(season,school) |>
+    mutate(
+      next_week_opp = lead(opponent),
+      next_week_opp = ifelse(is.na(next_week_opp),'Bye Week',next_week_opp)
+           ) |>
+    ungroup() 
+  
+  
+  return(game_schedule)
 }
 
 # function to rank teams each week based on their ELO per season
@@ -56,6 +79,7 @@ create_weekly_rankings <- function(full_elo_df) {
     inner_join(conf_df,
                by = c('team_a' = 'school',
                       'season' = 'season')) |>
+    filter(team_a == 'Minnesota') |>
     mutate(
       game_result = paste0(result, " vs. ", team_b, " (", pts, "-", opp, ")"),
       elo_change_from_game = case_when(
@@ -67,19 +91,20 @@ create_weekly_rankings <- function(full_elo_df) {
     select(season, wk, team = team_a, 
            elo_entering_week = elo_a,
            elo_change_from_game,
-           game_result, 
-           next_opp = team_b)
+           game_result)
   
   # Step 2: Create complete season-week grid
   season_bounds <- full_elo_df |>
+    filter(team_a == 'Minnesota') |>
     group_by(season) |>
     summarise(first_wk = min(wk), last_wk = max(wk), .groups = 'drop')
   
   all_teams <- full_elo_df |>
+    filter(team_a == 'Minnesota') |>
     distinct(season, team = team_a) |>
     left_join(season_bounds, by = "season") |>
     rowwise() |>
-    reframe(season = season, team = team, wk = first_wk:last_wk)
+    reframe(season = season, team = team, wk = 1:last_wk)
   
   # Step 3: Join and fill
   weekly_elo <- all_teams |>
