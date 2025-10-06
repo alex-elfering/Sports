@@ -31,7 +31,8 @@ create_full_game_records <- function(winning_games_df = read.csv("C:/Users/alexe
   
   # Combine with original
   full_games <- bind_rows(winning_games_df, inverse_games) |>
-    arrange(season, wk, date)
+    arrange(season, wk, date) |>
+    select(season,wk,school,opponent)
   
   return(full_games)
 }
@@ -48,6 +49,7 @@ create_weekly_rankings <- function(full_elo_df) {
   library(tidyverse)
   
   full_elo_df <-full_elo_df |> filter(season == 2025)
+  full_game_df <- create_full_game_records()
   
   # Step 1: For each team-week where they played, get their pre and post ELO
   games_played <- full_elo_df |>
