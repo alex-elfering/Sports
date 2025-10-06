@@ -54,7 +54,8 @@ create_full_game_records <- function(winning_games_df = read.csv("C:/Users/alexe
       next_week_opp = lead(opponent),
       next_week_opp = ifelse(is.na(next_week_opp),'Bye Week',next_week_opp)
            ) |>
-    ungroup() 
+    ungroup() |>
+    rename(team = school)
   
   
   return(game_schedule)
@@ -71,7 +72,7 @@ create_weekly_rankings <- function(full_elo_df) {
   
   library(tidyverse)
   
-  full_elo_df <-full_elo_df |> filter(season == 2025)
+  #full_elo_df <-full_elo_df |> filter(season == 2025)
   full_game_df <- create_full_game_records()
   
   # Step 1: For each team-week where they played, get their pre and post ELO
@@ -79,7 +80,7 @@ create_weekly_rankings <- function(full_elo_df) {
     inner_join(conf_df,
                by = c('team_a' = 'school',
                       'season' = 'season')) |>
-    filter(team_a == 'Minnesota') |>
+    #filter(team_a == 'Minnesota') |>
     mutate(
       game_result = paste0(result, " vs. ", team_b, " (", pts, "-", opp, ")"),
       elo_change_from_game = case_when(
@@ -91,16 +92,18 @@ create_weekly_rankings <- function(full_elo_df) {
     select(season, wk, team = team_a, 
            elo_entering_week = elo_a,
            elo_change_from_game,
-           game_result)
+           game_result) |>
+    inner_join(full_game_df) |>
+    select(-opponent)
   
   # Step 2: Create complete season-week grid
   season_bounds <- full_elo_df |>
-    filter(team_a == 'Minnesota') |>
+    #filter(team_a == 'Minnesota') |>
     group_by(season) |>
-    summarise(first_wk = min(wk), last_wk = max(wk), .groups = 'drop')
+    summarise(first_wk = 1, last_wk = max(wk), .groups = 'drop')
   
   all_teams <- full_elo_df |>
-    filter(team_a == 'Minnesota') |>
+    #filter(team_a == 'Minnesota') |>
     distinct(season, team = team_a) |>
     left_join(season_bounds, by = "season") |>
     rowwise() |>
@@ -122,12 +125,11 @@ create_weekly_rankings <- function(full_elo_df) {
     group_by(season, wk) |>
     mutate(rank = min_rank(desc(post_elo))) |>
     ungroup() |>
-    #filter(!is.na(game_result)) |>
     # Add next opponent and changes
     arrange(season, team, wk) |>
     group_by(season, team) |>
     mutate(
-      next_week_opp = lead(next_opp),
+      #next_week_opp = lead(next_opp),
       next_week_info = if_else(is.na(next_week_opp), "Bye Week", 
                                paste0("vs. ", next_week_opp)),
       last_result = if_else(is.na(game_result), "Bye Week", game_result),
@@ -233,13 +235,13 @@ get_wlt_totals <- function(full_elo_df,conf_df){
  weekly_rankings <- create_weekly_rankings(full_elo_df)
  weekly_season_wlt <- get_wlt_totals(full_elo_df,conf_df)
  
- get_team_season_trajectory(weekly_rankings, "Iowa State", 2000) |> as.data.frame()
+ #get_team_season_trajectory(weekly_rankings, "Iowa State", 2000) |> as.data.frame()
  
- get_team_season_trajectory(weekly_rankings, team_name = 'Kansas State',2014)
+ #get_team_season_trajectory(weekly_rankings, team_name = 'Kansas State',2014)
  
- get_biggest_movers(weekly_rankings,2025,1)
+ #get_biggest_movers(weekly_rankings,2025,1)
  
- get_top_25(weekly_rankings,2022,10) |> as.data.frame() |> inner_join(weekly_season_wlt) |>
+ get_top_25(weekly_rankings,2025,7) |> as.data.frame() |> inner_join(weekly_season_wlt) |>
    select(season,
           wk,
           team,
