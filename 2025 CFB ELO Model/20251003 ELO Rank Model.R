@@ -61,6 +61,12 @@ create_full_game_records <- function(winning_games_df = read.csv("C:/Users/alexe
   return(game_schedule)
 }
 
+create_conf_df <- function(conf_df = read.csv("C:/Users/alexe/OneDrive/Documents/Sports Analysis/2025 CFB Data Modeling/Data Sources/school conferences.csv") |> arrange(season) |> select(season, school, conf, div)){
+  
+  return(conf_df)
+  
+}
+
 # function to rank teams each week based on their ELO per season
 create_weekly_rankings <- function(full_elo_df) {
   #' Create week-by-week ELO rankings for all teams across all seasons
@@ -73,14 +79,11 @@ create_weekly_rankings <- function(full_elo_df) {
   library(tidyverse)
   
   #full_elo_df <-full_elo_df |> filter(season == 2025)
-  full_game_df <- create_full_game_records()
+  full_game_df <- create_full_game_records() #|> filter(team == 'Mississippi',season==2025)
+  conf_df <- create_conf_df() |> select(season,team = school)
   
   # Step 1: For each team-week where they played, get their pre and post ELO
   games_played <- full_elo_df |>
-    inner_join(conf_df,
-               by = c('team_a' = 'school',
-                      'season' = 'season')) |>
-    #filter(team_a == 'Minnesota') |>
     mutate(
       game_result = paste0(result, " vs. ", team_b, " (", pts, "-", opp, ")"),
       elo_change_from_game = case_when(
@@ -92,18 +95,14 @@ create_weekly_rankings <- function(full_elo_df) {
     select(season, wk, team = team_a, 
            elo_entering_week = elo_a,
            elo_change_from_game,
-           game_result) |>
-    inner_join(full_game_df) |>
-    select(-opponent)
+           game_result)
   
   # Step 2: Create complete season-week grid
   season_bounds <- full_elo_df |>
-    #filter(team_a == 'Minnesota') |>
     group_by(season) |>
     summarise(first_wk = 1, last_wk = max(wk), .groups = 'drop')
   
   all_teams <- full_elo_df |>
-    #filter(team_a == 'Minnesota') |>
     distinct(season, team = team_a) |>
     left_join(season_bounds, by = "season") |>
     rowwise() |>
@@ -111,6 +110,7 @@ create_weekly_rankings <- function(full_elo_df) {
   
   # Step 3: Join and fill
   weekly_elo <- all_teams |>
+    #filter(team == 'Mississippi') |>
     left_join(games_played, by = c("season", "wk", "team")) |>
     arrange(season, team, wk) |>
     group_by(season, team) |>
@@ -121,6 +121,7 @@ create_weekly_rankings <- function(full_elo_df) {
     fill(pre_elo, .direction = c('up')) |>
     mutate(post_elo = ifelse(is.na(elo_entering_week), pre_elo,elo_entering_week)) |>
     ungroup() |>
+    inner_join(conf_df) |>
     # Calculate rankings
     group_by(season, wk) |>
     mutate(rank = min_rank(desc(post_elo))) |>
@@ -128,6 +129,7 @@ create_weekly_rankings <- function(full_elo_df) {
     # Add next opponent and changes
     arrange(season, team, wk) |>
     group_by(season, team) |>
+    inner_join(full_game_df) |>
     mutate(
       #next_week_opp = lead(next_opp),
       next_week_info = if_else(is.na(next_week_opp), "Bye Week", 
@@ -239,7 +241,7 @@ get_wlt_totals <- function(full_elo_df,conf_df){
  
  #get_team_season_trajectory(weekly_rankings, team_name = 'Kansas State',2014)
  
- #get_biggest_movers(weekly_rankings,2025,1)
+ #get_biggest_movers(weekly_rankings,2025,7)
  
  get_top_25(weekly_rankings,2025,7) |> as.data.frame() |> inner_join(weekly_season_wlt) |>
    select(season,
