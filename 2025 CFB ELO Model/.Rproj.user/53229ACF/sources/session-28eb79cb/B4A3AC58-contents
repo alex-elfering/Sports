@@ -1,0 +1,233 @@
+#### ELO MODEL - FINAL VERSION
+# generates historical ELO ratings for each CFB team in FBS
+# HUGE THANKS TO https://www.sports-reference.com/ for providing the data
+
+library(here)
+
+# Configuration Constants ----
+INITIAL_RATING <- 1500
+HOME_ADVANTAGE <- 50
+REGRESS_AMOUNT <- 0.4
+K_EARLY <- 50    # Weeks 1-4
+K_MID <- 30      # Weeks 5-8
+K_LATE <- 25     # Week 9+
+
+# ELO bounds to prevent extreme ratings
+ELO_MIN <- 800
+ELO_MAX <- 2400
+
+# Pull in functions ----
+source(here("20250603 CFB ELO Functions.R"))
+
+# Data sources ----
+all_schools <- winning_games$school
+all_opponents <- winning_games$opponent
+
+init_ratings <- tibble(
+  school = unique(c(all_opponents, all_schools)),
+  rating = INITIAL_RATING
+)
+
+# Helper Functions ----
+k_dynamic <- function(week) {
+  case_when(
+    week <= 4 ~ K_EARLY,
+    week <= 8 ~ K_MID,
+    TRUE ~ K_LATE
+  )
+}
+
+process_season <- function(season_data, starting_elo, season_num, conf_data) {
+  #' Process all weeks for a single season
+  #' @param season_data Filtered game data for one season
+  #' @param starting_elo ELO ratings at start of season
+  #' @param season_num Year being processed
+  #' @param conf_data Conference affiliations for this season
+  #' @return List with season games, regressed ratings, and weekly tracking
+  
+  beg_week <- min(season_data$wk)
+  end_week <- max(season_data$wk)
+  
+  week_games <- list()
+  weekly_tracking <- list()
+  current_elo <- starting_elo
+  
+  for(week_num in beg_week:end_week) {
+    
+    # Update ELO for this week
+    week_update <- elo_week_update(
+      df = season_data,
+      use_elo_df = current_elo,
+      week_int = week_num,
+      team_adv = HOME_ADVANTAGE,
+      k_val = k_dynamic(week_num)
+    )
+    
+    # Skip if no games this week
+    if(nrow(week_update) == 0) {
+      next
+    }
+    
+    # Update ratings with this week's results
+    current_elo <- team_elo_scores(df = week_update, use_elo_df = current_elo)
+    
+    # Apply ELO bounds to prevent extreme ratings
+    current_elo <- current_elo |>
+      mutate(rating = pmax(ELO_MIN, pmin(ELO_MAX, rating)))
+    
+    # Track weekly ratings
+    weekly_tracking[[paste0(season_num, "_", week_num)]] <- current_elo |>
+      mutate(season = season_num, wk = week_num)
+    
+    # Store this week's games
+    week_games[[week_num]] <- week_update
+    
+    # Regress ratings at end of season to prevent rating inflation
+    # Conference teams regress toward their conference mean
+    # Independent teams regress toward overall FBS mean
+    # Non-FBS teams reset to initial rating
+    if(week_num == end_week) {
+      season_regress <- regress_ratings(
+        conf_df = conf_data, 
+        df = current_elo,
+        regress_val = REGRESS_AMOUNT
+      )
+      
+      current_elo <- season_regress |>
+        select(school, rating = regress_rating)
+      
+      cat(sprintf("✓ Season %d complete (weeks %d-%d)\n", season_num, beg_week, end_week))
+      # print(season_regress |> mutate(season = season_num))
+    }
+  }
+  
+  return(list(
+    games = bind_rows(week_games),
+    final_elo = current_elo,
+    regressed = if(exists("season_regress")) season_regress |> mutate(season = season_num) else NULL,
+    weekly = weekly_tracking
+  ))
+}
+
+# Main Processing Loop ----
+season_vector <- c(1872:2025)
+season_games <- list()
+season_regress_ratings <- list()
+weekly_elo_tracking <- list()
+current_ratings <- init_ratings
+
+cat(sprintf("Processing %d seasons...\n\n", length(season_vector)))
+
+for(season_year in season_vector) {
+  
+  # Prepare season data
+  use_season <- winning_games |>
+    mutate(
+      wk = as.numeric(wk),
+      wins = ifelse(pts > opp, 1, 0),
+      loses = ifelse(pts < opp, 1, 0),
+      ties = ifelse(pts == opp, 1, 0)
+    ) |>
+    filter(season == season_year)
+  
+  # Get conference data for this season
+  season_conf <- conf_df |>
+    filter(season == season_year) |>
+    select(school, conf)
+  
+  # Process entire season
+  season_results <- process_season(
+    season_data = use_season,
+    starting_elo = current_ratings,
+    season_num = season_year,
+    conf_data = season_conf
+  )
+  
+  # Store results
+  season_games[[season_year]] <- season_results$games
+  if(!is.null(season_results$regressed)) {
+    season_regress_ratings[[season_year]] <- season_results$regressed
+  }
+  weekly_elo_tracking <- c(weekly_elo_tracking, season_results$weekly)
+  
+  # Carry forward ratings to next season
+  current_ratings <- season_results$final_elo
+}
+
+cat("\n✓ All seasons processed!\n\n")
+
+# Combine Results ----
+elo_df <- rbindlist(season_games, fill = TRUE) |>
+  distinct() |>
+  rename(
+    elo_a = school_elo,
+    elo_b = opponent_elo,
+    p_a = p_team,
+    team_a = school,
+    team_b = opponent
+  ) |>
+  select(-p_opponent) |>
+  arrange(season, wk)
+
+# Create full bidirectional dataset
+full_elo_df <- elo_df |>
+  distinct() |>
+  select(
+    season, wk,
+    team_a = team_b,
+    team_b = team_a,
+    location,
+    pts = opp,
+    opp = pts,
+    ps, elo_adj, p_a,
+    elo_a = elo_b,
+    elo_b = elo_a
+  ) |>
+  mutate(
+    p_a = 1 - p_a,
+    location = case_when(
+      location == '' ~ '@',
+      location == '@' ~ '',
+      location == 'N' ~ 'N'
+    )
+  ) |>
+  bind_rows(elo_df) |>
+  mutate(result = case_when(
+    pts > opp ~ 'W',
+    pts < opp ~ 'L',
+    pts == opp ~ 'T'
+  )) |>
+  arrange(season, wk)
+
+full_regress_scores <- bind_rows(season_regress_ratings)
+
+weekly_elo_all <- bind_rows(weekly_elo_tracking) |>
+  arrange(season, wk, desc(rating))
+
+# Export Results ----
+timestamp <- format(Sys.time(), "%Y%m%d_%H%M%S")
+output_dir <- "C:/Users/alexe/OneDrive/Documents/Sports Analysis/CFB ELO Model/"
+
+cat("Exporting results...\n")
+
+write.csv(full_regress_scores, 
+          paste0(output_dir, "full_regress_scores_", timestamp, ".csv"), 
+          row.names = FALSE)
+
+write.csv(elo_df, 
+          paste0(output_dir, "unique_elo_df_", timestamp, ".csv"), 
+          row.names = FALSE)
+
+write.csv(full_elo_df, 
+          paste0(output_dir, "full_elo_df_", timestamp, ".csv"), 
+          row.names = FALSE)
+
+write.csv(weekly_elo_all, 
+          paste0(output_dir, "weekly_elo_tracking_", timestamp, ".csv"), 
+          row.names = FALSE)
+
+cat(sprintf("\n✓ All files exported with timestamp: %s\n", timestamp))
+cat(sprintf("  - Total games processed: %s\n", format(nrow(full_elo_df), big.mark = ",")))
+cat(sprintf("  - Unique games: %s\n", format(nrow(elo_df), big.mark = ",")))
+cat(sprintf("  - Seasons covered: %d-%d\n", min(season_vector), max(season_vector)))
+cat("\n✓ ELO Model Complete!\n")

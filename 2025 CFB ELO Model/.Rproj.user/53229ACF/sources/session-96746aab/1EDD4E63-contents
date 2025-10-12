@@ -1,0 +1,18 @@
+weekly_rankings |>
+  group_by(team,
+           season) |>
+  filter(wk == min(wk) | wk == max(wk)) |>
+  filter(team == 'Harvard') |>
+  #filter(season > 1998) |>
+  select(season,
+         team,
+         wk,
+         rank) |>
+  mutate(index = row_number()) |>
+  select(-wk) |>
+  pivot_wider(names_from = index,
+              values_from = rank) |>
+  ungroup() |>
+  mutate(`1` = ifelse(`1` > 25, NA, `1`),
+         `2` = ifelse(`2` > 25, NA,`2`)) |>
+  as.data.frame()

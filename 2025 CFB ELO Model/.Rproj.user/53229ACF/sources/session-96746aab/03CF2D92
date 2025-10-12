@@ -1,0 +1,27 @@
+{
+    "id": "03CF2D92",
+    "path": "~/GitHub/Sports/2025 CFB ELO Model/20251012 ELO Prediction Draft.R",
+    "project_path": "20251012 ELO Prediction Draft.R",
+    "type": "r_source",
+    "hash": "1857466618",
+    "contents": "",
+    "dirty": false,
+    "created": 1760294214051.0,
+    "source_on_save": false,
+    "relative_order": 11,
+    "properties": {
+        "tempName": "Untitled7",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "464,16",
+        "scrollLine": "459"
+    },
+    "folds": "44|41|56|0|\n59|53|98|0|\n549|57|568|0|\n",
+    "lastKnownWriteTime": 1760299765,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1760299765781,
+    "read_only": false,
+    "read_only_alternatives": []
+}

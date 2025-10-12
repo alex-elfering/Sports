@@ -1,0 +1,186 @@
+# Add this helper function at the top
+deduplicate_games <- function(games_df) {
+  #' Remove duplicate game entries (keeps only one side of each matchup)
+  #' 
+  #' @param games_df Data frame with team_a, team_b, season, wk
+  #' @return Deduplicated games
+  
+  games_df |>
+    rowwise() |>
+    mutate(
+      game_key = paste(season, wk, 
+                       paste(sort(c(team_a, team_b)), collapse = "_"),
+                       sep = "_")
+    ) |>
+    ungroup() |>
+    distinct(game_key, .keep_all = TRUE) |>
+    select(-game_key)
+}
+
+# Update the main function with deduplication
+simulate_season_progressive <- function(weekly_rankings, full_elo_df, conf_df,
+                                        season_num, as_of_week, 
+                                        conference_name = NULL,
+                                        n_sims = 10000) {
+  #' Simulate remaining games from a specific week using ELO at that point
+  #' 
+  #' @param weekly_rankings ELO ratings week by week
+  #' @param full_elo_df Complete game data
+  #' @param conf_df Conference membership
+  #' @param season_num Season year
+  #' @param as_of_week Week to simulate from (games after this are simulated)
+  #' @param conference_name Optional: limit to one conference
+  #' @param n_sims Number of simulations
+  #' @return List with win projections and championship probabilities
+  
+  # Get teams to simulate (all or conference only)
+  if(!is.null(conference_name)) {
+    teams_to_sim <- conf_df |>
+      filter(season == season_num, conf == conference_name) |>
+      pull(school)
+  } else {
+    teams_to_sim <- unique(full_elo_df$team_a[full_elo_df$season == season_num])
+  }
+  
+  # Get actual results up to as_of_week (deduplicated)
+  completed_games <- full_elo_df |>
+    filter(season == season_num, 
+           wk <= as_of_week,
+           team_a %in% teams_to_sim) |>
+    select(season, wk, team_a, team_b, result) |>
+    deduplicate_games()  # ADD THIS
+  
+  # Calculate current records
+  current_records <- calculate_records_to_date(completed_games, teams_to_sim)
+  
+  # Get remaining games (deduplicated)
+  remaining_games <- full_elo_df |>
+    filter(season == season_num,
+           wk > as_of_week,
+           team_a %in% teams_to_sim,
+           team_b %in% teams_to_sim) |>
+    select(season, wk, team_a, team_b, location) |>
+    deduplicate_games()  # ADD THIS
+  
+  if(nrow(remaining_games) == 0) {
+    cat("No remaining games to simulate\n")
+    return(list(final_records = current_records))
+  }
+  
+  # Get ELO ratings as of the specified week
+  elo_as_of <- weekly_rankings |>
+    filter(season == season_num, wk == as_of_week) |>
+    select(team, elo)
+  
+  # Calculate win probabilities for remaining games
+  remaining_with_probs <- remaining_games |>
+    left_join(elo_as_of, by = c("team_a" = "team")) |>
+    rename(elo_a = elo) |>
+    left_join(elo_as_of, by = c("team_b" = "team")) |>
+    rename(elo_b = elo) |>
+    mutate(
+      # Apply home advantage
+      elo_a_adj = elo_a + case_when(
+        location == '' | is.na(location) ~ 50,
+        location == '@' ~ -50,
+        location == 'N' ~ 0,
+        TRUE ~ 0
+      ),
+      elo_b_adj = elo_b + case_when(
+        location == '@' ~ 50,
+        location == '' | is.na(location) ~ -50,
+        location == 'N' ~ 0,
+        TRUE ~ 0
+      ),
+      win_prob_a = 1 / (1 + 10^(-(elo_a_adj - elo_b_adj) / 400))
+    )
+  
+  cat(sprintf("Simulating %s season %d from week %d\n", 
+              ifelse(is.null(conference_name), "full", conference_name),
+              season_num, as_of_week + 1))
+  cat(sprintf("Teams: %d, Completed games: %d, Remaining: %d\n",
+              length(teams_to_sim), nrow(completed_games), nrow(remaining_games)))
+  
+  # Run simulations
+  sim_results <- run_season_simulations(
+    current_records = current_records,
+    remaining_games = remaining_with_probs,
+    n_sims = n_sims
+  )
+  
+  return(sim_results)
+}
+
+
+# Usage Examples ----
+
+# Example 1: Simulate 1999 season from week 2
+sim_1999_wk2 <- simulate_season_progressive(
+  weekly_rankings = weekly_rankings,
+  full_elo_df = full_elo_df,
+  conf_df = conf_df,
+  season_num = 2025,
+  as_of_week = 2,
+  n_sims = 10000
+)
+
+print(sim_1999_wk2$final_records |> head(20))
+
+# Example 2: Track how projections evolved throughout 1999
+weeks_to_track <- 1:7
+timeline_1999 <- simulate_season_timeline(
+  weekly_rankings = weekly_rankings,
+  full_elo_df = full_elo_df,
+  conf_df = conf_df,
+  season_num = 2025,
+  weeks_to_simulate = weeks_to_track,
+  n_sims = 10000
+)
+
+# Compare Florida State's projection over time
+map_dfr(weeks_to_track, ~{
+  timeline_1999[[paste0("week_", .x)]]$projections |>
+    filter(team == "Florida State") |>
+    mutate(projection_week = .x)
+})
+
+# Example 3: Big Ten only from week 8
+big_ten_1999 <- simulate_season_progressive(
+  weekly_rankings = weekly_rankings,
+  full_elo_df = full_elo_df,
+  conf_df = conf_df,
+  season_num = 1999,
+  as_of_week = 8,
+  conference_name = "Big Ten",
+  n_sims = 10000
+)
+
+# Example 4: Visualize projection changes
+library(ggplot2)
+
+projection_evolution <- map_dfr(weeks_to_track, ~{
+  timeline_1999[[paste0("week_", .x)]]$projections |>
+    select(team, current_wins, mean_final_wins, prob_10plus) |>
+    mutate(as_of_week = .x)
+})
+
+# Plot top teams' win projections over time
+top_teams <- projection_evolution |>
+  filter(as_of_week == max(as_of_week)) |>
+  slice_max(mean_final_wins, n = 10) |>
+  pull(team)
+
+projection_evolution |>
+  filter(team %in% top_teams) |>
+  ggplot(aes(x = as_of_week, y = mean_final_wins, color = team, group = team)) +
+  geom_line(size = 1) +
+  geom_point(size = 2) +
+  labs(
+    title = "1999 Season - Win Projections Over Time",
+    subtitle = "How expectations changed as season progressed",
+    x = "Projection Made After Week",
+    y = "Projected Final Wins",
+    color = "Team"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "right")

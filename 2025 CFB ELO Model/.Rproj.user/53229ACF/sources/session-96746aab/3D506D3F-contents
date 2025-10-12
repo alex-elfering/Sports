@@ -1,0 +1,373 @@
+# Updated function to calculate conference records ----
+calculate_records_to_date <- function(games, teams, conf_df = NULL, season_num = NULL) {
+  #' Calculate win-loss records from completed games
+  #' Now includes conference-only records
+  #' 
+  #' @param games Completed games data
+  #' @param teams Teams to calculate for
+  #' @param conf_df Conference membership data (optional)
+  #' @param season_num Season year (optional, needed for conf records)
+  
+  # Overall records
+  team_a_records <- games |>
+    group_by(team_a) |>
+    summarise(
+      wins = sum(result == "W"),
+      losses = sum(result == "L"),
+      ties = sum(result == "T"),
+      .groups = "drop"
+    ) |>
+    rename(team = team_a)
+  
+  team_b_records <- games |>
+    group_by(team_b) |>
+    summarise(
+      wins = sum(result == "L"),
+      losses = sum(result == "W"),
+      ties = sum(result == "T"),
+      .groups = "drop"
+    ) |>
+    rename(team = team_b)
+  
+  overall_records <- bind_rows(team_a_records, team_b_records) |>
+    group_by(team) |>
+    summarise(
+      wins = sum(wins),
+      losses = sum(losses),
+      ties = sum(ties),
+      .groups = "drop"
+    )
+  
+  # Conference records (if conf_df provided)
+  if(!is.null(conf_df) && !is.null(season_num)) {
+    conf_teams <- conf_df |>
+      filter(season == season_num) |>
+      select(team = school, conf)
+    
+    # Filter to conference games only
+    conf_games <- games |>
+      inner_join(conf_teams, by = c("team_a" = "team")) |>
+      rename(conf_a = conf) |>
+      inner_join(conf_teams, by = c("team_b" = "team")) |>
+      rename(conf_b = conf) |>
+      filter(conf_a == conf_b)  # Same conference
+    
+    conf_a_records <- conf_games |>
+      group_by(team_a) |>
+      summarise(
+        conf_wins = sum(result == "W"),
+        conf_losses = sum(result == "L"),
+        conf_ties = sum(result == "T"),
+        .groups = "drop"
+      ) |>
+      rename(team = team_a)
+    
+    conf_b_records <- conf_games |>
+      group_by(team_b) |>
+      summarise(
+        conf_wins = sum(result == "L"),
+        conf_losses = sum(result == "W"),
+        conf_ties = sum(result == "T"),
+        .groups = "drop"
+      ) |>
+      rename(team = team_b)
+    
+    conf_records <- bind_rows(conf_a_records, conf_b_records) |>
+      group_by(team) |>
+      summarise(
+        conf_wins = sum(conf_wins),
+        conf_losses = sum(conf_losses),
+        conf_ties = sum(conf_ties),
+        .groups = "drop"
+      )
+    
+    # Combine overall and conference
+    all_teams <- tibble(team = teams)
+    result <- all_teams |>
+      left_join(overall_records, by = "team") |>
+      left_join(conf_records, by = "team") |>
+      mutate(
+        wins = replace_na(wins, 0),
+        losses = replace_na(losses, 0),
+        ties = replace_na(ties, 0),
+        conf_wins = replace_na(conf_wins, 0),
+        conf_losses = replace_na(conf_losses, 0),
+        conf_ties = replace_na(conf_ties, 0)
+      )
+    
+  } else {
+    # No conference data
+    all_teams <- tibble(team = teams)
+    result <- all_teams |>
+      left_join(overall_records, by = "team") |>
+      mutate(
+        wins = replace_na(wins, 0),
+        losses = replace_na(losses, 0),
+        ties = replace_na(ties, 0)
+      )
+  }
+  
+  return(result)
+}
+
+# Updated simulation function to track conference games ----
+run_season_simulations <- function(current_records, remaining_games, 
+                                   conf_df = NULL, season_num = NULL,
+                                   n_sims) {
+  #' Simulate remaining games with conference record tracking
+  
+  n_games <- nrow(remaining_games)
+  sim_matrix <- matrix(NA, nrow = n_sims, ncol = n_games)
+  
+  for(i in 1:n_sims) {
+    sim_matrix[i, ] <- rbinom(n_games, 1, remaining_games$win_prob_a)
+  }
+  
+  teams <- unique(c(remaining_games$team_a, remaining_games$team_b))
+  
+  # Identify conference games if conf_df provided
+  if(!is.null(conf_df) && !is.null(season_num)) {
+    conf_teams <- conf_df |>
+      filter(season == season_num) |>
+      select(team = school, conf)
+    
+    remaining_games <- remaining_games |>
+      left_join(conf_teams, by = c("team_a" = "team")) |>
+      rename(conf_a = conf) |>
+      left_join(conf_teams, by = c("team_b" = "team")) |>
+      rename(conf_b = conf) |>
+      mutate(is_conf_game = (conf_a == conf_b))
+  } else {
+    remaining_games <- remaining_games |>
+      mutate(is_conf_game = FALSE)
+  }
+  
+  final_records <- map_dfr(teams, ~{
+    team_name <- .x
+    
+    # Current records
+    current <- current_records |> filter(team == team_name)
+    current_wins <- if(nrow(current) > 0) current$wins else 0
+    current_losses <- if(nrow(current) > 0) current$losses else 0
+    current_conf_wins <- if(nrow(current) > 0 && "conf_wins" %in% names(current)) {
+      current$conf_wins
+    } else {
+      0
+    }
+    current_conf_losses <- if(nrow(current) > 0 && "conf_losses" %in% names(current)) {
+      current$conf_losses
+    } else {
+      0
+    }
+    
+    # Games as team_a
+    games_as_a <- which(remaining_games$team_a == team_name)
+    wins_as_a <- if(length(games_as_a) > 0) {
+      rowSums(sim_matrix[, games_as_a, drop = FALSE])
+    } else {
+      rep(0, n_sims)
+    }
+    
+    # Conference games as team_a
+    conf_games_as_a <- which(remaining_games$team_a == team_name & 
+                               remaining_games$is_conf_game)
+    conf_wins_as_a <- if(length(conf_games_as_a) > 0) {
+      rowSums(sim_matrix[, conf_games_as_a, drop = FALSE])
+    } else {
+      rep(0, n_sims)
+    }
+    
+    # Games as team_b
+    games_as_b <- which(remaining_games$team_b == team_name)
+    wins_as_b <- if(length(games_as_b) > 0) {
+      rowSums(1 - sim_matrix[, games_as_b, drop = FALSE])
+    } else {
+      rep(0, n_sims)
+    }
+    
+    # Conference games as team_b
+    conf_games_as_b <- which(remaining_games$team_b == team_name & 
+                               remaining_games$is_conf_game)
+    conf_wins_as_b <- if(length(conf_games_as_b) > 0) {
+      rowSums(1 - sim_matrix[, conf_games_as_b, drop = FALSE])
+    } else {
+      rep(0, n_sims)
+    }
+    
+    # Totals
+    total_wins <- current_wins + wins_as_a + wins_as_b
+    remaining_wins <- wins_as_a + wins_as_b
+    n_remaining <- length(games_as_a) + length(games_as_b)
+    total_games <- current_wins + current_losses + n_remaining
+    
+    # Conference totals
+    total_conf_wins <- current_conf_wins + conf_wins_as_a + conf_wins_as_b
+    remaining_conf_wins <- conf_wins_as_a + conf_wins_as_b
+    n_conf_remaining <- length(conf_games_as_a) + length(conf_games_as_b)
+    total_conf_games <- current_conf_wins + current_conf_losses + n_conf_remaining
+    
+    # Probabilities
+    prob_win_out <- if(n_remaining > 0) {
+      sum(remaining_wins == n_remaining) / n_sims
+    } else {
+      NA_real_
+    }
+    
+    prob_lose_out <- if(n_remaining > 0) {
+      sum(remaining_wins == 0) / n_sims
+    } else {
+      NA_real_
+    }
+    
+    prob_conf_win_out <- if(n_conf_remaining > 0) {
+      sum(remaining_conf_wins == n_conf_remaining) / n_sims
+    } else {
+      NA_real_
+    }
+    
+    tibble(
+      team = team_name,
+      current_wins = current_wins,
+      current_losses = current_losses,
+      current_conf_wins = current_conf_wins,
+      current_conf_losses = current_conf_losses,
+      games_remaining = n_remaining,
+      conf_games_remaining = n_conf_remaining,
+      mean_final_wins = mean(total_wins),
+      median_final_wins = median(total_wins),
+      mean_conf_wins = mean(total_conf_wins),
+      median_conf_wins = median(total_conf_wins),
+      sd_wins = sd(total_wins),
+      min_wins = min(total_wins),
+      max_wins = max(total_wins),
+      prob_6plus = sum(total_wins >= 6) / n_sims,
+      prob_8plus = sum(total_wins >= 8) / n_sims,
+      prob_10plus = sum(total_wins >= 10) / n_sims,
+      prob_undefeated = sum(total_wins == total_games) / n_sims,
+      prob_win_out = prob_win_out,
+      prob_lose_out = prob_lose_out,
+      prob_conf_win_out = prob_conf_win_out
+    )
+  }) |>
+    arrange(desc(mean_final_wins))
+  
+  return(list(
+    final_records = final_records,
+    remaining_games = remaining_games |> 
+      select(wk, team_a, team_b, location, win_prob_a, is_conf_game),
+    simulation_matrix = sim_matrix
+  ))
+}
+
+# Update simulate_season_progressive to pass conf_df ----
+# Find the section where you call calculate_records_to_date and update:
+
+# Calculate current records (with conference records)
+current_records <- calculate_records_to_date(
+  completed_games, 
+  teams_to_sim,
+  conf_df = conf_df,      # ADD THIS
+  season_num = season_num  # ADD THIS
+)
+
+# And update where you call run_season_simulations:
+
+# Run simulations
+sim_results <- run_season_simulations(
+  current_records = current_records,
+  remaining_games = remaining_with_probs,
+  conf_df = conf_df,        # ADD THIS
+  season_num = season_num,  # ADD THIS
+  n_sims = n_sims
+)
+
+# Also update the early return case to include conference columns:
+
+if(nrow(remaining_games) == 0) {
+  cat("No remaining games to simulate\n")
+  return(list(
+    final_records = current_records |>
+      mutate(
+        games_remaining = 0,
+        conf_games_remaining = 0,
+        mean_final_wins = wins,
+        median_final_wins = wins,
+        mean_conf_wins = if("conf_wins" %in% names(current_records)) conf_wins else 0,
+        median_conf_wins = if("conf_wins" %in% names(current_records)) conf_wins else 0,
+        sd_wins = 0,
+        min_wins = wins,
+        max_wins = max_wins,
+        prob_6plus = as.numeric(wins >= 6),
+        prob_8plus = as.numeric(wins >= 8),
+        prob_10plus = as.numeric(wins >= 10),
+        prob_undefeated = as.numeric(wins + losses == 0 | (wins > 0 & losses == 0)),
+        prob_win_out = NA_real_,
+        prob_lose_out = NA_real_,
+        prob_conf_win_out = NA_real_
+      ) |>
+      rename(current_wins = wins, current_losses = losses) |>
+      arrange(desc(mean_final_wins)),
+    remaining_games = remaining_games,
+    simulation_matrix = NULL
+  ))
+}
+
+# Full season with conference records
+sim_2025 <- simulate_season_progressive(
+  weekly_rankings = weekly_rankings,
+  full_elo_df = full_elo_df,
+  conf_df = conf_df,
+  season_num = 2025,
+  as_of_week = 7,
+  future_schedule = schedule_2025,
+  conference_games_only = FALSE,
+  n_sims = 10000
+)
+
+# View with conference records
+cat("\n2025 Projections with Conference Records:\n")
+sim_2025$final_records |>
+  select(team, 
+         overall = current_wins, 
+         conf = current_conf_wins,
+         overall_proj = mean_final_wins,
+         conf_proj = mean_conf_wins,
+         conf_remaining = conf_games_remaining,
+         prob_conf_win_out) |>
+  head(20)
+
+# Big Ten standings projection
+big_ten_2025 <- simulate_season_progressive(
+  weekly_rankings = weekly_rankings,
+  full_elo_df = full_elo_df,
+  conf_df = conf_df,
+  season_num = 2025,
+  as_of_week = 7,
+  future_schedule = schedule_2025,
+  conference_name = "Big Ten",
+  conference_games_only = FALSE,  # Get full records
+  n_sims = 10000
+)
+
+cat("\nBig Ten Standings:\n")
+big_ten_2025$final_records |>
+  mutate(
+    current_record = paste0(current_wins, "-", current_losses),
+    conf_record = paste0(current_conf_wins, "-", current_conf_losses),
+    proj_conf = paste0(round(mean_conf_wins, 1))
+  ) |>
+  arrange(desc(mean_conf_wins)) |>
+  select(team, current_record, conf_record, 
+         mean_conf_wins, prob_conf_win_out) |>
+  head(15)
+
+# Teams fighting for bowl eligibility with conference context
+sim_2025$final_records |>
+  filter(current_wins < 6) |>
+  mutate(
+    needs = 6 - current_wins,
+    conf_record = paste0(current_conf_wins, "-", current_conf_losses)
+  ) |>
+  select(team, current_wins, conf_record, needs, 
+         games_remaining, prob_6plus, mean_conf_wins) |>
+  arrange(desc(prob_6plus))

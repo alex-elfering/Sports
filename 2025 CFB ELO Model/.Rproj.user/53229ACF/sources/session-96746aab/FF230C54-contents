@@ -1,0 +1,11 @@
+weekly_rankings |>
+  filter(rank <= 10) |>
+  arrange(desc(rank_change)) |>
+  filter(season >= 1946)
+
+weekly_rankings |>
+  filter(rank_change < 0) |>
+  mutate(prev_rank = rank + rank_change) |>
+  filter(prev_rank <= 10) |>
+  arrange((rank_change)) |>
+  filter(season >= 2000)

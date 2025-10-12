@@ -78,9 +78,12 @@ create_weekly_rankings <- function(full_elo_df) {
   
   library(tidyverse)
   
-  #full_elo_df <-full_elo_df |> filter(season == 2025)
-  full_game_df <- create_full_game_records() |> select(-location) #|> filter(team == 'Mississippi',season==2025)
-  conf_df <- create_conf_df() |> select(season,team = school)
+  full_game_df <- create_full_game_records() |> 
+    select(-location) |>
+    # FIX: Remove duplicates that cause many-to-many
+    distinct(season, team, wk, .keep_all = TRUE)
+  
+  conf_df <- create_conf_df() |> select(season, team = school)
   
   # Step 1: For each team-week where they played, get their pre and post ELO
   games_played <- full_elo_df |>
@@ -95,7 +98,9 @@ create_weekly_rankings <- function(full_elo_df) {
     select(season, wk, team = team_a, 
            elo_entering_week = elo_a,
            elo_change_from_game,
-           game_result)
+           game_result) |>
+    # FIX: Also deduplicate games_played
+    distinct(season, wk, team, .keep_all = TRUE)
   
   # Step 2: Create complete season-week grid
   season_bounds <- full_elo_df |>
@@ -106,35 +111,32 @@ create_weekly_rankings <- function(full_elo_df) {
     distinct(season, team = team_a) |>
     left_join(season_bounds, by = "season") |>
     rowwise() |>
-    reframe(season = season, team = team, wk = 1:last_wk) |> as.data.frame()
+    reframe(season = season, team = team, wk = 1:last_wk) |> 
+    as.data.frame()
   
   # Step 3: Join and fill
   weekly_elo <- all_teams |>
-    #filter(team == 'Mississippi') |>
     left_join(games_played, by = c("season", "wk", "team")) |>
     arrange(season, team, wk) |>
     group_by(season, team) |>
     mutate(
-      elo_entering_week = ifelse(is.na(elo_entering_week),lag(elo_entering_week),elo_entering_week),
+      elo_entering_week = ifelse(is.na(elo_entering_week), lag(elo_entering_week), elo_entering_week),
       pre_elo = ifelse(is.na(elo_change_from_game), elo_entering_week + 0, elo_entering_week - elo_change_from_game),
-      ) |>
+    ) |>
     fill(pre_elo, .direction = c('up')) |>
     fill(pre_elo, .direction = c('down')) |>
-    mutate(post_elo = ifelse(is.na(elo_entering_week), pre_elo,elo_entering_week)) |>
+    mutate(post_elo = ifelse(is.na(elo_entering_week), pre_elo, elo_entering_week)) |>
     ungroup() |>
-    inner_join(conf_df) |>
+    inner_join(conf_df, by = c("season", "team")) |>
     # Calculate rankings
     group_by(season, wk) |>
     mutate(rank = min_rank(desc(post_elo))) |>
     ungroup() |>
-    #as.data.frame()
     # Add next opponent and changes
     arrange(season, team, wk) |>
-    #filter(team == 'Georgia',season == 2024) |>
     group_by(season, team) |>
-    inner_join(full_game_df,by = join_by(season, team, wk)) |>
+    inner_join(full_game_df, by = c("season", "team", "wk")) |>
     mutate(
-      #next_week_opp = lead(next_opp),
       next_week_info = if_else(is.na(next_week_opp), "Bye Week", 
                                paste0("vs. ", next_week_opp)),
       last_result = if_else(is.na(game_result), "Bye Week", game_result),
@@ -149,7 +151,6 @@ create_weekly_rankings <- function(full_elo_df) {
            elo_change = elo_change_from_game,
            last_result, next_week_info) |>
     arrange(season, wk, rank) |>
-    #fill(post_elo, .direction = c('down')) |>
     as.data.frame() 
   
   return(weekly_elo)
@@ -249,7 +250,7 @@ get_wlt_totals <- function(full_elo_df,conf_df){
  
  get_biggest_movers(weekly_rankings,1997,4)
  
- get_top_25(weekly_rankings,2024,7) |> as.data.frame() |> inner_join(weekly_season_wlt) |>
+ get_top_25(weekly_rankings,2014,15) |> as.data.frame() |> inner_join(weekly_season_wlt) |>
    select(season,
           wk,
           team,
@@ -259,4 +260,6 @@ get_wlt_totals <- function(full_elo_df,conf_df){
           rank_change,
           elo,
           last_result,
-          next_week_info)
+          next_week_info) |>
+   arrange((rank)) |>
+   head(25)

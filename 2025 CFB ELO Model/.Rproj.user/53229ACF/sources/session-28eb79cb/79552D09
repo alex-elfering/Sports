@@ -1,26 +1,26 @@
 {
-    "id": "8704E690",
-    "path": "~/GitHub/Sports/2025 CFB ELO Model/20250603 CFB ELO Model.R",
-    "project_path": "20250603 CFB ELO Model.R",
+    "id": "79552D09",
+    "path": "~/Sports Analysis/2024-04-07 full fbs scrape.R",
+    "project_path": null,
     "type": "r_source",
     "hash": "0",
     "contents": "",
     "dirty": false,
-    "created": 1749086285263.0,
+    "created": 1759619972245.0,
     "source_on_save": false,
-    "relative_order": 2,
+    "relative_order": 7,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "23,44",
-        "scrollLine": "9"
+        "cursorPosition": "151,34",
+        "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1759692049,
+    "lastKnownWriteTime": 1759698483,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1759692049068,
+    "last_content_update": 1759698483637,
     "read_only": false,
     "read_only_alternatives": []
 }

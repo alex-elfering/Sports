@@ -1,0 +1,175 @@
+simulate_season_progressive <- function(weekly_rankings, full_elo_df, conf_df,
+                                        season_num, as_of_week, 
+                                        future_schedule = NULL,
+                                        conference_name = NULL,
+                                        conference_games_only = FALSE,  # ADD THIS
+                                        n_sims = 10000) {
+  #' Simulate remaining games from a specific week using ELO at that point
+  #' 
+  #' @param weekly_rankings ELO ratings week by week
+  #' @param full_elo_df Complete game data
+  #' @param conf_df Conference membership
+  #' @param season_num Season year
+  #' @param as_of_week Week to simulate from (games after this are simulated)
+  #' @param future_schedule Optional: Full schedule for future games (for incomplete seasons)
+  #' @param conference_name Optional: limit to one conference
+  #' @param conference_games_only If TRUE, only simulate conference games (default FALSE = all games)
+  #' @param n_sims Number of simulations
+  #' @return List with win projections and championship probabilities
+  
+  # Get teams to simulate (all or conference only)
+  if(!is.null(conference_name)) {
+    teams_to_sim <- conf_df |>
+      filter(season == season_num, conf == conference_name) |>
+      pull(school)
+  } else {
+    # For future seasons, get teams from schedule if no historical data
+    if(!is.null(future_schedule) && season_num > max(full_elo_df$season, na.rm = TRUE)) {
+      teams_to_sim <- unique(future_schedule$team[future_schedule$season == season_num])
+    } else {
+      teams_to_sim <- unique(full_elo_df$team_a[full_elo_df$season == season_num])
+    }
+  }
+  
+  # Get actual results up to as_of_week - ALL GAMES (not just conference)
+  completed_games <- full_elo_df |>
+    filter(season == season_num, 
+           wk <= as_of_week,
+           team_a %in% teams_to_sim) |>  # All games for these teams
+    select(season, wk, team_a, team_b, result) |>
+    deduplicate_games()
+  
+  # Calculate current records (includes ALL games, not just conference)
+  current_records <- calculate_records_to_date(completed_games, teams_to_sim)
+  
+  # Get remaining games
+  if(!is.null(future_schedule)) {
+    # Use provided schedule for future games (2025 case)
+    remaining_games <- future_schedule |>
+      filter(season == season_num,
+             wk > as_of_week,
+             team %in% teams_to_sim,
+             opponent != "Bye Week") |>
+      # CHANGE THIS: Use conference_games_only parameter
+      filter(if(conference_games_only) opponent %in% teams_to_sim else TRUE) |>
+      # Convert to team_a/team_b format and deduplicate
+      select(season, wk, team_a = team, team_b = opponent, location) |>
+      deduplicate_games()
+    
+  } else {
+    # Use historical game results (past seasons)
+    remaining_games <- full_elo_df |>
+      filter(season == season_num,
+             wk > as_of_week,
+             team_a %in% teams_to_sim) |>  # CHANGED: removed team_b filter
+      # CHANGE THIS: Use conference_games_only parameter
+      filter(if(conference_games_only) team_b %in% teams_to_sim else TRUE) |>
+      select(season, wk, team_a, team_b, location) |>
+      deduplicate_games()
+  }
+  
+  if(nrow(remaining_games) == 0) {
+    cat("No remaining games to simulate\n")
+    # Return properly formatted empty result
+    return(list(
+      final_records = current_records |>
+        mutate(
+          games_remaining = 0,
+          mean_final_wins = wins,
+          median_final_wins = wins,
+          sd_wins = 0,
+          min_wins = wins,
+          max_wins = wins,
+          prob_6plus = as.numeric(wins >= 6),
+          prob_8plus = as.numeric(wins >= 8),
+          prob_10plus = as.numeric(wins >= 10),
+          prob_undefeated = as.numeric(wins + losses == 0 | (wins > 0 & losses == 0))
+        ) |>
+        rename(current_wins = wins, current_losses = losses) |>
+        arrange(desc(mean_final_wins)),
+      remaining_games = remaining_games,
+      simulation_matrix = NULL,
+      sample_standings = NULL
+    ))
+  }
+  
+  # Get ELO ratings as of the specified week
+  elo_as_of <- weekly_rankings |>
+    filter(season == season_num, wk == as_of_week) |>
+    select(team, elo)
+  
+  # Calculate win probabilities for remaining games
+  remaining_with_probs <- remaining_games |>
+    left_join(elo_as_of, by = c("team_a" = "team")) |>
+    rename(elo_a = elo) |>
+    left_join(elo_as_of, by = c("team_b" = "team")) |>
+    rename(elo_b = elo) |>
+    filter(!is.na(elo_a), !is.na(elo_b)) |>  # Remove games with missing ELO
+    mutate(
+      # Apply home advantage
+      elo_a_adj = elo_a + case_when(
+        location == '' | is.na(location) ~ 50,
+        location == '@' ~ -50,
+        location == 'N' ~ 0,
+        TRUE ~ 0
+      ),
+      elo_b_adj = elo_b + case_when(
+        location == '@' ~ 50,
+        location == '' | is.na(location) ~ -50,
+        location == 'N' ~ 0,
+        TRUE ~ 0
+      ),
+      win_prob_a = 1 / (1 + 10^(-(elo_a_adj - elo_b_adj) / 400))
+    )
+  
+  cat(sprintf("Simulating %s season %d from week %d\n", 
+              ifelse(is.null(conference_name), "full", conference_name),
+              season_num, as_of_week + 1))
+  cat(sprintf("Teams: %d, Completed games: %d, Remaining: %d\n",
+              length(teams_to_sim), nrow(completed_games), nrow(remaining_with_probs)))
+  
+  # Run simulations
+  sim_results <- run_season_simulations(
+    current_records = current_records,
+    remaining_games = remaining_with_probs,
+    n_sims = n_sims
+  )
+  
+  return(sim_results)
+}
+
+# Usage Examples:
+
+# Full season - ALL games (non-conference + conference)
+sim_2025_full <- simulate_season_progressive(
+  weekly_rankings = weekly_rankings,
+  full_elo_df = full_elo_df,
+  conf_df = conf_df,
+  season_num = 2025,
+  as_of_week = 7,
+  future_schedule = schedule_2025,
+  conference_games_only = FALSE,  # Include ALL remaining games
+  n_sims = 10000
+)
+
+# Check - should have ~12 total games
+sim_2025_full$final_records |>
+  mutate(total_games = current_wins + current_losses + games_remaining) |>
+  select(team, current_wins, current_losses, games_remaining, total_games, mean_final_wins) |>
+  head(25) |>
+  as.data.frame()
+
+# Conference championship - only conference games
+big_ten_2025 <- simulate_season_progressive(
+  weekly_rankings = weekly_rankings,
+  full_elo_df = full_elo_df,
+  conf_df = conf_df,
+  season_num = 2025,
+  as_of_week = 8,
+  future_schedule = schedule_2025,
+  conference_name = "Big Ten",
+  conference_games_only = T,  # Only Big Ten games
+  n_sims = 10000
+)
+
+big_ten_2025[[1]] |> as.data.frame() 
