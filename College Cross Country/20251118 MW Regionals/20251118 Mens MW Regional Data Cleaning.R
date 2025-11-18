@@ -19,9 +19,12 @@ time_to_decimal <- function(time_string) {
 }
 
 decimal_to_time <- function(decimal_mins) {
-  minutes <- floor(decimal_mins)
-  seconds <- (decimal_mins - minutes) * 60
-  return(sprintf("%d:%04.1f", minutes, seconds))
+  # Vectorized version - handle vectors of values
+  sign <- ifelse(decimal_mins < 0, "-", "")
+  decimal_mins_abs <- abs(decimal_mins)
+  minutes <- floor(decimal_mins_abs)
+  seconds <- (decimal_mins_abs - minutes) * 60
+  return(sprintf("%s%d:%04.1f", sign, minutes, seconds))
 }
 
 
