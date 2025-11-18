@@ -181,31 +181,6 @@ run_season_simulations <- function(current_records, remaining_games, n_sims) {
 # Also update the early return case in simulate_season_progressive:
 # Find this section and add the two new columns:
 
-if(nrow(remaining_games) == 0) {
-  cat("No remaining games to simulate\n")
-  return(list(
-    final_records = current_records |>
-      mutate(
-        games_remaining = 0,
-        mean_final_wins = wins,
-        median_final_wins = wins,
-        sd_wins = 0,
-        min_wins = wins,
-        max_wins = wins,
-        prob_6plus = as.numeric(wins >= 6),
-        prob_8plus = as.numeric(wins >= 8),
-        prob_10plus = as.numeric(wins >= 10),
-        prob_undefeated = as.numeric(wins + losses == 0 | (wins > 0 & losses == 0)),
-        prob_win_out = NA_real_,   # NEW
-        prob_lose_out = NA_real_   # NEW
-      ) |>
-      rename(current_wins = wins, current_losses = losses) |>
-      arrange(desc(mean_final_wins)),
-    remaining_games = remaining_games,
-    simulation_matrix = NULL
-  ))
-}
-
 ################################################################################
 # MAIN SIMULATION FUNCTION
 ################################################################################
@@ -217,17 +192,6 @@ simulate_season_progressive <- function(weekly_rankings, full_elo_df, conf_df,
                                         conference_games_only = FALSE,
                                         n_sims = 10000) {
   #' Simulate remaining games from a specific week using ELO at that point
-  #' 
-  #' @param weekly_rankings ELO ratings week by week
-  #' @param full_elo_df Complete game data
-  #' @param conf_df Conference membership
-  #' @param season_num Season year
-  #' @param as_of_week Week to simulate from
-  #' @param future_schedule Optional: Full schedule for future games
-  #' @param conference_name Optional: limit to one conference
-  #' @param conference_games_only If TRUE, only simulate conference games
-  #' @param n_sims Number of simulations
-  #' @return List with win projections
   
   # Get teams to simulate
   if(!is.null(conference_name)) {
@@ -273,6 +237,7 @@ simulate_season_progressive <- function(weekly_rankings, full_elo_df, conf_df,
       deduplicate_games()
   }
   
+  # NOW check if empty - AFTER remaining_games exists
   if(nrow(remaining_games) == 0) {
     cat("No remaining games to simulate\n")
     return(list(
@@ -287,7 +252,9 @@ simulate_season_progressive <- function(weekly_rankings, full_elo_df, conf_df,
           prob_6plus = as.numeric(wins >= 6),
           prob_8plus = as.numeric(wins >= 8),
           prob_10plus = as.numeric(wins >= 10),
-          prob_undefeated = as.numeric(wins + losses == 0 | (wins > 0 & losses == 0))
+          prob_undefeated = as.numeric(wins + losses == 0 | (wins > 0 & losses == 0)),
+          prob_win_out = NA_real_,
+          prob_lose_out = NA_real_
         ) |>
         rename(current_wins = wins, current_losses = losses) |>
         arrange(desc(mean_final_wins)),
@@ -469,7 +436,7 @@ sim_2025 <- simulate_season_progressive(
 cat("\nTeams Most Likely to Win Out:\n")
 sim_2025$final_records |>
   filter(games_remaining > 0) |>
-  arrange(desc(prob_lose_out)) |>
+  arrange(desc(prob_win_out)) |>
   select(team, current_wins, current_losses, games_remaining, 
          mean_final_wins, prob_win_out, prob_lose_out) |>
   head(15)
@@ -535,7 +502,7 @@ big_ten_2025 <- simulate_season_progressive(
   season_num = 2025,
   as_of_week = 8,
   future_schedule = schedule_2025,
-  conference_name = "SEC",
+  conference_name = "Big Ten",
   conference_games_only = TRUE,
   n_sims = 10000
 )

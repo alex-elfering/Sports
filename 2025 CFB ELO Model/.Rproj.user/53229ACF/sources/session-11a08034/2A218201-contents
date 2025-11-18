@@ -1,0 +1,327 @@
+library(tidyverse)
+
+# Function to calculate quality losses ----
+calculate_quality_losses <- function(full_elo_df, weekly_rankings) {
+  #' Track quality losses and how they've aged over time
+  #' 
+  #' @param full_elo_df Game results with ELO ratings
+  #' @param weekly_rankings Week-by-week ELO ratings
+  #' @return Data frame with quality loss metrics
+  
+  # Get only losses
+  losses_only <- full_elo_df |>
+    filter(result == "L") |>
+    select(season, wk, team = team_a, opponent = team_b, 
+           location, pts, opp, elo_team = elo_a, elo_opp = elo_b)
+  
+  # For each loss, track how opponent's ELO evolved rest of season
+  quality_losses <- losses_only |>
+    left_join(
+      weekly_rankings |>
+        group_by(season, team) |>
+        summarise(
+          final_week = max(wk),
+          final_elo = elo[wk == max(wk)],
+          .groups = "drop"
+        ),
+      by = c("season" = "season", "opponent" = "team")
+    ) |>
+    mutate(
+      # How opponent's ELO changed after beating you
+      elo_change = final_elo - elo_opp,
+      elo_pct_change = (final_elo - elo_opp) / elo_opp * 100,
+      
+      # Quality metrics
+      quality_score = elo_opp,  # Opponent's ELO at time of game
+      aged_quality = final_elo,  # How good opponent ended up
+      
+      # Margin of defeat
+      margin = opp - pts,
+      
+      # Loss classification
+      loss_type = case_when(
+        elo_team > elo_opp + 100 ~ "Bad Loss (upset)",
+        elo_team > elo_opp ~ "Slight Upset",
+        elo_opp > elo_team + 100 ~ "Expected Loss",
+        TRUE ~ "Competitive Loss"
+      ),
+      
+      # Trending classification
+      trend = case_when(
+        elo_change > 50 ~ "Beat future powerhouse",
+        elo_change > 0 ~ "Beat rising team",
+        elo_change > -50 ~ "Beat declining team",
+        TRUE ~ "Beat collapsing team"
+      ),
+      
+      # Is this a "good loss"?
+      good_loss = case_when(
+        elo_opp >= 2100 & margin <= 7 ~ "Elite team, close game",
+        elo_opp >= 2000 & margin <= 14 ~ "Top team, competitive",
+        final_elo >= 2100 ~ "Lost to future powerhouse",
+        elo_opp >= 1900 ~ "Respectable loss",
+        TRUE ~ "Questionable loss"
+      )
+    )
+  
+  return(quality_losses)
+}
+
+# Function to get team's "best" losses ----
+get_team_best_losses <- function(quality_losses_df, team_name, season_num, n = 5) {
+  #' Get a team's most excusable/quality losses
+  #' 
+  #' @param quality_losses_df Output from calculate_quality_losses()
+  #' @param team_name Team to analyze
+  #' @param season_num Season year
+  #' @param n Number of losses to return
+  #' @return Top N "quality losses" ranked by opponent ELO
+  
+  quality_losses_df |>
+    filter(team == team_name, season == season_num) |>
+    arrange(desc(quality_score)) |>
+    head(n) |>
+    select(wk, opponent, location, score = pts, opp_score = opp,
+           margin, opp_elo = elo_opp, final_opp_elo = final_elo, 
+           elo_change, good_loss, trend)
+}
+
+# Function to find bad losses ----
+get_team_bad_losses <- function(quality_losses_df, team_name, season_num) {
+  #' Identify a team's worst/most damaging losses
+  #' 
+  #' @param quality_losses_df Output from calculate_quality_losses()
+  #' @param team_name Team to analyze
+  #' @param season_num Season year
+  #' @return Worst losses (low opponent ELO or opponent collapsed)
+  
+  quality_losses_df |>
+    filter(team == team_name, season == season_num) |>
+    mutate(
+      badness_score = (2000 - elo_opp) + (100 - elo_change)  # Lower opp ELO + bigger drop = worse
+    ) |>
+    arrange(desc(badness_score)) |>
+    select(wk, opponent, location, margin, opp_elo = elo_opp, 
+           final_opp_elo = final_elo, elo_change, loss_type, trend) |>
+    head(5)
+}
+
+# Function to analyze loss aging ----
+get_loss_aging_analysis <- function(quality_losses_df, team_name, season_num) {
+  #' Analyze how a team's losses have aged
+  #' 
+  #' @return List with losses that look better/worse in hindsight
+  
+  team_losses <- quality_losses_df |>
+    filter(team == team_name, season == season_num)
+  
+  # Losses that aged well (opponent got much better)
+  aged_well <- team_losses |>
+    arrange(desc(elo_change)) |>
+    head(3) |>
+    select(wk, opponent, opp_elo = elo_opp, final_opp_elo = final_elo,
+           elo_change, margin, trend)
+  
+  # Losses that aged poorly (opponent collapsed)
+  aged_poorly <- team_losses |>
+    arrange(elo_change) |>
+    head(3) |>
+    select(wk, opponent, opp_elo = elo_opp, final_opp_elo = final_elo,
+           elo_change, margin, trend)
+  
+  list(aged_well = aged_well, aged_poorly = aged_poorly)
+}
+
+# Function to compare teams' loss quality ----
+compare_loss_quality <- function(quality_losses_df, teams, season_num) {
+  #' Compare quality of losses between teams (for playoff/ranking debates)
+  #' 
+  #' @param quality_losses_df Output from calculate_quality_losses()
+  #' @param teams Vector of team names
+  #' @param season_num Season year
+  #' @return Comparison of loss résumés
+  
+  quality_losses_df |>
+    filter(team %in% teams, season == season_num) |>
+    group_by(team) |>
+    summarise(
+      total_losses = n(),
+      avg_opponent_elo = mean(elo_opp),
+      best_loss_elo = max(elo_opp),  # Highest quality loss
+      best_loss_to = opponent[which.max(elo_opp)],
+      worst_loss_elo = min(elo_opp),  # Most damaging loss
+      worst_loss_to = opponent[which.min(elo_opp)],
+      losses_to_2100plus = sum(elo_opp >= 2100),  # Elite opponent losses
+      losses_to_sub1800 = sum(elo_opp < 1800),    # Bad losses
+      avg_margin = mean(margin),
+      close_losses = sum(margin <= 7),
+      avg_aging = mean(elo_change),
+      losses_aged_well = sum(elo_change > 0),
+      .groups = "drop"
+    ) |>
+    arrange(total_losses, desc(avg_opponent_elo))
+}
+
+# Function to identify "good losses" for résumé ----
+identify_good_losses <- function(quality_losses_df, season_num, min_opp_elo = 2000) {
+  #' Find losses that shouldn't hurt a team's ranking
+  #' 
+  #' @param quality_losses_df Output from calculate_quality_losses()
+  #' @param season_num Season year
+  #' @param min_opp_elo Minimum opponent ELO to be "quality"
+  #' @return Teams with quality losses
+  
+  quality_losses_df |>
+    filter(season == season_num, elo_opp >= min_opp_elo) |>
+    arrange(desc(elo_opp)) |>
+    select(team, wk, opponent, location, margin, 
+           elo_team, elo_opp, final_elo,  # Changed from final_opp_elo
+           elo_change, good_loss, trend)
+}
+
+# Visualization: Loss quality timeline ----
+plot_loss_quality_timeline <- function(quality_losses_df, team_name, season_num) {
+  #' Visualize a team's losses with aging analysis
+  
+  library(ggplot2)
+  
+  team_data <- quality_losses_df |>
+    filter(team == team_name, season == season_num)
+  
+  if(nrow(team_data) == 0) {
+    return(ggplot() + 
+             labs(title = glue::glue("{team_name} - Undefeated in {season_num}!")) +
+             theme_minimal())
+  }
+  
+  ggplot(team_data, aes(x = wk, y = elo_opp)) +
+    geom_segment(aes(xend = wk, y = elo_opp, yend = final_elo, 
+                     color = elo_change > 0),
+                 arrow = arrow(length = unit(0.2, "cm")), 
+                 size = 1, alpha = 0.7) +
+    geom_point(aes(size = elo_opp, fill = margin), 
+               shape = 21, color = "black", stroke = 1.5) +
+    geom_text(aes(label = opponent), hjust = -0.1, size = 3) +
+    scale_color_manual(values = c("FALSE" = "#d7191c", "TRUE" = "#2c7bb6"),
+                       labels = c("Opponent declined", "Opponent improved")) +
+    scale_fill_gradient2(low = "#2166ac", mid = "#f7f7f7", high = "#b2182b",
+                         midpoint = 14, name = "Margin") +
+    geom_hline(yintercept = 2000, linetype = "dashed", alpha = 0.5) +
+    labs(
+      title = glue::glue("{team_name} - {season_num} Season Loss Analysis"),
+      subtitle = "Size = opponent ELO, Color = margin, Arrows = how opponent finished",
+      x = "Week",
+      y = "Opponent ELO Rating",
+      color = "Opponent Trend"
+    ) +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+}
+
+# Combined win/loss quality profile ----
+get_complete_resume <- function(quality_wins_df, quality_losses_df, 
+                                team_name, season_num) {
+  #' Get complete picture of team's wins and losses
+  
+  wins_summary <- quality_wins_df |>
+    filter(team == team_name, season == season_num) |>
+    summarise(
+      total_wins = n(),
+      avg_win_quality = mean(elo_opp),
+      best_win_elo = max(elo_opp),
+      best_win_vs = opponent[which.max(elo_opp)],
+      elite_wins = sum(elo_opp >= 2000)
+    )
+  
+  losses_summary <- quality_losses_df |>
+    filter(team == team_name, season == season_num) |>
+    summarise(
+      total_losses = n(),
+      avg_loss_quality = mean(elo_opp),
+      worst_loss_elo = min(elo_opp),
+      worst_loss_to = opponent[which.min(elo_opp)],
+      bad_losses = sum(elo_opp < 1800)
+    )
+  
+  bind_cols(
+    team = team_name,
+    season = season_num,
+    wins_summary,
+    losses_summary
+  )
+}
+
+# Usage Examples ----
+
+# Calculate all quality losses
+quality_losses <- calculate_quality_losses(full_elo_df, weekly_rankings)
+
+# Get Michigan's "best" losses (most excusable)
+michigan_quality_losses <- get_team_best_losses(quality_losses, "Iowa", 2025)
+print(michigan_quality_losses)
+
+# Find Michigan's worst/most damaging losses
+michigan_bad_losses <- get_team_bad_losses(quality_losses, "Nebraska", 2025)
+print(michigan_bad_losses)
+
+# Analyze how losses aged
+michigan_loss_aging <- get_loss_aging_analysis(quality_losses, "Nebraska", 2025)
+print("Losses that aged well:")
+print(michigan_loss_aging$aged_well)
+print("Losses that aged poorly:")
+print(michigan_loss_aging$aged_poorly)
+
+# Compare playoff contenders' loss quality
+contenders <- c("Georgia", "Ohio State", "Michigan", "Alabama")
+loss_comparison <- compare_loss_quality(quality_losses, contenders, 2024)
+print(loss_comparison)
+
+# Find all "good losses" in 2024
+good_losses_2024 <- identify_good_losses(quality_losses, 2025, min_opp_elo = 2100)
+print(good_losses_2024)
+
+# Visualize
+plot_loss_quality_timeline(quality_losses, "Ohio State", 2002)
+
+# Complete résumé (wins + losses)
+quality_wins <- calculate_quality_wins(full_elo_df, weekly_rankings)
+ohio_state_resume <- get_complete_resume(quality_wins, quality_losses, 
+                                         "Nebraska", 2025)
+print(ohio_state_resume)
+
+# Create GT table for loss quality comparison
+loss_comparison |>
+  gt() |>
+  tab_header(
+    title = "2024 Playoff Contenders - Loss Quality Comparison",
+    subtitle = "Which team has the most excusable losses?"
+  ) |>
+  fmt_number(columns = c(avg_opponent_elo, best_loss_elo, worst_loss_elo, 
+                         avg_margin), decimals = 1) |>
+  cols_label(
+    team = "Team",
+    total_losses = "Losses",
+    avg_opponent_elo = "Avg Opp ELO",
+    best_loss_elo = "Best Loss ELO",
+    best_loss_to = "Best Loss To",
+    worst_loss_elo = "Worst Loss ELO",
+    worst_loss_to = "Worst Loss To",
+    losses_to_2100plus = "Elite Opp Losses",
+    losses_to_sub1800 = "Bad Losses",
+    avg_margin = "Avg Margin",
+    close_losses = "Close Losses (≤7)"
+  ) |>
+  data_color(
+    columns = losses_to_sub1800,
+    colors = scales::col_numeric(
+      palette = c("#ffffff", "#d7191c"),
+      domain = c(0, 3)
+    )
+  ) |>
+  data_color(
+    columns = losses_to_2100plus,
+    colors = scales::col_numeric(
+      palette = c("#ffffff", "#2c7bb6"),
+      domain = c(0, 3)
+    )
+  )

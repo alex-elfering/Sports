@@ -1,0 +1,242 @@
+library(tidyverse)
+
+# Function to calculate quality wins ----
+calculate_quality_wins <- function(full_elo_df, weekly_rankings) {
+  #' Track quality wins and how they've aged over time
+  #' 
+  #' @param full_elo_df Game results with ELO ratings
+  #' @param weekly_rankings Week-by-week ELO ratings
+  #' @return Data frame with quality win metrics
+  
+  # Get only wins
+  wins_only <- full_elo_df |>
+    filter(result == "W") |>
+    select(season, wk, team = team_a, opponent = team_b, 
+           location, pts, opp, elo_team = elo_a, elo_opp = elo_b)
+  
+  # For each win, track how opponent's ELO evolved rest of season
+  quality_wins <- wins_only |>
+    left_join(
+      weekly_rankings |>
+        group_by(season, team) |>
+        summarise(
+          final_week = max(wk),
+          final_elo = elo[wk == max(wk)],
+          .groups = "drop"
+        ),
+      by = c("season" = "season", "opponent" = "team")
+    ) |>
+    mutate(
+      # How opponent's ELO changed after the loss
+      elo_change = final_elo - elo_opp,
+      elo_pct_change = (final_elo - elo_opp) / elo_opp * 100,
+      
+      # Quality metrics
+      quality_score = elo_opp,  # Simple: opponent's ELO at time of game
+      aged_quality = final_elo,  # How good opponent ended up
+      
+      # Trending classification
+      trend = case_when(
+        elo_change > 50 ~ "Surging",
+        elo_change <= 50 & elo_change > 0 ~ "Rising",
+        elo_change == 0 ~ "Flat",
+        elo_change > -50 ~ "Declining",
+        elo_change > -50 ~ "Plunge",
+        TRUE ~ "Falling"
+      )
+    )
+  
+  return(quality_wins)
+}
+
+# Function to get team's best wins ----
+get_team_best_wins <- function(quality_wins_df, team_name, season_num, n = 5) {
+  #' Get a team's best wins for a season
+  #' 
+  #' @param quality_wins_df Output from calculate_quality_wins()
+  #' @param team_name Team to analyze
+  #' @param season_num Season year
+  #' @param n Number of top wins to return
+  #' @return Top N wins ranked by opponent ELO
+  
+  quality_wins_df |>
+    filter(team == team_name, season == season_num) |>
+    arrange(desc(quality_score)) |>
+    head(n) |>
+    select(wk, opponent, location, score = pts, opp_score = opp,
+           opp_elo = elo_opp, final_opp_elo = final_elo, 
+           elo_change, trend)
+}
+
+# Function to find wins that aged best/worst ----
+get_aging_wins <- function(quality_wins_df, team_name, season_num) {
+  #' Find which wins aged best (opponent got better) or worst (opponent fell apart)
+  #' 
+  #' @param quality_wins_df Output from calculate_quality_wins()
+  #' @param team_name Team to analyze
+  #' @param season_num Season year
+  #' @return List with best_aged and worst_aged wins
+  
+  team_wins <- quality_wins_df |>
+    filter(team == team_name, season == season_num)
+  
+  best_aged <- team_wins |>
+    arrange(desc(elo_change)) |>
+    head(5) |>
+    select(wk, opponent, opp_elo = elo_opp, final_opp_elo = final_elo, 
+           elo_change, elo_pct_change, trend)
+  
+  worst_aged <- team_wins |>
+    arrange(elo_change) |>
+    head(5) |>
+    select(wk, opponent, opp_elo = elo_opp, final_opp_elo = final_elo, 
+           elo_change, elo_pct_change, trend)
+  
+  list(best_aged = best_aged, worst_aged = worst_aged)
+}
+
+# Function to get season's best wins across all teams ----
+get_season_best_wins <- function(quality_wins_df, season_num, min_opp_elo = 1800) {
+  #' Find the highest quality wins in a season
+  #' 
+  #' @param quality_wins_df Output from calculate_quality_wins()
+  #' @param season_num Season year
+  #' @param min_opp_elo Minimum opponent ELO to consider
+  #' @return Top quality wins for the season
+  
+  quality_wins_df |>
+    filter(season == season_num, elo_opp >= min_opp_elo) |>
+    arrange(desc(quality_score)) |>
+    select(wk, team, opponent, location, elo_team, elo_opp, 
+           final_elo, elo_change, trend) |>
+    mutate(upset = elo_team < elo_opp)
+}
+
+# Function to compare teams' résumés ----
+compare_team_resumes <- function(quality_wins_df, teams, season_num) {
+  #' Compare quality of wins between multiple teams
+  #' 
+  #' @param quality_wins_df Output from calculate_quality_wins()
+  #' @param teams Vector of team names to compare
+  #' @param season_num Season year
+  #' @return Comparison metrics
+  
+  quality_wins_df |>
+    filter(team %in% teams, season == season_num) |>
+    group_by(team) |>
+    summarise(
+      total_wins = n(),
+      avg_opp_elo = mean(elo_opp),
+      best_win_elo = max(elo_opp),
+      best_win_opp = opponent[which.max(elo_opp)],
+      wins_vs_1900plus = sum(elo_opp >= 1900),
+      wins_vs_2000plus = sum(elo_opp >= 2000),
+      wins_vs_2100plus = sum(elo_opp >= 2100),
+      avg_aging = mean(elo_change),
+      rising_opponents = sum(trend %in% c("Rising", "Surging")),
+      falling_opponents = sum(trend %in% c("Declining", "Falling")),
+      .groups = "drop"
+    ) |>
+    arrange(desc(best_win_elo))
+}
+
+# Visualization: Win quality over time ----
+plot_win_quality_timeline <- function(quality_wins_df, team_name, season_num) {
+  #' Plot a team's wins colored by opponent quality
+  #' 
+  #' @param quality_wins_df Output from calculate_quality_wins()
+  #' @param team_name Team to plot
+  #' @param season_num Season year
+  
+  library(ggplot2)
+  
+  team_data <- quality_wins_df |>
+    filter(team == team_name, season == season_num)
+  
+  ggplot(team_data, aes(x = wk, y = elo_opp)) +
+    geom_segment(aes(xend = wk, y = elo_opp, yend = final_elo, color = trend),
+                 arrow = arrow(length = unit(0.2, "cm")), 
+                 size = 1, alpha = 0.7) +
+    geom_point(aes(size = elo_opp, color = trend)) +
+    geom_text(aes(label = opponent), vjust = -1, size = 3) +
+    scale_color_manual(values = c(
+      "Surging" = "#2c7bb6",
+      "Rising" = "#abd9e9",
+      "Declining" = "#fdae61",
+      "Falling" = "#d7191c"
+    )) +
+    labs(
+      title = glue::glue("{team_name} - {season_num} Season Win Quality"),
+      subtitle = "Arrows show how opponent's ELO changed after loss",
+      x = "Week",
+      y = "Opponent ELO Rating",
+      color = "Opponent Trend",
+      size = "Opponent ELO"
+    ) +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+}
+
+# Usage Examples ----
+
+# Calculate all quality wins
+quality_wins <- calculate_quality_wins(full_elo_df, weekly_rankings)
+
+# Get Michigan's best wins in 2024
+michigan_best <- get_team_best_wins(quality_wins, "Ohio", 2017, n = 5)
+print(michigan_best)
+
+# See which Michigan wins aged best/worst
+michigan_aging <- get_aging_wins(quality_wins, "Alabama", 2006)
+print("Best Aged Wins:")
+print(michigan_aging$best_aged)
+print("Worst Aged Wins:")
+print(michigan_aging$worst_aged)
+
+# Find season's best wins overall
+best_wins_2024 <- get_season_best_wins(quality_wins, 2024, min_opp_elo = 2000)
+print(best_wins_2024)
+
+# Compare playoff contenders' résumés
+contenders <- c("Alabama","Miami (FL)","UCLA","Texas","Oklahoma","Auburn","Kansas")
+resume_comparison <- compare_team_resumes(quality_wins, contenders, 1995)
+print(resume_comparison)
+
+# Visualize
+plot_win_quality_timeline(quality_wins, "Northwestern", 1995)
+
+# Create a quality wins summary table
+quality_summary <- quality_wins |>
+  filter(season == 2025) |>
+  group_by(team) |>
+  summarise(
+    wins = n(),
+    top_win_elo = max(elo_opp),
+    top_win_vs = opponent[which.max(elo_opp)],
+    avg_win_quality = mean(elo_opp),
+    best_aged_win = opponent[which.max(elo_change)],
+    best_aged_gain = max(elo_change),
+    .groups = "drop"
+  ) |>
+  arrange(desc(top_win_elo))
+
+# Use with GT table
+library(gt)
+
+quality_summary |>
+  #head(25) |>
+  gt() |>
+  tab_header(
+    title = "2024 Season - Quality Wins Leaderboard",
+    subtitle = "Teams with the best victories by opponent ELO"
+  ) |>
+  fmt_number(columns = c(top_win_elo, avg_win_quality, best_aged_gain), decimals = 0) |>
+  cols_label(
+    team = "Team",
+    wins = "Wins",
+    top_win_elo = "Best Win ELO",
+    top_win_vs = "Best Win vs.",
+    avg_win_quality = "Avg Win Quality",
+    best_aged_win = "Best Aged Win",
+    best_aged_gain = "ELO Gain"
+  )

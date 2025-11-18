@@ -248,9 +248,9 @@ get_wlt_totals <- function(full_elo_df,conf_df){
  
  #get_team_season_trajectory(weekly_rankings, team_name = 'Kansas State',2014)
  
- get_biggest_movers(weekly_rankings,1997,4)
+ get_biggest_movers(weekly_rankings,2025,10)
  
- get_top_25(weekly_rankings,2025,9) |> as.data.frame() |> inner_join(weekly_season_wlt) |>
+ get_top_25(weekly_rankings,2025,10) |> as.data.frame() |> inner_join(weekly_season_wlt) |>
    select(season,
           wk,
           team,
