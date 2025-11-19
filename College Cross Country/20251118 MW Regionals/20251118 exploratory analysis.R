@@ -87,7 +87,7 @@ mens_mw_clean |>
     total_tier_changes = sum(tier_change, na.rm = TRUE)
   )
 
-# ----  largest jumps in places by split
+# ----  largest jumps in places by split  ----
 mens_mw_clean |>
   group_by(split) |>
   mutate(split_rank = dense_rank(split_diff_decimal)) |>
@@ -134,3 +134,35 @@ first_second_split_halves_df <- first_second_halves |>
   as.data.frame() |>
   select(-contains('decimal'),
          -plus_minus)
+
+
+#   ----  largest movers based on place between 2000m and 10000m  ----
+
+max_place <- max(mens_mw_clean$place, na.rm = TRUE)
+
+jumpers <- mens_mw_clean |>
+  filter(split %in% c(2000,10000)) |>
+  select(athlete,
+         class,
+         school,
+         split,
+         place) |>
+  pivot_wider(names_from = split,
+              values_from = place) |>
+  clean_names() |>
+  mutate(change = x2000-x10000,
+         moved_up_rank = dense_rank(desc(change))) |>
+  filter(dense_rank(desc(change)) <= 10) |>
+  arrange(desc(change))
+
+#   ----  who either ran fast or similar pace during the last 2k vs. the other 8k?  ----
+
+mens_mw_clean |>
+  mutate(rate_per_km = time_decimal/(split/1000)) |>
+  group_by(split) |>
+  mutate(avg_min_km = median(rate_per_km,na.rm = T)) |>
+  ungroup() |>
+  mutate(change = decimal_to_time(rate_per_km-avg_min_km )) |>
+  arrange((rate_per_km-avg_min_km)) |>
+  as.data.frame()
+
