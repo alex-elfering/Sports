@@ -128,6 +128,9 @@ first_second_halves <- mens_mw_clean |>
 median_split <- median(first_second_halves$plus_minus)
 average_split <- mean(first_second_halves$plus_minus)
 
+decimal_to_time(median_split)
+decimal_to_time(average_split)
+
 first_second_split_halves_df <- first_second_halves |>
   filter(plus_minus < average_split) |>
   filter(dense_rank(plus_minus) <= 26) |>
@@ -155,14 +158,41 @@ jumpers <- mens_mw_clean |>
   filter(dense_rank(desc(change)) <= 10) |>
   arrange(desc(change))
 
+jumpers
+
 #   ----  who either ran fast or similar pace during the last 2k vs. the other 8k?  ----
 
-mens_mw_clean |>
-  mutate(rate_per_km = time_decimal/(split/1000)) |>
+acceleration_analysis <- mens_mw_clean |>
+  group_by(athlete, school) |>
+  arrange(athlete, split) |>
+  mutate(
+    # Distance and time for THIS segment only
+    segment_distance = split - lag(split, default = 0),
+    segment_time = split_diff_decimal,
+    
+    # Pace for this segment in min/km
+    segment_pace_per_km = (segment_time / segment_distance) * 1000
+  ) |>
+  filter(!is.na(segment_pace_per_km)) |>
   group_by(split) |>
-  mutate(avg_min_km = median(rate_per_km,na.rm = T)) |>
+  mutate(
+    # Median segment pace for this split across all runners
+    median_segment_pace = median(segment_pace_per_km, na.rm = TRUE),
+    
+    # How much faster/slower than median for this segment
+    pace_diff = segment_pace_per_km - median_segment_pace,
+    pace_diff_formatted = decimal_to_time(pace_diff)
+  ) |>
   ungroup() |>
-  mutate(change = decimal_to_time(rate_per_km-avg_min_km )) |>
-  arrange((rate_per_km-avg_min_km)) |>
-  as.data.frame()
+  arrange(athlete, split)
 
+
+acceleration_analysis |>
+  filter(athlete == 'Luke Knepp') |>
+  ggplot() +
+  geom_line(mapping = aes(x = split,
+                          y = median_segment_pace),
+            linetype = 'dashed') +
+  geom_line(mapping = aes(x = split,
+                          y = segment_pace_per_km)) +
+  scale_y_reverse()

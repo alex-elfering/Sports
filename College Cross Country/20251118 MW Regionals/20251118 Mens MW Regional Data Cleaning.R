@@ -27,6 +27,11 @@ decimal_to_time <- function(decimal_mins) {
   return(sprintf("%s%d:%04.1f", sign, minutes, seconds))
 }
 
+time_to_seconds <- function(time_str) {
+  parts <- str_split(time_str, ":")[[1]]
+  as.numeric(parts[1]) * 60 + as.numeric(parts[2])
+}
+
 
 # ----  data cleaning ----
 mens_mw_clean <- mens_midwest_regionals_25 |>
