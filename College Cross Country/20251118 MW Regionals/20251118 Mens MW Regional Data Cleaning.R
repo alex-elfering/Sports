@@ -34,6 +34,15 @@ time_to_seconds <- function(time_str) {
 
 
 # ----  data cleaning ----
+
+# school information
+mens_midwest_regionals_25 |>
+  clean_names() |>
+  distinct(school,
+           athlete,
+           class) |>
+  write.csv('roster.csv')
+
 mens_mw_clean <- mens_midwest_regionals_25 |>
   clean_names() |>
   # Pivot times
@@ -62,6 +71,7 @@ mens_mw_clean <- mens_midwest_regionals_25 |>
     time_formatted = format(time, "%M:%OS1"),
     time_formatted = sub("^0", "", time_formatted),
     time_decimal = sapply(time_formatted, time_to_decimal),
+    #time_seconds = map_dbl(time_formatted, time_to_seconds),
     split = as.numeric(gsub('[xm]','',split))
   ) |>
   group_by(school, athlete) |>
@@ -73,5 +83,4 @@ mens_mw_clean <- mens_midwest_regionals_25 |>
                         NA_character_),
     place_diff = lag(place)-place
   ) |>
-  ungroup() |>
-  select(-time)
+  ungroup()
