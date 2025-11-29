@@ -47,7 +47,7 @@ mens_mw_clean <- mens_midwest_regionals_25 |>
   clean_names() |>
   # Pivot times
   pivot_longer(
-    cols = matches("^x\\d+m$"),  # Matches columns like x2000m, x3300m, etc.
+    cols = matches("^x\\d+K$"),  # Matches columns like x2000m, x3300m, etc.
     names_to = "split",
     values_to = "time"
   ) |>
@@ -72,7 +72,7 @@ mens_mw_clean <- mens_midwest_regionals_25 |>
     time_formatted = sub("^0", "", time_formatted),
     time_decimal = sapply(time_formatted, time_to_decimal),
     #time_seconds = map_dbl(time_formatted, time_to_seconds),
-    split = as.numeric(gsub('[xm]','',split))
+    split = as.numeric(gsub('[xk]','',split))
   ) |>
   group_by(school, athlete) |>
   arrange(school, athlete, split) |>
