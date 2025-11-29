@@ -10,7 +10,13 @@ library(ggbeeswarm)
 library(glue)
 library(gt)
 library(colorspace)
-library(ggpattern)
+library(showtext)
+
+# fonts fonts fonts
+
+font_add_google("IBM Plex Sans", "ibm")
+font_add_google("Noto Sans","noto")
+
 
 # variable testing
 
@@ -128,7 +134,7 @@ mens_10k_times |>
   ) +
   labs(x = '',
        y = '10k Race Time (minutes)',
-       caption = 'Visualization by Alex Elfering; Source: Data manually pulled from NCAA and PrimeTime Timing',
+       caption = '\nVisualization by Alex Elfering; Source: Data manually pulled from NCAA and PrimeTime Timing',
        color = '') +
   theme(
     legend.position = "top",
