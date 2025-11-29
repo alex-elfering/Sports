@@ -96,12 +96,12 @@ mens_10k_times |>
   ggplot(aes(x = '', y = time_decimal)) + 
   geom_beeswarm(
     aes(fill = color_spotlight,
-        color = color_spotlight == "spotlight",
-        size = color_spotlight == "spotlight"),
+        color = color_spotlight == "spotlight"),
     shape = 21,
     stroke = 1,
     cex = 2.3,
-    method = 'center'
+    method = 'center',
+    size = 3
   ) +
   coord_flip() +
   scale_y_reverse() +
@@ -109,13 +109,6 @@ mens_10k_times |>
     values = c(
       'TRUE' = 'black',
       'FALSE' = 'white'
-    ),
-    guide = 'none'
-  ) +
-  scale_size_manual(
-    values = c(
-      'TRUE' = 4,      # Larger for spotlight
-      'FALSE' = 3
     ),
     guide = 'none'
   ) +
@@ -132,4 +125,44 @@ mens_10k_times |>
       "top_n" = glue("Top {top_n} finishers"),
       "other" = "Other runners"
     )
+  ) +
+  labs(x = '',
+       y = '10k Race Time (minutes)',
+       caption = 'Visualization by Alex Elfering; Source: Data manually pulled from NCAA and PrimeTime Timing',
+       color = '') +
+  theme(
+    legend.position = "top",
+    plot.title = element_text(family = "bebas", 
+                              size = 14,  # Increased from 14
+                              face = "bold"),
+    plot.subtitle = element_text(family = "bebas", 
+                                 size = 12),  # Increased from 12
+    axis.title.y = element_text(angle = 0,
+                                vjust = 0.5,
+                                family = "ibm_plex_sans",
+                                size = 11,  # Increased from 11
+                                color = "gray50"),
+    axis.text.x = element_text(size = 10,  # Increased from 10
+                               color = 'gray50',
+                               family = 'ibm_plex_sans'),
+    axis.text.y = element_text(size = 10,  # Increased from 10
+                               color = 'gray50',
+                               family = 'ibm_plex_sans'),
+    strip.text = element_text(size = 12, 
+                              face = 'bold',
+                              hjust = 0.5, 
+                              family = 'bebas'),
+    legend.title = element_blank(),
+    plot.title.position = "plot", 
+    plot.caption.position = 'plot',
+    panel.spacing.x = unit(2, "lines"),
+    axis.line.x.bottom = element_line(color = 'gray50'),
+    axis.line.y.left = element_blank(),
+    axis.ticks.y = element_blank(), 
+    axis.ticks.x = element_blank(),
+    #strip.background = element_rect(fill = NA),
+    panel.background = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.major.y = element_blank()
   )
