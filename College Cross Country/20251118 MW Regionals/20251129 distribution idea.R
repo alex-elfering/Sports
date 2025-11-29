@@ -12,6 +12,8 @@ library(gt)
 library(colorspace)
 library(showtext)
 
+showtext_auto()
+
 # fonts fonts fonts
 
 font_add_google("IBM Plex Sans", "ibm")
@@ -96,6 +98,9 @@ mens_10k_times <- mens_mw_clean |>
 #    )
 #  ) 
 
+min_time <- floor(min(mens_10k_times$time_decimal,na.rm = T))
+max_time <- round(max(mens_10k_times$time_decimal,na.rm = T))+1
+
 mens_10k_times |>
   ggplot(aes(x = '', y = time_decimal)) + 
   geom_beeswarm(
@@ -103,12 +108,15 @@ mens_10k_times |>
         color = color_spotlight == "spotlight"),
     shape = 21,
     stroke = 1,
-    cex = 2.3,
+    cex = 3.5,
     method = 'center',
-    size = 3
+    size = 5
   ) +
   coord_flip() +
-  scale_y_reverse() +
+  scale_y_reverse(limits = c(max_time, min_time),
+                  breaks = seq(min_time, max_time, by = 3)#,
+                  #labels = rev(c('39 minutes','34','29'))
+                  ) +
   scale_color_manual(
     values = c(
       'TRUE' = 'black',
@@ -120,42 +128,54 @@ mens_10k_times |>
     values = c(
       "spotlight" = school_color_var,
       "teammates" = school_color_var_light,
-      "top_n" = "gray10",
+      "top_n" = "gray30",
       "other" = "gray90"
     ),
     labels = c(
       "spotlight" = athlete_var,
       "teammates" = glue("{school_var} Teammates"),
-      "top_n" = glue("Top {top_n} finishers"),
+      "top_n" = glue("Top {top_n} Finishers"),
       "other" = "Other runners"
     )
   ) +
+  geom_text_repel(
+    data = mens_10k_times |> filter(athlete %in% athlete_var),
+    aes(label = athlete),
+    size = 3,
+    fontface = "bold",
+    box.padding = 0.5,
+    point.padding = 0.3
+  ) +
   labs(x = '',
-       y = '10k Race Time (minutes)',
-       caption = '\nVisualization by Alex Elfering; Source: Data manually pulled from NCAA and PrimeTime Timing',
-       color = '') +
+       y = '',
+       #y = '10k Race Time (minutes)',
+       caption = '\nVisualization by Alex Elfering\nSource: Data manually pulled from NCAA and PrimeTime Timing') +
   theme(
     legend.position = "top",
-    plot.title = element_text(family = "bebas", 
-                              size = 14,  # Increased from 14
+    plot.title = element_text(family = "noto", 
+                              size = 14, 
                               face = "bold"),
-    plot.subtitle = element_text(family = "bebas", 
-                                 size = 12),  # Increased from 12
+    plot.subtitle = element_text(family = "noto", 
+                                 size = 12),  
+    plot.caption = element_text(family = "noto", 
+                                size = 8,
+                                hjust = 0,
+                                color = 'gray80'),  
     axis.title.y = element_text(angle = 0,
                                 vjust = 0.5,
-                                family = "ibm_plex_sans",
-                                size = 11,  # Increased from 11
+                                family = "ibm",
+                                size = 11,  
                                 color = "gray50"),
-    axis.text.x = element_text(size = 10,  # Increased from 10
+    axis.text.x = element_text(size = 10,  
                                color = 'gray50',
-                               family = 'ibm_plex_sans'),
-    axis.text.y = element_text(size = 10,  # Increased from 10
+                               family = 'ibm'),
+    axis.text.y = element_text(size = 10,  
                                color = 'gray50',
-                               family = 'ibm_plex_sans'),
+                               family = 'ibm'),
     strip.text = element_text(size = 12, 
                               face = 'bold',
                               hjust = 0.5, 
-                              family = 'bebas'),
+                              family = 'noto'),
     legend.title = element_blank(),
     plot.title.position = "plot", 
     plot.caption.position = 'plot',
@@ -168,5 +188,6 @@ mens_10k_times |>
     panel.background = element_blank(),
     panel.grid.minor = element_blank(),
     panel.grid.major = element_blank(),
-    panel.grid.major.y = element_blank()
+    panel.grid.major.x = element_line(color = 'gray90',
+                                      linetype = 'dashed')
   )
