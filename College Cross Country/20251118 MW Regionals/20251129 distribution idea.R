@@ -42,9 +42,7 @@ teammates_10k_var <- mens_mw_clean |>
   pull(athlete)
 
 top_n_10k_var <- mens_mw_clean |>
-  filter(split == 10000,
-         #  just in case they are in the top 'n'
-         athlete != athlete_var) |>
+  filter(split == 10000) |>
   filter(dense_rank((time_decimal)) <= top_n) |>
   pull(athlete)
 
@@ -127,7 +125,7 @@ mens_10k_times |>
     ),
     labels = c(
       "spotlight" = athlete_var,
-      "teammates" = glue("{school_var} teammates"),
+      "teammates" = glue("{school_var} Teammates"),
       "top_n" = glue("Top {top_n} finishers"),
       "other" = "Other runners"
     )
