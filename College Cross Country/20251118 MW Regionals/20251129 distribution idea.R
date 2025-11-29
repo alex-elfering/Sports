@@ -12,34 +12,32 @@ library(gt)
 library(colorspace)
 library(showtext)
 
+set.seed(42)
+
 showtext_auto()
+showtext_opts(dpi = 300)
 
 # fonts fonts fonts
 
-font_add_google("IBM Plex Sans", "ibm")
-font_add_google("Noto Sans","noto")
+#font_add_google("IBM Plex Sans", "ibm")
+#font_add_google("Noto Sans","noto")
 
 
 # variable testing
 
-athlete_var <- mens_mw_clean |>
-  select(athlete) |>
-  distinct() |>
-  sample_n(1) |>
-  pull(athlete)
+athlete_var <- 'Denny Chapman'
 
 school_var <- mens_mw_clean |>
   filter(athlete == athlete_var) |>
   distinct(school) |>
   pull(school)
 
-top_n <- 25
+top_n <- 10
 
 # data frames needed(?)
 
 teammates_10k_var <- mens_mw_clean |>
-  filter(school == school_var,
-         athlete != athlete_var) |>
+  filter(school == school_var) |>
   filter(split == 10000) |>
   pull(athlete)
 
@@ -61,68 +59,121 @@ mens_10k_times <- mens_mw_clean |>
          time_decimal,
          place) |>
   mutate(color_spotlight = case_when(athlete == athlete_var ~ 'spotlight',
-                                     athlete %in% teammates_10k_var ~ 'teammates',
+                                     school == school_var ~ 'teammates',
                                      athlete %in% top_n_10k_var ~ 'top_n',
                                      TRUE ~ 'other'),
          color_spotlight = factor(color_spotlight, levels = c('spotlight','teammates','top_n','other')))
 
-# visualization ideas 
-
-#mens_10k_times |>
-#  ggplot() + 
-#  geom_histogram(aes(time_decimal,
-#                     group = athlete,
-#                     fill = color_spotlight,
-#                     color = color_spotlight == "spotlight"),
-#                 #color = 'white',
-#                 binwidth = 0.25) +
-#  scale_x_reverse() +
-#  scale_color_manual(
-#    values = c(
-#      'TRUE' = 'black',
-#      'FALSE' = 'white'
-#    )
-#  ) +
-#  scale_fill_manual(
-#    values = c(
-#      "spotlight" = school_color_var,
-#      "teammates" = school_color_var_light,
-#      "top_n" = "gray10",  # Gold for top finishers
-#      "other" = "gray90"
-#    ),
-#    labels = c(
-#      "spotlight" = athlete_var,
-#      "teammates" = glue("{school_var} teammates"),
-#      "top_n" = glue("Top {top_n} finishers"),
-#      "other" = "Other runners"
-#    )
-#  ) 
+# visualization idea
 
 min_time <- floor(min(mens_10k_times$time_decimal,na.rm = T))
 max_time <- round(max(mens_10k_times$time_decimal,na.rm = T))+1
 
+# Calculate ranges for rectangles
+school_range <- mens_10k_times |>
+  filter(color_spotlight %in% c("teammates",'spotlight')) |>
+  summarise(
+    ymin = min(time_decimal, na.rm = TRUE),
+    ymax = max(time_decimal, na.rm = TRUE),
+    median = median(time_decimal,na.rm = T)
+  )
+
+top_n_range <- mens_10k_times |>
+  filter(color_spotlight == "top_n") |>
+  summarise(
+    ymin = min(time_decimal, na.rm = TRUE),
+    ymax = max(time_decimal, na.rm = TRUE),
+    median = median(time_decimal,na.rm = T)
+  )
+
+athlete_times <- mens_10k_times |>
+  filter(athlete == athlete_var)|>
+  summarise(
+    #ymin = min(time_decimal, na.rm = TRUE),
+    #ymax = max(time_decimal, na.rm = TRUE),
+    time_stat = median(time_decimal,na.rm = T)
+  )
+
 mens_10k_times |>
-  ggplot(aes(x = '', y = time_decimal)) + 
-  geom_beeswarm(
+  ggplot(aes(x = 0, y = time_decimal)) + 
+  annotate(
+    "rect",
+    xmin = -0.5, xmax = 0.5,  # Changed from -Inf/Inf to discrete range
+    ymin = school_range$ymin, ymax = school_range$ymax,
+    fill = school_color_var_light,
+    alpha = 0.25
+  ) +
+  annotate(
+    "rect",
+    xmin = -0.5, xmax = 0.5,  # Changed from -Inf/Inf
+    ymin = top_n_range$ymin, ymax = top_n_range$ymax,
+    fill = "gray30",
+    alpha = 0.15
+  ) +
+  geom_quasirandom(
     aes(fill = color_spotlight,
-        color = color_spotlight == "spotlight"),
+        color = color_spotlight == "spotlight",
+        alpha = color_spotlight),
     shape = 21,
     stroke = 1,
-    cex = 3.5,
-    method = 'center',
+    width = 0.4,  # Add width to control spread
+    method = 'smiley',  # Try 'smiley' for more centered distribution
     size = 5
   ) +
-  coord_flip() +
-  scale_y_reverse(limits = c(max_time, min_time),
-                  breaks = seq(min_time, max_time, by = 3),
-                  labels = rev(c('41 minutes','38','35','32','29'))
-                  ) +
+  annotate(
+    "text",
+    x = 0.5,  # Left side
+    y = median(c(school_range$ymin, school_range$ymax)),
+    label = glue("{school_var}: {decimal_to_time(school_range$median)} min"),
+    hjust = 1.25,
+    size = 4,
+    color = school_color_var,
+    fontface = "bold",
+    family = 'noto'
+  ) +
+  annotate(
+    "text",
+    x = 0.5,  # Right side
+    y = median(c(top_n_range$ymin, top_n_range$ymax)),
+    label = glue("Top {top_n}: {decimal_to_time(top_n_range$median)} min"),
+    hjust = 1.25,
+    size = 4,
+    color = "gray30",
+    fontface = "bold",
+    family = 'noto'
+  ) +
+  geom_text_repel(
+    aes(label = ifelse(athlete == athlete_var, glue('{athlete}:\n{decimal_to_time(athlete_times$time_stat)}'), NA)),
+    position = position_quasirandom(width = 0.4, method = 'smiley'),  # Match the geom
+    box.padding = 1,
+    point.padding = 0.5,
+    segment.color = "black",
+    segment.size = 0.5,
+    min.segment.length = 0,  # Always show segment
+    size = 4,
+    fontface = "bold",
+    seed = 42,
+    max.overlaps = 20,
+    family = 'noto',
+    hjust = 1,
+    vjust = 0
+  ) +
+  scale_y_continuous(
+    limits = c(min_time, max_time),
+    breaks = seq(min_time, max_time, by = 3),
+    labels = c('29 minutes', '32', '35', '38', '41')  # Fixed order
+  ) +
   scale_color_manual(
-    values = c(
-      'TRUE' = 'black',
-      'FALSE' = 'white'
-    ),
+    values = c('TRUE' = 'black', 'FALSE' = 'white'),
     guide = 'none'
+  ) +
+  scale_alpha_manual(
+    values = c(
+      "spotlight" = 1,
+      "teammates" = 1,
+      "top_n" = 1,
+      "other" = 0.3
+    )
   ) +
   scale_fill_manual(
     values = c(
@@ -133,61 +184,34 @@ mens_10k_times |>
     ),
     labels = c(
       "spotlight" = athlete_var,
-      "teammates" = glue("{school_var} Teammates"),
+      "teammates" = glue("{school_var}"),
       "top_n" = glue("Top {top_n} Finishers"),
       "other" = "Other runners"
     )
   ) +
-  geom_text_repel(
-    data = mens_10k_times |> filter(athlete %in% athlete_var),
-    aes(label = athlete),
-    size = 3,
-    fontface = "bold",
-    box.padding = 0.5,
-    point.padding = 0.3
+  labs(
+    x = '',
+    y = '',
+    caption = '\nVisualization by Alex Elfering\nSource: Data manually pulled from NCAA and PrimeTime Timing'
   ) +
-  labs(x = '',
-       y = '',
-       #y = '10k Race Time (minutes)',
-       caption = '\nVisualization by Alex Elfering\nSource: Data manually pulled from NCAA and PrimeTime Timing') +
   theme(
     legend.position = "top",
-    plot.title = element_text(family = "noto", 
-                              size = 14, 
-                              face = "bold"),
-    plot.subtitle = element_text(family = "noto", 
-                                 size = 12),  
-    plot.caption = element_text(family = "noto", 
-                                size = 8,
-                                hjust = 0,
-                                color = 'gray80'),  
-    axis.title.y = element_text(angle = 0,
-                                vjust = 0.5,
-                                family = "ibm",
-                                size = 11,  
-                                color = "gray50"),
-    axis.text.x = element_text(size = 10,  
-                               color = 'gray50',
-                               family = 'ibm'),
-    axis.text.y = element_text(size = 10,  
-                               color = 'gray50',
-                               family = 'ibm'),
-    strip.text = element_text(size = 12, 
-                              face = 'bold',
-                              hjust = 0.5, 
-                              family = 'noto'),
+    plot.caption = element_text(size = 8, hjust = 0, color = 'gray80'),
+    axis.text.y = element_text(size = 10, color = 'gray50'),
+    axis.text.x = element_blank(),
     legend.title = element_blank(),
     plot.title.position = "plot", 
     plot.caption.position = 'plot',
-    panel.spacing.x = unit(2, "lines"),
-    axis.line.x.bottom = element_line(color = 'gray50'),
-    axis.line.y.left = element_blank(),
+    axis.line.y.left = element_line(color = 'gray50'),
+    axis.line.x.bottom = element_blank(),
     axis.ticks.y = element_blank(), 
     axis.ticks.x = element_blank(),
-    #strip.background = element_rect(fill = NA),
     panel.background = element_blank(),
     panel.grid.minor = element_blank(),
     panel.grid.major = element_blank(),
-    panel.grid.major.x = element_line(color = 'gray90',
-                                      linetype = 'dashed')
+    panel.grid.major.y = element_line(color = 'gray90', linetype = 'dashed')
   )
+
+ggsave('file test.png', width = 8,height=10, units = c('in'))
+
+decimal_to_time(8.1)
