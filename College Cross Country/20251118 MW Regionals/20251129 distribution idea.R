@@ -114,8 +114,8 @@ mens_10k_times |>
   ) +
   coord_flip() +
   scale_y_reverse(limits = c(max_time, min_time),
-                  breaks = seq(min_time, max_time, by = 3)#,
-                  #labels = rev(c('39 minutes','34','29'))
+                  breaks = seq(min_time, max_time, by = 3),
+                  labels = rev(c('41 minutes','38','35','32','29'))
                   ) +
   scale_color_manual(
     values = c(
