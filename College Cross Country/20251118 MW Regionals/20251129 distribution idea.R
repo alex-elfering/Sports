@@ -124,7 +124,7 @@ mens_10k_times |>
     "text",
     x = 0.5,  # Left side
     y = median(c(school_range$ymin, school_range$ymax)),
-    label = glue("{school_var}: {decimal_to_time(school_range$median)} min"),
+    label = glue("{school_var} Median:\n{decimal_to_time(school_range$median)} min"),
     hjust = 1.25,
     size = 4,
     color = school_color_var,
@@ -135,7 +135,7 @@ mens_10k_times |>
     "text",
     x = 0.5,  # Right side
     y = median(c(top_n_range$ymin, top_n_range$ymax)),
-    label = glue("Top {top_n}: {decimal_to_time(top_n_range$median)} min"),
+    label = glue("Top {top_n} Median:\n{decimal_to_time(top_n_range$median)} min"),
     hjust = 1.25,
     size = 4,
     color = "gray30",
@@ -161,7 +161,7 @@ mens_10k_times |>
   scale_y_continuous(
     limits = c(min_time, max_time),
     breaks = seq(min_time, max_time, by = 3),
-    labels = c('29 minutes', '32', '35', '38', '41')  # Fixed order
+    labels = c('29', '32', '35', '38', '41 minutes')  # Fixed order
   ) +
   scale_color_manual(
     values = c('TRUE' = 'black', 'FALSE' = 'white'),
@@ -172,7 +172,7 @@ mens_10k_times |>
       "spotlight" = 1,
       "teammates" = 1,
       "top_n" = 1,
-      "other" = 0.3
+      "other" = 0.5
     )
   ) +
   scale_fill_manual(
@@ -191,13 +191,14 @@ mens_10k_times |>
   ) +
   labs(
     x = '',
-    y = '',
+    y = '10K Race Time\n▲ Faster\n▼ Slower',
     caption = '\nVisualization by Alex Elfering\nSource: Data manually pulled from NCAA and PrimeTime Timing'
   ) +
   theme(
     legend.position = "top",
     plot.caption = element_text(size = 8, hjust = 0, color = 'gray80'),
     axis.text.y = element_text(size = 10, color = 'gray50'),
+    axis.title.y = element_text(angle = 90,, hjust = 1, vjust = 1),
     axis.text.x = element_blank(),
     legend.title = element_blank(),
     plot.title.position = "plot", 
@@ -213,5 +214,3 @@ mens_10k_times |>
   )
 
 ggsave('file test.png', width = 8,height=10, units = c('in'))
-
-decimal_to_time(8.1)
