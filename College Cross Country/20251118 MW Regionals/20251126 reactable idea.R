@@ -4,6 +4,7 @@ source('~/GitHub/Sports/College Cross Country/20251118 MW Regionals/20251118 Men
 
 library(reactable)
 library(gt)
+library(htmltools)
   
 #   ----  runners who did not finish  ----
 
