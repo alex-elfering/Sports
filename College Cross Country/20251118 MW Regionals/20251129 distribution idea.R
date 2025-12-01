@@ -16,7 +16,7 @@ library(shadowtext)
 set.seed(42)
 
 showtext_auto()
-showtext_opts(dpi = 300)
+showtext_opts(dpi = 100)
 
 # fonts fonts fonts
 
@@ -61,7 +61,7 @@ for(i in athlete_var){
     mutate(color_spotlight = case_when(athlete == i ~ 'spotlight',
                                        school == school_var ~ 'teammates',
                                        TRUE ~ 'other'),
-           color_spotlight = factor(color_spotlight, levels = c('spotlight','teammates','other')))
+           color_spotlight = factor(color_spotlight, levels = rev(c('spotlight','teammates','other'))))
   
   # visualization idea
   
@@ -104,8 +104,8 @@ for(i in athlete_var){
     #  hjust = 1
     #) +
     geom_shadowtext(
-      data = mens_10k_times |> filter(athlete == i),
-      aes(label = glue('{athlete}:\n{decimal_to_time(time_decimal)}')),
+      #data = mens_10k_times |> filter(athlete == i),
+      aes(label = ifelse(athlete == i,glue('{athlete}:\n{decimal_to_time(time_decimal)}'),'')),
       size = 4,
       fontface = "bold",
       family = 'noto',
@@ -182,21 +182,92 @@ for(i in athlete_var){
 
 # density plot----
 
-denstiy_chart <- mens_10k_times |>
+mens_10k_times <- mens_mw_clean |>
+  filter(split == 10000) |>
+  select(school,
+         athlete,
+         time_decimal,
+         place) |>
+  mutate(color_spotlight = case_when(athlete == i ~ 'spotlight',
+                                     school == school_var ~ 'teammates',
+                                     TRUE ~ 'other'),
+         color_spotlight = factor(color_spotlight, levels = rev(c('spotlight','teammates','other'))))
+
+athlete_var <- mens_mw_clean |>
+  select(athlete) |>
+  distinct() |>
+  sample_n(1) |>
+  pull(athlete) |>
+  sort()
+
+school_var <- mens_mw_clean |>
+  filter(athlete == athlete_var) |>
+  distinct(school) |>
+  pull(school)
+
+# data frames needed(?)
+
+school_color_var <- school_colors |>
+  filter(school == school_var) |>
+  pull(primary_color)
+
+school_color_var_light <- lighten(school_color_var, amount = 0.5)
+
+# Calculate medians for each group
+group_medians <- mens_10k_times |>
+  filter(color_spotlight != 'spotlight',
+         !is.na(time_decimal)) |>
+  group_by(color_spotlight) |>
+  summarise(
+    median_time = median(time_decimal, na.rm = TRUE),
+    y_position = max((density(time_decimal))$y),
+    .groups = "drop"
+  ) |>
+  arrange(median_time) |>
+  mutate(
+    label = case_when(
+      color_spotlight == "spotlight" ~ glue("{athlete_var}: {decimal_to_time(median_time)}"),
+      color_spotlight == "teammates" ~ glue("{school_var}: {decimal_to_time(median_time)}"),
+      color_spotlight == "other" ~ glue("Others: {decimal_to_time(median_time)}")
+    )
+  ) |>
+  mutate(
+    color_spotlight = factor(color_spotlight,levels = (c('spotlight','teammates','other')) )
+  ) 
+
+mens_10k_times |>
   ggplot( aes(x=time_decimal, color=color_spotlight, fill=color_spotlight)) +
   geom_density(alpha=0.6) +
-  scale_x_reverse(limits = rev(c(min_time, max_time))) +
+  scale_x_reverse(
+    limits = rev(c(min_time, max_time)),
+    breaks = seq(min_time, max_time, by = 1.5)
+    ) +
+  geom_vline(
+    data = group_medians,
+    aes(xintercept = median_time, color = color_spotlight),
+    linetype = "dashed",
+    linewidth = 0.8
+  ) +
+  geom_shadowtext(
+    data = group_medians,
+    aes(x = median_time, y = y_position, label = label, color = color_spotlight),
+    size = 3,
+    fontface = "bold",
+    family = "noto",
+    #hjust = -0.1,
+    #angle = 90,
+    #position = position_stack(vjust = 0.5)
+  ) +
+  # Add lab
   scale_fill_manual(
     values = c(
       "spotlight" = school_color_var,
       "teammates" = school_color_var_light,
-      "top_n" = "gray30",
       "other" = "gray90"
     ),
     labels = c(
       "spotlight" = athlete_var,
       "teammates" = glue("{school_var}"),
-      "top_n" = glue("Top {top_n} Finishers"),
       "other" = "Other runners"
     )
   ) +
@@ -210,16 +281,16 @@ denstiy_chart <- mens_10k_times |>
     labels = c(
       "spotlight" = athlete_var,
       "teammates" = glue("{school_var}"),
-      "top_n" = glue("Top {top_n} Finishers"),
       "other" = "Other runners"
     )
   ) +
   theme(
-    legend.position = "top",
-    plot.caption = element_text(size = 8, hjust = 0, color = 'gray80'),
+    legend.position = "none",
+    plot.caption = element_text(size = 8, hjust = 0, color = 'gray80',family = 'noto'),
     axis.text.x = element_blank(),
-    axis.title.y = element_text(angle = 90,, hjust = 1, vjust = 1),
-    #axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.title.y = element_blank(),
+    axis.title.x = element_blank(),
     legend.title = element_blank(),
     plot.title.position = "plot", 
     plot.caption.position = 'plot',
