@@ -124,6 +124,19 @@ server <- function(input, output, session) {
       )
     
     # use for calculating pace between splits
+    
+    basic_stats <- mens_mw_clean |>
+      filter(
+        split == 10000
+      ) |>
+      select(
+        athlete,
+        school,
+        class,
+        final_place = place,
+        final_time = time_formatted
+      )
+    
     split_pace_per_km <- mens_mw_clean |>
       arrange(athlete, split) |>        # ensure correct order
       group_by(athlete, school, class) |>
@@ -146,6 +159,26 @@ server <- function(input, output, session) {
         mean_pace_km    = mean(pace_per_km,  na.rm = TRUE)
       ) |>
       ungroup()
+    
+    pacing_stats <- split_pace_per_km |>
+      filter(!athlete %in% dnf_runners) |>
+      group_by(
+        athlete,
+        class,
+        school
+      ) |>
+      summarize(
+        first_half_pace = round(median(pace_per_km[split <= 5000], na.rm = TRUE),3),
+        second_half_pace = round(median(pace_per_km[split > 5000], na.rm = TRUE),3),
+        pace_difference_5k = second_half_pace - first_half_pace,
+        first_8k_half_pace = round(median(pace_per_km[split <= 8000], na.rm = TRUE),3),
+        last_2k_half_pace = round(median(pace_per_km[split > 8000], na.rm = TRUE),3),
+        pace_difference_8k = last_2k_half_pace - first_8k_half_pace,
+        
+        .groups = "drop"
+      ) |>
+      arrange((last_2k_half_pace)) |>
+      as.data.frame()
     
     # Pre-filter data subsets (avoid filtering in each geom)
     data_other <- mens_10k_times |> filter(color_spotlight == 'other')
