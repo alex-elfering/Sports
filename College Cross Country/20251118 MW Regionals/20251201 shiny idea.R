@@ -123,6 +123,30 @@ server <- function(input, output, session) {
                         "Others")  # if_else is faster than case_when for binary
       )
     
+    # use for calculating pace between splits
+    split_pace_per_km <- mens_mw_clean |>
+      arrange(athlete, split) |>        # ensure correct order
+      group_by(athlete, school, class) |>
+      mutate(
+        cumulative_seconds = time_decimal * 60,
+        
+        # Compute split-to-split segment time
+        split_time = cumulative_seconds - lag(cumulative_seconds),
+        
+        # Compute segment distance
+        split_length = split - lag(split),
+        
+        # Pace per km
+        pace_per_km = (split_time / split_length) * 1000
+      ) |>
+      ungroup() |>
+      group_by(split) |>
+      mutate(
+        median_pace_km  = median(pace_per_km, na.rm = TRUE),
+        mean_pace_km    = mean(pace_per_km,  na.rm = TRUE)
+      ) |>
+      ungroup()
+    
     # Pre-filter data subsets (avoid filtering in each geom)
     data_other <- mens_10k_times |> filter(color_spotlight == 'other')
     data_teammates <- mens_10k_times |> filter(color_spotlight == 'teammates')
