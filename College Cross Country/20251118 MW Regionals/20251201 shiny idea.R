@@ -17,7 +17,7 @@ source('~/GitHub/Sports/College Cross Country/20251118 MW Regionals/20251129 sch
 #showtext_auto()
 #showtext_opts(dpi = 96)  # Use 96 for screen display
 
-font_add_google("IBM Plex Sans", "ibm")
+font_add_google("Fira Mono", "ibm")
 font_add_google("Noto Sans", "noto")
 
 # Helper function to convert decimal to time
@@ -29,6 +29,7 @@ decimal_to_time <- function(x) {
 
 # Get unique athletes and schools
 athlete_list <- mens_mw_clean |> 
+  filter(split == 10000, !is.na(time_decimal)) |>  # Only finishers at 10k
   distinct(athlete, school) |> 
   arrange(school, athlete)
 
@@ -52,22 +53,6 @@ ui <- fluidPage(
         selected = sample(athlete_list$athlete, 1)  # RANDOM SELECTION ON LOAD
       ),
       
-      # Top N slider
-      sliderInput(
-        "top_n",
-        "Compare to Top N Finishers:",
-        min = 5,
-        max = 50,
-        value = 10,
-        step = 5
-      ),
-      
-      hr(),
-      
-      # Summary stats
-      h4("Selected Athlete Stats:"),
-      tableOutput("athlete_stats"),
-      
       hr(),
       
       downloadButton("download_plot", "Download Plot")
@@ -77,10 +62,11 @@ ui <- fluidPage(
       width = 9,
       
       # Density plot on top
-      plotOutput("density_plot", height = "250px"),
+      plotOutput("density_plot", height = "150px",width = "800px"),
       
+      #hr(),
       # Main quasi-random plot below
-      plotOutput("quasi_plot", height = "500px")
+      plotOutput("quasi_plot", height = "300px",width = "800px")
     )
   )
 )
@@ -93,21 +79,11 @@ server <- function(input, output, session) {
     req(input$athlete)
     
     athlete_var <- input$athlete
-    top_n <- input$top_n
     
     school_var <- mens_mw_clean |>
       filter(athlete == athlete_var) |>
       distinct(school) |>
       pull(school)
-    
-    teammates_10k_var <- mens_mw_clean |>
-      filter(school == school_var, split == 10000) |>
-      pull(athlete)
-    
-    top_n_10k_var <- mens_mw_clean |>
-      filter(split == 10000) |>
-      filter(dense_rank(time_decimal) <= top_n) |>
-      pull(athlete)
     
     school_color_var <- school_colors |>
       filter(school == school_var) |>
@@ -115,6 +91,7 @@ server <- function(input, output, session) {
     
     school_color_var_light <- lighten(school_color_var, amount = 0.5)
     
+    # Filter to 10k split ONCE instead of multiple times
     mens_10k_times <- mens_mw_clean |>
       filter(split == 10000) |>
       select(school, athlete, time_decimal, place) |>
@@ -122,25 +99,46 @@ server <- function(input, output, session) {
         color_spotlight = case_when(
           athlete == athlete_var ~ 'spotlight',
           school == school_var ~ 'teammates',
-          #athlete %in% top_n_10k_var ~ 'top_n',
           TRUE ~ 'other'
         ),
         color_spotlight = factor(color_spotlight, 
                                  levels = c('spotlight','teammates','other'))
       )
     
-    athlete_time <- mens_10k_times |>
-      filter(athlete == athlete_var) |>
-      pull(time_decimal)
+    athlete_time <- mens_10k_times$time_decimal[mens_10k_times$athlete == athlete_var]  # Faster than filter + pull
+    
+    # Pre-calculate group medians ONCE (used in both plots)
+    group_medians <- mens_10k_times |>
+      filter(color_spotlight != 'spotlight', !is.na(time_decimal)) |>
+      group_by(color_spotlight) |>
+      summarise(
+        median_time = median(time_decimal, na.rm = TRUE),
+        y_position = max(density(time_decimal)$y),
+        .groups = "drop"
+      ) |>
+      arrange(median_time) |>
+      mutate(
+        label = if_else(color_spotlight == "teammates", 
+                        school_var, 
+                        "Others")  # if_else is faster than case_when for binary
+      )
+    
+    # Pre-filter data subsets (avoid filtering in each geom)
+    data_other <- mens_10k_times |> filter(color_spotlight == 'other')
+    data_teammates <- mens_10k_times |> filter(color_spotlight == 'teammates')
+    data_spotlight <- mens_10k_times |> filter(color_spotlight == 'spotlight')
     
     list(
       athlete_var = athlete_var,
       school_var = school_var,
-      top_n = top_n,
       school_color_var = school_color_var,
       school_color_var_light = school_color_var_light,
       mens_10k_times = mens_10k_times,
-      athlete_time = athlete_time
+      athlete_time = athlete_time,
+      group_medians = group_medians,
+      data_other = data_other,
+      data_teammates = data_teammates,
+      data_spotlight = data_spotlight
     )
   })
   
@@ -148,58 +146,84 @@ server <- function(input, output, session) {
   output$quasi_plot <- renderPlot({
     data <- athlete_data()
     
-    #set.seed(42)  # ADD THIS - ensures consistent quasirandom positions
-    
+    # Use pre-calculated values
     min_time <- floor(min(data$mens_10k_times$time_decimal, na.rm = TRUE))
-    max_time <- round(max(data$mens_10k_times$time_decimal, na.rm = TRUE)) + 1
+    max_time <- ceiling(max(data$mens_10k_times$time_decimal, na.rm = TRUE))  # ceiling instead of round + 1
     
-    athlete_time_value <- data$mens_10k_times |>
-      filter(athlete == data$athlete_var) |>
-      pull(time_decimal)
-    
-    data$mens_10k_times |>
-      ggplot(aes(x = 0, y = time_decimal)) + 
+    ggplot(data$mens_10k_times, aes(x = 0, y = time_decimal)) + 
+      
+      # Use pre-filtered data
       geom_quasirandom(
-        data = data$mens_10k_times |> filter(athlete != data$athlete_var),
-        aes(fill = color_spotlight,
-            color = color_spotlight == "spotlight",
-            alpha = color_spotlight,
-            size = color_spotlight),
+        data = data$data_other,
         shape = 21,
         stroke = 1,
         width = 0.4,
         method = 'smiley',
-        size = 6
-      ) +
-      geom_hline(
-        yintercept = athlete_time_value,
+        fill = 'gray80',
         color = 'white',
-        linewidth = 1.5,
-        #linetype = 'dashed',
-        alpha = 0.7
+        size = 4,
+        alpha = 0.6
+      ) +
+      
+      geom_hline(
+        data = data$group_medians |> filter(color_spotlight == 'other'),
+        aes(yintercept = median_time),
+        color = 'gray70',
+        linetype = "solid",
+        linewidth = 1.2
       ) +
       geom_hline(
-        yintercept = athlete_time_value,
-        color = data$school_color_var,
-        linewidth = 1.2,
-        #linetype = 'dashed',
-        alpha = 0.7
+        data = data$group_medians |> filter(color_spotlight == 'teammates'),
+        aes(yintercept = median_time),
+        color = 'white',
+        linetype = "solid",
+        linewidth = 1.8
       ) +
+      geom_hline(
+        data = data$group_medians |> filter(color_spotlight == 'teammates'),
+        aes(yintercept = median_time),
+        color = data$school_color_var_light,
+        linetype = "solid",
+        linewidth = 1.2
+      ) +
+      
       geom_quasirandom(
-        data = data$mens_10k_times |> filter(athlete == data$athlete_var),
-        aes(fill = color_spotlight,
-            color = color_spotlight == "spotlight",
-            alpha = color_spotlight,
-            size = color_spotlight),
+        data = data$data_teammates,
         shape = 21,
         stroke = 1,
         width = 0.4,
         method = 'smiley',
+        fill = data$school_color_var,
+        color = 'white',
+        size = 6,
+        alpha = 0.8
+      ) +
+      
+      geom_hline(
+        yintercept = data$athlete_time,
+        color = 'white',
+        linewidth = 1.8
+      ) +
+      geom_hline(
+        yintercept = data$athlete_time,
+        color = data$school_color_var,
+        linewidth = 1.2
+      ) +
+      
+      geom_quasirandom(
+        data = data$data_spotlight,
+        aes(fill = color_spotlight,
+            color = color_spotlight == "spotlight"),
+        shape = 21,
+        stroke = 0.7,
+        width = 0.4,
+        method = 'smiley',
         size = 6
       ) +
+      
       geom_shadowtext(
-        data = data$mens_10k_times |> filter(athlete == data$athlete_var),
-        aes(label = glue('{athlete}: {decimal_to_time(time_decimal)}')),
+        data = data$data_spotlight,
+        aes(label = athlete),  # No need for glue() for single variable
         position = position_quasirandom(width = 0.4, method = 'smiley'),
         size = 4,
         fontface = "bold",
@@ -210,10 +234,9 @@ server <- function(input, output, session) {
       ) +
       coord_flip() +
       scale_y_reverse(
-        limits = rev(c(min_time, max_time)),
+        limits = c(max_time, min_time),  # Avoid rev() function call
         breaks = seq(min_time, max_time, by = 1.5),
         labels = function(x) {
-          # FORMAT LABELS AS mm:ss
           mins <- floor(x)
           secs <- round((x - mins) * 60)
           sprintf("%d:%02d", mins, secs)
@@ -224,182 +247,112 @@ server <- function(input, output, session) {
         guide = 'none'
       ) +
       scale_alpha_manual(
-        values = c("spotlight" = 1, "teammates" = 1, "top_n" = 0.8, "other" = 0.6)
+        values = c("spotlight" = 1, "teammates" = 1, "other" = 0.6),
+        guide = 'none'
       ) +
-      #scale_size_manual(
-      #  values = c("spotlight" = 5, "teammates" = 4, "top_n" = 3, "other" = 2.5)
-      #) +
       scale_fill_manual(
         values = c(
           "spotlight" = data$school_color_var,
           "teammates" = data$school_color_var_light,
-          #"top_n" = "gray30",
           "other" = "gray85"
         ),
-        labels = c(
-          "spotlight" = data$athlete_var,
-          "teammates" = glue("{data$school_var}"),
-          #"top_n" = glue("Top {data$top_n} Finishers"),
-          "other" = "Other runners"
-        )
+        guide = 'none'
       ) +
       labs(
-        #x = '',
-        y = '10K Race Time\n← Slower                                                     Faster →',
-      #  title = glue("{data$athlete_var} ({data$school_var}) Performance Distribution")
+        x = '',
+        y = '10K Race Time\n← Slower                                                     Faster →'
       ) +
       theme_minimal() +
       theme(
         legend.position = "none",
-        plot.caption = element_text(size = 8, hjust = 0, color = 'gray80'),
         axis.text.y = element_blank(),
-        axis.text.x = element_text(size = 8, hjust = 0, color = 'gray80'),
-        axis.title.y = element_text(angle = 90,, hjust = 1, vjust = 1),
-        #axis.text.x = element_blank(),
-        legend.title = element_blank(),
-        plot.title.position = "plot", 
-        plot.caption.position = 'plot',
-        axis.line.y.left = element_line(color = 'gray50'),
+        axis.text.x = element_text(size = 13, color = 'gray80', family = 'ibm'),
+        axis.title.x = element_text(size = 13, face = 'bold', family = 'ibm'),
+        axis.title.y = element_blank(),
+        axis.line.y.left = element_blank(),
         axis.line.x.bottom = element_blank(),
         axis.ticks.y = element_blank(), 
         axis.ticks.x = element_blank(),
         panel.background = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.major.x = element_line(color = 'gray90', linetype = 'dashed')
+        panel.grid = element_blank()
       )
     
   }, res = 96)
   
-  # Density plot
+  # Density plot - similar optimizations
   output$density_plot <- renderPlot({
     data <- athlete_data()
     
     min_time <- floor(min(data$mens_10k_times$time_decimal, na.rm = TRUE))
-    max_time <- round(max(data$mens_10k_times$time_decimal, na.rm = TRUE)) + 1
+    max_time <- ceiling(max(data$mens_10k_times$time_decimal, na.rm = TRUE))
     
-    # Calculate medians for each group
-    group_medians <- data$mens_10k_times |>
-      filter(color_spotlight != 'spotlight',
-             !is.na(time_decimal)) |>
-      group_by(color_spotlight) |>
-      summarise(
-        median_time = median(time_decimal, na.rm = TRUE),
-        y_position = max((density(time_decimal))$y),
-        .groups = "drop"
-      ) |>
-      arrange(median_time) |>
-      mutate(
-        label = case_when(
-          #color_spotlight == "spotlight" ~ glue("{data$athlete_var}: {decimal_to_time(median_time)}"),
-          color_spotlight == "teammates" ~ glue("{data$school_var}: {decimal_to_time(median_time)}"),
-          #color_spotlight == "top_n" ~ glue("Top {data$top_n}: {decimal_to_time(median_time)}"),
-          color_spotlight == "other" ~ glue("Others: {decimal_to_time(median_time)}")
-        ),
-        # Stagger y positions to avoid overlap
-        y_label = seq(0.05, 0.2, length.out = n())
-      )
-    
-    athlete_time_value <- data$mens_10k_times |>
-      filter(athlete == data$athlete_var) |>
-      pull(time_decimal)
-    
-    data$mens_10k_times |>
-      ggplot( aes(x=time_decimal, color=color_spotlight, fill=color_spotlight)) +
-      geom_density(alpha=0.6) +
+    ggplot(data$mens_10k_times, aes(x = time_decimal, color = color_spotlight, fill = color_spotlight)) +
+      
+      geom_density(
+        data = data$data_other,
+        alpha = 0.5, 
+        linewidth = 1
+      ) +
+      geom_density(
+        data = data$data_teammates,
+        alpha = 0.5, 
+        linewidth = 1
+      ) +
+      
+      geom_errorbar(
+        data = data$data_spotlight,
+        mapping = aes(xmin = time_decimal - 0.2,
+                      xmax = time_decimal + 0.2,
+                      ymin= 0,
+                      ymax = 0)
+      ) +
+      
+      geom_point(
+        data = data$data_spotlight,
+        aes(y = 0),
+        size = 4
+      ) +
+      
       scale_x_reverse(
-        limits = rev(c(min_time, max_time)),
+        limits = c(max_time, min_time),
         breaks = seq(min_time, max_time, by = 1.5)
       ) +
-      geom_vline(
-        data = athlete_time_value,
-        aes(xintercept = time_decimal, color = color_spotlight),
-        linetype = "solid",
-        linewidth = 0.8
-      ) +
-      geom_vline(
-        data = group_medians,
-        aes(xintercept = median_time, color = color_spotlight),
-        linetype = "dashed",
-        linewidth = 0.8
-      ) +
+      
       geom_shadowtext(
-        data = group_medians,
-        aes(x = median_time, y = y_position, label = label, color = color_spotlight),
+        data = data$group_medians,
+        aes(x = median_time, y = y_position, label = label),
         size = 4,
         fontface = "bold",
-        family = "noto",
+        family = "noto"
       ) +
-      # Add lab
       scale_fill_manual(
         values = c(
           "spotlight" = data$school_color_var,
           "teammates" = data$school_color_var_light,
           "other" = "gray85"
         ),
-        labels = c(
-          "spotlight" = data$athlete_var,
-          "teammates" = glue("{data$school_var}"),
-          "other" = "Other runners"
-        )
+        guide = 'none'
       ) +
       scale_color_manual(
         values = c(
           "spotlight" = data$school_color_var,
           "teammates" = data$school_color_var_light,
-          "top_n" = "gray30",
-          "other" = "gray85"
+          "other" = "gray70"
         ),
-        labels = c(
-          "spotlight" = data$athlete_var,
-          "teammates" = glue("{data$school_var}"),
-          "other" = "Other runners"
-        )
+        guide = 'none'
       ) +
+      theme_minimal() +
       theme(
         legend.position = "none",
-        plot.caption = element_text(size = 8, hjust = 0, color = 'gray80',family = 'noto'),
-        axis.title.y = element_blank(),
-        axis.title.x = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        legend.title = element_blank(),
-        plot.title.position = "plot", 
-        plot.caption.position = 'plot',
-        axis.line.y.left = element_line(color = 'gray50'),
-        axis.line.x.bottom = element_blank(),
-        axis.ticks.y = element_blank(), 
-        axis.ticks.x = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        axis.line = element_blank(),
+        axis.ticks = element_blank(),
         panel.background = element_blank(),
-        panel.grid.minor = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.major.x = element_line(color = 'gray90', linetype = 'dashed')
+        panel.grid = element_blank()
       )
+    
   }, res = 96)
-  
-  # Athlete stats table
-  output$athlete_stats <- renderTable({
-    data <- athlete_data()
-    
-    athlete_info <- data$mens_10k_times |>
-      filter(athlete == data$athlete_var) |>
-      select(place, time_decimal)
-    
-    team_avg <- data$mens_10k_times |>
-      filter(school == data$school_var) |>
-      summarise(avg = mean(time_decimal, na.rm = TRUE)) |>
-      pull(avg)
-    
-    data.frame(
-      Metric = c("Place", "Time", "School Avg", "Diff from Avg"),
-      Value = c(
-        as.character(athlete_info$place),
-        decimal_to_time(athlete_info$time_decimal),
-        decimal_to_time(team_avg),
-        decimal_to_time(athlete_info$time_decimal - team_avg)
-      )
-    )
-  }, striped = TRUE, hover = TRUE, bordered = TRUE)
   
   # Download handler
   output$download_plot <- downloadHandler(
