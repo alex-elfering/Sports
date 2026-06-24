@@ -32,41 +32,71 @@ school_colors <- data.frame(
              'Western Illinois',
              'Northern Iowa',
              'Chicago State',
-             'SIU Edwardsville'),
+             'SIU Edwardsville',
+             'Omaha',
+             'Missouri State',
+             'Northwestern',
+             'Oregon',
+             'Indiana',
+             'Michigan',
+             'Michigan State',
+             'Ohio State',
+             'Penn State',
+             'Purdue',
+             'Rutgers',
+             'UCLA',
+             'Washington',
+             'USC',
+             'Wisconsin'),
   primary_color = c(
-    '#FF7300',  # Oklahoma State - Orange
-    '#C8102E',  # Iowa State - Cardinal
-    '#FFCD00',  # Wichita State - Yellow
-    '#841617',  # Oklahoma - Crimson
-    '#C8102E',  # Bradley - Red
-    '#0033A0',  # South Dakota State - Blue
-    '#003594',  # Oral Roberts - Blue
-    '#F1B82D',  # Mizzou - Gold
-    '#003DA5',  # Tulsa - Blue
-    '#0051BA',  # Kansas - Blue
-    '#001E62',  # UIC - Navy
-    '#8A1538',  # Loyola - Maroon
-    '#7A0019',  # Minnesota - Maroon
-    '#0033A0',  # Drake - Blue
-    '#009A44',  # North Dakota - Green
-    '#13294B',  # Illinois - Navy/Orange (Navy primary)
-    '#006633',  # North Dakota State - Green
-    '#CE1126',  # Illinois State - Red
-    '#E41C38',  # Nebraska - Red
-    '#FFCD00',  # Iowa - Gold (use with black)
-    '#512888',  # Kansas State - Purple
-    '#004B87',  # DePaul - Blue
-    '#004B83',  # Eastern Illinois - Blue
-    '#C8102E',  # SE Missouri - Red
-    '#512888',  # St. Thomas - Purple
-    '#005CA9',  # Creighton - Blue
-    '#005DAA',  # Saint Louis - Blue
-    '#D6001C',  # South Dakota - Red
-    '#B5A36A',  # Lindenwood - Black/Gold
-    '#5D1725',  # Southern Illinois - Maroon
-    '#6A287E',  # Western Illinois - Purple
-    '#4B116F',  # Northern Iowa - Purple
-    '#00563F',  # Chicago State - Green
-    '#CE1141'   # SIU Edwardsville - Red
+    '#FF7300',    # Oklahoma State
+    '#C8102E',    # Iowa State
+    '#FFCD00',    # Wichita State
+    '#841617',    # Oklahoma
+    '#A50000',    # Bradley
+    '#0033A0',    # South Dakota State
+    '#002f60',    # Oral Roberts
+    '#F1B82D',    # Mizzou
+    '#002D72',    # Tulsa
+    '#0051BA',    # Kansas
+    '#ac1e2d',    # UIC
+    '#b62b3a',    # Loyola
+    '#7A0019',    # Minnesota
+    '#004477',    # Drake
+    '#009A44',    # North Dakota
+    '#13294B',    # Illinois
+    '#0a5640',    # North Dakota State
+    '#CE1126',    # Illinois State
+    '#e41c38',    # Nebraska
+    '#FFCD00',    # Iowa
+    '#512888',    # Kansas State
+    '#005EB8',    # DePaul
+    '#004b83',    # Eastern Illinois
+    '#C8102E',    # SE Missouri
+    '#510c76',    # St. Thomas
+    '#005CA9',    # Creighton
+    '#003DA5',    # Saint Louis
+    '#ad0000',    # South Dakota
+    '#B5A36A',    # Lindenwood
+    '#720000',    # Southern Illinois
+    '#663399',    # Western Illinois
+    '#4B116F',    # Northern Iowa
+    '#006666',    # Chicago State
+    '#ef3829' ,   # SIU Edwardsville
+    '#D71920',    # Omaha/UNO
+    '#5E0009',    # MO State
+    '#4E2A84',    # Northwestern,
+    '#154733',    # oregon
+    '#990000',    # indiana
+    '#00274c',    # michigan
+    '#18453B',    # michigan state
+    '#BB0000',    # ohio state 
+    '#041E42',    # penn state
+    '#ceb888',    # purdue
+    '#cc0033',    # rutgers
+    '#2d68c4',    # ucla
+    '#4B2E83',    # washington
+    '#990000',    # usc,
+    '#c5050c'     # wisconsin
   )
 )
