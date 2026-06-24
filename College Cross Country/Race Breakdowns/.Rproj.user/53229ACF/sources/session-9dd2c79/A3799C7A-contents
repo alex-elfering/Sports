@@ -1,0 +1,184 @@
+# the brand new shiny script
+
+library(colorspace)
+library(ggbeeswarm)
+library(showtext)
+library(ggtext)
+library(ggpattern)
+
+# ----  pull in the cleaned and compiled file ----
+
+source('~/GitHub/Sports/College Cross Country/Race Breakdowns/20260624 Data Cleaning.R')
+
+# ----  init shiny variables  ----
+
+showtext_auto()
+showtext_opts(dpi = 96)  # Use 96 for screen display
+
+font_add_google("Fira Code", "ibm")
+font_add_google("Noto Sans", "noto")
+
+ui <- fluidPage(
+  
+  theme = bslib::bs_theme(version = 5, bootswatch = "flatly"),
+  
+  fluidRow(
+    column(
+      width = 12,
+      wellPanel(
+        fluidRow(
+          column(
+            width = 6,
+            selectInput(
+              "athlete",
+              "Select Athlete:",
+              choices = setNames(sort(athlete_list$athlete), 
+                                 sort(paste0(athlete_list$athlete, " (", athlete_list$school, ")"))),
+              selected = sample(athlete_list$athlete, 1)
+            )
+          )
+        )
+      )
+    )
+  ),
+  
+  tabsetPanel(
+    type = "tabs",
+    
+    # Tab 1: Athlete Comparison 
+    #   examines how athlete's final time compares to the rest of the field
+    tabPanel(
+      "Athlete Comparison",
+      br(),
+      plotOutput("density_plot", height = "200px", width = "1000px")
+    ),
+    
+    # Tab 2: Pacing comparison
+    #   compares pacing against school or top 25 of race
+    tabPanel(
+      "Pacing per Split",
+      br(),
+      plotOutput("pacing_plot", height = "700px", width = "1000px")
+    ),
+    
+    # tab #3: adjacent competitors
+    #   compares race performance against adjacent competitors
+    tabPanel(
+      "Adjacent Competitors",
+      br(),
+      plotOutput("")
+    )
+  )
+)
+server <- function(input, output, session) {
+  
+  # # dataset to dynamically pull variables depending on the selection(s)
+  athlete_data <- reactive({
+    req(input$athlete)
+    
+    athlete_var <- input$athlete
+    
+    school_var <- mens_mw_clean |>
+      filter(athlete == athlete_var) |>
+      pull(school) |>
+      first()  # More explicit than distinct() |> pull()
+    
+    school_color_var <- school_colors$primary_color[school_colors$school == school_var][1]
+    school_color_var_light <- lighten(school_color_var, amount = 0.5)
+    
+    # Filter to 10k split ONCE
+    mens_10k_times <- mens_mw_clean |>
+      filter(split == 10000) |>
+      select(school, athlete, time_decimal, place) |>
+      mutate(
+        color_spotlight = factor(
+          case_when(
+            athlete == athlete_var ~ 'spotlight',
+            school == school_var ~ 'teammates',  # Removed "| athlete == athlete_var" - redundant
+            TRUE ~ 'other'
+          ),
+          levels = c('spotlight','teammates','other')
+        )
+      )
+    
+    athlete_time <- mens_10k_times$time_decimal[mens_10k_times$athlete == athlete_var]
+    
+    # Pre-calculate group medians
+    group_medians <- mens_10k_times |>
+      filter(!is.na(time_decimal)) |>  # Remove the spotlight filter
+      mutate(
+        # Recode spotlight as teammates for median calculation
+        group_for_median = if_else(color_spotlight == "spotlight", "teammates", as.character(color_spotlight))
+      ) |>
+      group_by(group_for_median) |>
+      summarise(
+        median_time = median(time_decimal, na.rm = TRUE),
+        y_position = max(density(time_decimal)$y),
+        .groups = "drop"
+      ) |>
+      rename(color_spotlight = group_for_median) |>
+      mutate(
+        color_spotlight = factor(color_spotlight, levels = c('teammates', 'other')),
+        label = if_else(color_spotlight == "teammates", school_var, "Others")
+      )
+    
+    group_summary_splits <- pacing_stats_global |>
+      filter(athlete == athlete_var | school == school_var) |>  # Filter FIRST before mutate
+      mutate(
+        color_spotlight = factor(
+          if_else(athlete == athlete_var, 'spotlight', 'teammates'),
+          levels = c('spotlight','teammates','other')
+        )
+      ) |>
+      group_by(split, color_spotlight) |>
+      summarise(
+        median_pace_km = median(pace_per_km, na.rm = TRUE),
+        .groups = 'drop'
+      )
+    
+    # Separately calculate "other" if needed:
+    group_summary_other <- pacing_stats_global |>
+      filter(athlete != athlete_var, school != school_var) |>
+      group_by(split) |>
+      summarise(
+        median_pace_km = median(pace_per_km, na.rm = TRUE),
+        color_spotlight = factor('other', levels = c('spotlight','teammates','other')),
+        .groups = 'drop'
+      )
+    
+    group_summary_splits <- bind_rows(group_summary_splits, group_summary_other)
+    
+    # Pre-filter data subsets
+    data_other <- mens_10k_times |> filter(color_spotlight == 'other')
+    data_teammates <- mens_10k_times |> filter(color_spotlight == 'teammates')
+    data_spotlight <- mens_10k_times |> filter(color_spotlight == 'spotlight')
+    
+    list(
+      athlete_var = athlete_var,
+      school_var = school_var,
+      school_color_var = school_color_var,
+      school_color_var_light = school_color_var_light,
+      mens_10k_times = mens_10k_times,
+      athlete_time = athlete_time,
+      group_medians = group_medians,
+      data_other = data_other,
+      data_teammates = data_teammates,
+      data_spotlight = data_spotlight,
+      group_summary_splits = group_summary_splits
+      # Remove basic_stats and pacing_stats - use global versions
+    )
+  })
+  
+  # Density plot - similar optimizations
+  output$density_plot <- renderPlot({
+
+    
+  }, res = 96)
+  
+  output$pacing_plot <- renderPlot({
+
+    
+  }, res = 96)
+  
+
+}

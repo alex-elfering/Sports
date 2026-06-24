@@ -1,0 +1,27 @@
+{
+    "id": "A3799C7A",
+    "path": "~/Midwest Regionals/Files/20260624 shiny dashboard.R",
+    "project_path": null,
+    "type": "r_source",
+    "hash": "247123556",
+    "contents": "",
+    "dirty": false,
+    "created": 1782298283494.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "68,18",
+        "scrollLine": "12"
+    },
+    "folds": "75|28|169|2|\n172|37|175|2|\n177|36|180|2|\n",
+    "lastKnownWriteTime": 1782298952,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1782298952623,
+    "read_only": false,
+    "read_only_alternatives": []
+}
