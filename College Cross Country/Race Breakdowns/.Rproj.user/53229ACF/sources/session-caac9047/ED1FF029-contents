@@ -1,0 +1,709 @@
+library(data.table)
+library(tidyverse)
+library(janitor)
+library(readxl)
+library(stringr)
+library(colorspace)
+library(ggbeeswarm)
+library(glue)
+library(showtext)
+library(shadowtext)
+library(ggtext)
+library(ggpattern)
+
+setwd("~/Midwest Regionals/Files")
+cross_country_data <- rbindlist(lapply(list.files(pattern = "*.csv"), fread))
+
+# variables ----
+
+test_athlete <- "Denny Chapman" 
+test_school <- "Nebraska"
+
+source('~/GitHub/Sports/College Cross Country/20251118 MW Regionals/20251129 school colors.R')
+
+school_color_var <- school_colors$primary_color[school_colors$school == test_school][1]
+school_color_var_light <- lighten(school_color_var, 0.5)
+
+test_event <- "2025 Midwest Men's Regional"
+
+# ----  functions ----
+
+assign_spotlight <- function(df, spotlight_athlete, spotlight_school){
+  
+  df |>
+    mutate(color_spotlight = factor(
+      case_when(athlete == spotlight_athlete ~ 'spotlight',
+                school == spotlight_school ~ 'teammates',
+                TRUE ~ "other"),
+      levels = c('spotlight','teammates','other'))
+    ) 
+  
+  
+}
+format_times <- function(time_decimal){
+  sprintf('%d:%04.1f',floor(time_decimal),(time_decimal %% 1)*60)
+}
+get_ordinal_suffix <- function(n) {
+  if (n %% 100 %in% 11:13) return(paste0(n, "th"))
+    suffix <- switch(as.character(n %% 10),
+                   "1" = "st",
+                   "2" = "nd",
+                   "3" = "rd",
+                   "th")
+  return(paste0(n, suffix))
+}
+
+# ----  data cleaning ----
+
+clean_xc_data <- cross_country_data |>
+  clean_names() |>
+  filter(event == test_event) |>
+  select(event,
+         athlete,
+         school,
+         class,
+         distance,
+         place = pl,
+         time,
+         pts) |>
+  mutate(
+    time_new = str_pad(time, width = 7, side = 'left', pad = '0')
+  ) |>
+  separate(time_new, into = c("mins", "secs"), sep = ":", convert = TRUE, remove = FALSE) |>
+  mutate(
+    time_decimal = mins + (secs / 60),
+    time_decimal_seconds = time_decimal * 60
+  ) |>
+  select(-mins, -secs) |>
+  mutate(distance_m = readr::parse_number(distance)) |>
+  arrange(athlete, 
+          distance_m) |> 
+  group_by(event,athlete) |>
+  mutate(
+    segment_km = (distance_m - lag(distance_m, default = 0)) / 1000,
+    segment_time_min = time_decimal - lag(time_decimal, default = 0),
+    pace_km_min = segment_time_min / segment_km,
+    pace_mi_min = pace_km_min * 1.60934,
+    pace_km_formatted = sprintf("%d:%04.1f", floor(pace_km_min), (pace_km_min %% 1) * 60),
+    pace_mi_formatted = sprintf("%d:%04.1f", floor(pace_mi_min), (pace_mi_min %% 1) * 60)
+  ) |>
+  ungroup() |>
+  assign_spotlight(test_athlete, test_school)
+
+
+# ----  data frames to use in other visualizations  ----
+
+filter_final_splits <- filter(clean_xc_data,distance_m == max(distance_m))
+
+group_summary_splits <- clean_xc_data |>
+  group_by(distance_m, 
+           color_spotlight) |>
+  summarise(median_pace_km = median(pace_km_min, na.rm = TRUE), .groups = 'drop')  |>
+  mutate(distance_m = factor(distance_m))
+
+
+
+# ----  bee swarm data visualization ----
+
+library(ggrepel)
+group_medians <- filter_final_splits |>
+  filter(!is.na(time_decimal)) |>
+  mutate(
+    group_for_median = if_else(color_spotlight == "spotlight", "teammates", as.character(color_spotlight))
+  ) |>
+  group_by(group_for_median) |>
+  summarise(
+    median_time = median(time_decimal, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  transmute(
+    color_spotlight = factor(group_for_median, levels = c('teammates', 'other')),
+    median_time,
+    label = if_else(group_for_median == "teammates", test_school, "Others")
+  )
+
+
+final_athlete_spotlight_times <- filter_final_splits |>
+  filter(color_spotlight == 'spotlight') |>
+  select(time_decimal,
+         time_new)
+
+athlete_time_decimal <- final_athlete_spotlight_times$time_decimal
+athlete_time_formatted <- final_athlete_spotlight_times$time_new
+
+
+teammates_median <- group_medians |>
+  filter(color_spotlight == 'teammates') |>
+  pull(median_time)
+teammate_median_formatted <- sprintf("%d:%04.1f", floor(teammates_median), (teammates_median %% 1) * 60)
+
+others_median <- group_medians |>
+  filter(color_spotlight == 'other') |>
+  pull(median_time)
+others_median_formatted <- sprintf("%d:%04.1f", floor(others_median), (others_median %% 1) * 60)
+
+min_time <- floor(min(filter_final_splits$time_decimal, na.rm = TRUE))
+max_time <- ceiling(max(filter_final_splits$time_decimal, na.rm = TRUE))
+
+diff_vs_team <- athlete_time_decimal - teammates_median
+diff_abs <- abs(diff_vs_team)
+diff_secs <- diff_abs * 60
+
+team_diff_text <- case_when(
+  diff_secs <= 1 ~ "around the same time as",
+  
+  diff_vs_team < 0 & diff_secs < 60 ~ sprintf("%.1f seconds faster than", diff_secs),
+  diff_vs_team > 0 & diff_secs < 60 ~ sprintf("%.1f seconds slower than", diff_secs),
+  
+  diff_vs_team < 0 ~ paste0(sprintf("%d:%04.1f", floor(diff_abs), (diff_abs %% 1) * 60), " faster than "),
+  TRUE ~ paste0(sprintf("%d:%04.1f", floor(diff_abs), (diff_abs %% 1) * 60), " slower than ")
+)
+
+ggplot(filter_final_splits, 
+       aes(x = 0, 
+           y = time_decimal,
+           fill = color_spotlight,
+           color = color_spotlight,
+           alpha = color_spotlight)
+) + 
+  geom_hline(data = filter(group_medians, 
+                           color_spotlight == 'other'),
+             aes(yintercept = median_time), 
+             color = 'gray70', 
+             linewidth = 1.5) +
+  geom_hline(data = filter(group_medians, 
+                           color_spotlight == 'teammates'),
+             aes(yintercept = median_time), 
+             color = school_color_var, 
+             linewidth = 1.5) +
+  # beeswarm
+  geom_quasirandom(data = filter_final_splits, 
+                   shape = 21, 
+                   stroke = 1, 
+                   width = 0.4, 
+                   method = 'smiley',
+                   #color = 'white', 
+                   size = 4) +
+  
+  geom_label_repel(
+    data = filter(filter_final_splits, color_spotlight == 'spotlight'),
+    aes(label = test_athlete),  # Can also be a static string like "Selected"
+    nudge_x = 0.5,              # Pushes the label vertically (due to coord_flip) above the swarm
+    min.segment.length = 0,     # Forces the arrow to always draw
+    segment.color = "black",
+    segment.size = 0.6,
+    arrow = arrow(length = unit(0.015, "npc"), type = "closed"),
+    family = "noto",            # Matches the fonts in your theme
+    fontface = "bold",
+    fill = "white",
+    color = "black",
+    show.legend = FALSE
+  ) +
+  
+  
+  scale_color_manual(
+    values = c('other' = 'white',
+               'teammates' = 'black',
+               'spotlight' = 'black')
+  ) +
+  coord_flip() +
+  scale_y_reverse(limits = c(max_time, min_time), 
+                  breaks = seq(min_time, max_time, by = 1.5),
+                  labels = function(x) sprintf("%d:%02d", floor(x), round((x - floor(x)) * 60))) +
+  scale_alpha_manual(
+    values = c("spotlight" = 1, "teammates" = 1, "other" = 0.5), guide = 'none'
+  ) +
+  scale_fill_manual(
+    values = c("spotlight" = school_color_var, "teammates" = school_color_var_light, "other" = "gray75"), 
+    guide = 'none'
+  ) +
+  labs(x = '', 
+       y = 'Race Time\n← Slower                    Faster →',
+       title = glue("<b><span style='font-size:18pt'>{test_event}</span></b>"),
+       caption = '\nSource: NCAA & PrimeTime Timing',
+       subtitle = glue(
+         "<b><span style='font-size:12pt; color:{school_color_var};'>{test_athlete}</span></b> finished in ",
+         "<span style='font-family:ibm; font-weight:bold;'>{athlete_time_formatted}</span>, ",
+         "{team_diff_text} the median <b><span style='font-size:12pt; color:{school_color_var};'>{test_school}</span></b> runner. ",
+         "<br>The median <b><span style='font-size:12pt; color:{school_color_var};'>{test_school}</span></b> runner finished with a time of ",
+         "<span style='font-family:ibm; font-weight:bold;'>{teammate_median_formatted}</span>, while <b><span style='font-size:12pt; color:gray70;'>the rest of the field</span></b> finished with a median time of ",
+         "<span style='font-family:ibm; font-weight:bold;'>{others_median_formatted}</span>.")
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "none", 
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(size = 13, color = 'gray80', family = 'ibm'),
+    axis.title.x = element_text(size = 13, face = 'bold', family = 'noto'),
+    plot.caption = element_text(size = 13, family = 'noto', hjust = 0, color = 'gray80'),
+    
+    # Add this line right here to render the HTML:
+    plot.subtitle = ggtext::element_markdown(lineheight = 1.2),
+    plot.title = ggtext::element_markdown(lineheight = 1.2),
+    
+    axis.title.y = element_blank(), 
+    axis.line = element_blank(), 
+    axis.ticks = element_blank(),
+    panel.background = element_blank(), 
+    panel.grid = element_blank()
+  )
+
+ggsave("ncaa_regionals_plot.png", width = 10, height = 6, dpi = 300, bg = "white")
+
+
+# ----  pacing chart  ----
+
+
+# what if the user could compare their times against the top 25, median team time or the whole field?
+
+options_list <- c('Top 25', 'Team')
+options_select <- 'Team'
+
+
+if(options_select == 'Top 25'){
+  # pulls the median top 25 time, and the range
+  
+  rank_var <- 25
+  top_n_finishers <- filter_final_splits |>
+    filter(dense_rank((time_decimal)) <= rank_var) |>
+    pull(athlete)
+  
+  
+  pacing_split <- clean_xc_data |>
+    mutate(distance_m = factor(distance_m)) |>
+    filter(athlete %in% top_n_finishers) |>
+    group_by(distance_m) |>
+    summarise(
+      slowest_pace = min(pace_km_min, na.rm = TRUE),
+      fastest_pace = max(pace_km_min, na.rm = TRUE),
+      median_pace = median(pace_km_min,na.rm = TRUE),
+      .groups = 'drop'
+    ) 
+  
+  pacing_final_split <- pacing_split |>
+    filter(as.numeric(distance_m) == max(as.numeric(distance_m)))
+  
+  label_text <- "Top 25\nstayed\nin this\nrange"
+  
+  median_color <- 'gray60'
+  
+  
+}else if (options_select == 'Team'){
+  
+  pacing_split <- clean_xc_data |>
+    mutate(distance_m = factor(distance_m)) |>
+    filter(school == test_school) |>
+    group_by(distance_m) |>
+    summarise(
+      slowest_pace = min(pace_km_min, na.rm = TRUE),
+      fastest_pace = max(pace_km_min, na.rm = TRUE),
+      median_pace = median(pace_km_min,na.rm = TRUE),
+      .groups = 'drop'
+    ) 
+  
+  pacing_final_split <- pacing_split |>
+    filter(as.numeric(distance_m) == max(as.numeric(distance_m)))
+  
+  label_text <- glue("{test_school}\nstayed\nin this\nrange")
+  
+  median_color <- school_color_var_light
+  
+}else if (options_select == 'Nearest Neighbor'){
+  
+  athlete_final_place <- clean_xc_data |>
+    filter(distance_m == max(distance_m)) |>
+    filter(athlete == test_athlete) |>
+    pull(place)
+  
+  athlete_min_place <- athlete_final_place - 1
+  athlete_max_place <- athlete_final_place + 1
+  
+  neighbors <- clean_xc_data |>
+    filter(distance_m == max(distance_m)) |>
+    filter(place == athlete_min_place | place == athlete_max_place) |>
+    pull(athlete)
+  
+  pacing_split <- clean_xc_data |>
+    mutate(distance_m = factor(distance_m)) |>
+    filter(athlete %in% neighbors) |>
+    group_by(distance_m) |>
+    summarise(
+      slowest_pace = min(pace_km_min, na.rm = TRUE),
+      fastest_pace = max(pace_km_min, na.rm = TRUE),
+      .groups = 'drop'
+    ) 
+  
+  pacing_final_split <- pacing_split |>
+    filter(distance_m == 10000)
+  
+}
+
+
+# pacing by runners overall
+pacing_by_split <- clean_xc_data |>
+  mutate(distance_m = factor(distance_m)) |>
+  group_by(distance_m) |>
+  summarise(
+    slowest_pace = min(pace_km_min, na.rm = TRUE),
+    fastest_pace = max(pace_km_min, na.rm = TRUE),
+    .groups = 'drop'
+  ) 
+
+min_pacing <- min(c(pacing_split$fastest_pace,pacing_by_split$slowest_pace))
+max_pacing <- max(c(pacing_by_split$fastest_pace,pacing_by_split$slowest_pace))
+
+median_pace <- pacing_final_split$median_pace
+
+# variables for axis below
+n_splits <- length(unique(group_summary_splits$distance_m))
+last_split_position <- n_splits
+
+ggplot(pacing_by_split) + 
+  
+  # ribbon
+  geom_ribbon(aes(x = distance_m, ymin = slowest_pace, ymax = fastest_pace, group = 1),
+              fill = 'gray80', alpha = 0.4) +
+  geom_ribbon_pattern(data = pacing_split,
+                      aes(x = distance_m, ymin = slowest_pace, ymax = fastest_pace, group = 1), 
+                      fill = "gray70", pattern_color = "white", pattern_fill = "white",
+                      pattern_angle = 135, pattern_density = 0.1, pattern_spacing = 0.01,
+                      pattern_key_scale_factor = 0.5, alpha = 0.4) +
+  
+  # either top 25 or team highlight
+  geom_point(pacing_split,
+             mapping = aes(x = distance_m,
+                           y = median_pace,
+                           group = 1),
+             color = 'white',
+             size = 1.8
+  ) +
+  geom_line(pacing_split,
+            mapping = aes(x = distance_m,
+                          y = median_pace,
+                          group = 1),
+            size = 1.5,
+            color = 'white') +
+  geom_point(pacing_split,
+             mapping = aes(x = distance_m,
+                           y = median_pace,
+                           group = 1),
+             color = median_color,
+             size = 1.4
+  ) +
+  geom_line(pacing_split,
+            mapping = aes(x = distance_m,
+                          y = median_pace,
+                          group = 1),
+            size = 1.1,
+            color = median_color) +
+  
+  # athlete highlight
+  geom_point(data = group_summary_splits |> filter(color_spotlight == 'spotlight'),
+             mapping = aes(x = distance_m,
+                           y = median_pace_km,
+                           #color = school_color_var,
+                           group = color_spotlight),
+             color = 'white',
+             size = 1.8
+  ) +
+  geom_line(data = group_summary_splits |> filter(color_spotlight == 'spotlight'),
+            mapping = aes(x = distance_m,
+                          y = median_pace_km,
+                          #color = school_color_var,
+                          group = color_spotlight),
+            color = 'white',
+            size = 1.5
+  ) +
+  geom_point(data = group_summary_splits |> filter(color_spotlight == 'spotlight'),
+             mapping = aes(x = distance_m,
+                           y = median_pace_km,
+                           #color = school_color_var,
+                           group = color_spotlight),
+             color = school_color_var,
+             size = 1.4
+  ) +
+  geom_line(data = group_summary_splits |> filter(color_spotlight == 'spotlight'),
+            mapping = aes(x = distance_m,
+                          y = median_pace_km,
+                          #color = school_color_var,
+                          group = color_spotlight),
+            color = school_color_var,
+            size = 1.1
+  ) +
+  
+  scale_x_discrete(labels = function(x) paste0(as.numeric(x)/1000, "K")) +
+  scale_y_continuous(
+    
+    expand = expansion(mult = c(0.05, 0.05)),
+    
+    labels = function(x) {
+      ifelse(is.na(x), NA_character_,{
+        formatted <- sprintf('%d:%02d',floor(x),round((x-floor(x))*60))
+        
+        ifelse(x == max(x,na.rm = T),
+               paste0(formatted,'\nper km'),
+               formatted)
+        
+      })
+    },
+    breaks = seq(min_pacing, max_pacing, by = 0.25),
+  ) +
+  
+  # annotations
+  annotate("segment", x = last_split_position + 0.025, xend = last_split_position + 0.025,
+           y = pacing_final_split$slowest_pace, yend = pacing_final_split$fastest_pace,
+           linetype = "dashed", color = "gray50", linewidth = 0.5) +
+  annotate("text", x = last_split_position + 0.04,
+           y = ((pacing_final_split$slowest_pace + pacing_final_split$fastest_pace)/2),
+           label = label_text, size = 3, family = 'noto', hjust = 0) +
+  
+  # titles and labels
+  labs(title = glue("<b><span style='font-size:18pt'>{test_event}</span></b>"),
+       x = '\nSplit', 
+       #y = 'Slower &#9650;<br><br><br><br><br><br><br><br><br>Faster &#9660;'
+       y=NULL
+  ) +
+  annotate("text", x = 0.8, y = max_pacing-0.25, label = "▲\nSlower", family = 'noto', size = 3.5, hjust = 1,color = 'gray40') +
+  annotate("text", x = 0.8, y = min_pacing+0.25, label = "Faster\n▼", family = 'noto', size = 3.5, hjust = 1,color = 'gray40') +
+  # theme formatting
+  theme_minimal() +
+  theme(legend.position = "top", axis.text.x = element_text(size = 10, color = 'gray50', family = 'ibm'),
+        axis.text.y = element_text(size = 10, color = 'gray50', family = 'ibm'),
+        axis.title.y.left = element_markdown(size = 10, family = 'noto', angle = 0, vjust = 0.5),
+        axis.title.x = element_text(size = 11, family = 'noto'), legend.title = element_blank(),
+        legend.text = element_text(family = 'noto'),
+        plot.subtitle = ggtext::element_markdown(lineheight = 1.2),
+        plot.title = ggtext::element_markdown(lineheight = 1.2),
+        plot.title.position = "plot", axis.line = element_blank(), axis.ticks = element_blank(),
+        panel.background = element_blank(), panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(), panel.grid.major.y = element_line(color = 'gray90', linetype = 'dashed'))
+
+ggsave("pacing.png", width = 10, height = 6, dpi = 300, bg = "white")
+
+# ----  nearest neighbor analysis ----
+
+
+max_place_axis <- max(clean_xc_data$place,na.rm = T)
+
+
+
+test_athlete_place <- clean_xc_data |>
+  filter(athlete == test_athlete,
+         distance_m == max(distance_m)) |>
+  pull(place)
+
+if(test_athlete_place == 1){
+  min_place <- test_athlete_place+1
+  max_place <- test_athlete_place+2
+}else if (test_athlete_place == max(clean_xc_data$place)){
+  min_place <- test_athlete_place-1
+  max_place <- test_athlete_place-2
+}else{
+  min_place <- test_athlete_place-1
+  max_place <- test_athlete_place+1
+}
+
+
+median_overall_pace <- clean_xc_data |>
+  group_by(distance_m) |>
+  summarise(median_pace_km = median(pace_km_min,na.rm = T),
+            .groups = 'drop')
+
+athlete_filter <- clean_xc_data |>
+  filter(distance_m == max(distance_m)) |>
+  filter(place == min_place |
+           place == max_place) |>
+  pull(athlete)
+
+neighbors_df <- clean_xc_data |>
+  filter(athlete %in% athlete_filter | athlete == test_athlete) |>
+  mutate(labeler_label = case_when(athlete == test_athlete ~ 'Spotlighter',
+                                   athlete == athlete_filter[[1]] ~ 'Athlete_1',
+                                   athlete == athlete_filter[[2]] ~ 'Athlete_2'))
+
+neighbors_df |>
+  ggplot() + 
+  geom_line(mapping = aes(x = factor(distance_m),
+                          y = place,
+                          group = labeler_label,
+                          color = labeler_label,
+                          size = labeler_label)) +
+  geom_point(mapping = aes(x = factor(distance_m),
+                           y = place,
+                           group = labeler_label,
+                           color = labeler_label,
+                           size = labeler_label)) +
+  scale_color_manual(
+    values = c(
+      'Spotlighter' = '#ca0020',
+      'Athlete_1' = '#92c5de',
+      'Athlete_2' = '#0571b0'
+    ),
+    labels = c(
+      'Spotlighter' = test_athlete,
+      'Athlete_1' = athlete_filter[[1]],
+      'Athlete_2' = athlete_filter[[2]] 
+    )
+  ) +
+  scale_size_manual(
+    values = c(
+      'Spotlighter' = 1.3,
+      'Athlete_1' = 1,
+      'Athlete_2' = 1
+    ),
+    guide = 'none'
+  ) +
+  scale_y_reverse(
+    labels = function(x) {
+      ifelse(x == min(x, na.rm = TRUE), paste0("Finished\n#",x), as.character(x))
+    },
+    limits = c(max(neighbors_df$place), 1), 
+    breaks = seq(1,max(neighbors_df$place),10),
+    position = 'right'
+  ) +
+  scale_x_discrete(labels = function(x) paste0(as.numeric(x)/1000, "K")) +
+  labs(x = '',
+       y = NULL,
+       title = glue('Who did {test_athlete} finish alongside?'),
+       subtitle = ''
+       ) +
+  theme_minimal() +
+  theme(legend.position = "top", axis.text.x = element_text(size = 10, color = 'gray50', family = 'ibm'),
+        axis.text.y = element_text(size = 10, color = 'gray50', family = 'ibm'),
+        axis.title.y.left = element_markdown(size = 10, family = 'noto', angle = 0, vjust = 0.5),
+        axis.title.x = element_text(size = 11, family = 'noto'), legend.title = element_blank(),
+        legend.text = element_text(family = 'noto'),
+        plot.subtitle = ggtext::element_markdown(lineheight = 1.2),
+        plot.title = ggtext::element_markdown(lineheight = 1.2),
+        plot.title.position = "plot", axis.line = element_blank(), axis.ticks = element_blank(),
+        panel.background = element_blank(), panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(), panel.grid.major.y = element_line(color = 'gray90', linetype = 'dashed'))
+
+
+clean_xc_data |>
+  filter(athlete %in% athlete_filter | athlete == test_athlete) |>
+  mutate(labeler_label = case_when(athlete == test_athlete ~ 'Spotlighter',
+                                   athlete == athlete_filter[[1]] ~ 'Athlete_1',
+                                   athlete == athlete_filter[[2]] ~ 'Athlete_2'))  |>
+  ggplot() + 
+  geom_line(median_overall_pace,
+            mapping = aes(x = factor(distance_m),
+                          y = median_pace_km,
+                          group = 1),
+            size = 1,
+            color = 'gray80',
+            linetype = 'dashed') +
+  geom_line(mapping = aes(x = factor(distance_m),
+                          y = pace_km_min,
+                          group = labeler_label,
+                          color = labeler_label,
+                          size = labeler_label)) +
+  geom_point(mapping = aes(x = factor(distance_m),
+                          y = pace_km_min,
+                          group = labeler_label,
+                          color = labeler_label,
+                          size = labeler_label)) +
+  scale_color_manual(
+    values = c(
+      'Spotlighter' = '#ca0020',
+      'Athlete_1' = '#92c5de',
+      'Athlete_2' = '#0571b0'
+    ),
+    labels = c(
+      'Spotlighter' = test_athlete,
+      'Athlete_1' = athlete_filter[[1]],
+      'Athlete_2' = athlete_filter[[2]] 
+    )
+  ) +
+  scale_size_manual(
+    values = c(
+      'Spotlighter' = 1.3,
+      'Athlete_1' = 1,
+      'Athlete_2' = 1 
+    ),
+    guide = 'none'
+  ) +
+  scale_y_continuous(
+    
+    expand = expansion(mult = c(0.05, 0.05)),
+    
+    labels = function(x) {
+      ifelse(is.na(x), NA_character_,{
+        formatted <- sprintf('%d:%02d',floor(x),round((x-floor(x))*60))
+        
+        ifelse(x == max(x,na.rm = T),
+               paste0(formatted,'\nper km'),
+               formatted)
+        
+      })
+    },
+    breaks = seq(min_pacing, max_pacing, by = 0.05),
+  ) +
+  scale_x_discrete(labels = function(x) paste0(as.numeric(x)/1000, "K")) +
+  theme(legend.position = "top", axis.text.x = element_text(size = 10, color = 'gray50', family = 'ibm'),
+        axis.text.y = element_text(size = 10, color = 'gray50', family = 'ibm'),
+        axis.title.y.left = element_markdown(size = 10, family = 'noto', angle = 0, vjust = 0.5),
+        axis.title.x = element_text(size = 11, family = 'noto'), legend.title = element_blank(),
+        legend.text = element_text(family = 'noto'),
+        plot.subtitle = ggtext::element_markdown(lineheight = 1.2),
+        plot.title = ggtext::element_markdown(lineheight = 1.2),
+        plot.title.position = "plot", axis.line = element_blank(), axis.ticks = element_blank(),
+        panel.background = element_blank(), panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(), panel.grid.major.y = element_line(color = 'gray90', linetype = 'dashed'))
+  
+
+
+
+# what about with the test athlete as the base
+
+
+neighor_times <- neighbors_df |>
+  select(athlete,
+         #school,
+         distance_m,
+         time_decimal) |>
+  filter(athlete != test_athlete)
+
+baseline_df <- neighbors_df |>
+  filter(athlete == test_athlete) |>
+  select(#athlete,
+         #school,
+         distance_m,
+         baseline_times = time_decimal)
+
+neighor_times |>
+  left_join(baseline_df) |>
+  mutate(plus_minus = (time_decimal-baseline_times)*60 ) |>
+  ggplot() + 
+  geom_bar(
+    mapping = aes(x = factor(distance_m),
+                  y = plus_minus,
+                  group = 1),
+    stat = 'identity',
+    position = 'identity'
+  ) +
+  scale_y_continuous(
+    labels = function(x) {
+      formatted_vals <- ifelse(x > 0, paste0("+", x), as.character(x))
+      ifelse(
+        x == max(x, na.rm = TRUE), 
+        paste0(formatted_vals, "\nsec\nlead"), 
+        formatted_vals
+      )
+    },
+    position = 'right'
+  ) +
+  facet_wrap(~athlete) +
+  #theme_minimal() +
+  theme(legend.position = "top", axis.text.x = element_text(size = 10, color = 'gray50', family = 'ibm'),
+        axis.text.y = element_text(size = 10, color = 'gray50', family = 'ibm'),
+        axis.title.y.left = element_markdown(size = 10, family = 'noto', angle = 0, vjust = 0.5),
+        axis.title.x = element_text(size = 11, family = 'noto'), legend.title = element_blank(),
+        legend.text = element_text(family = 'noto'),
+        plot.subtitle = ggtext::element_markdown(lineheight = 1.2),
+        plot.title = ggtext::element_markdown(lineheight = 1.2),
+        plot.title.position = "plot", axis.line = element_blank(), axis.ticks = element_blank(),
+        panel.background = element_blank(), panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank(), panel.grid.major.y = element_line(color = 'gray90', linetype = 'dashed'))
+
+

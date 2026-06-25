@@ -1,0 +1,295 @@
+# the brand new shiny script
+
+library(colorspace)
+library(ggbeeswarm)
+library(showtext)
+library(ggtext)
+library(ggpattern)
+library(shiny)
+library(ggrepel)
+
+# ----  pull in the cleaned and compiled file ----
+
+source('~/GitHub/Sports/College Cross Country/Race Breakdowns/20260624 Data Cleaning.R')
+source('~/GitHub/Sports/College Cross Country/20251118 MW Regionals/20251129 school colors.R')
+
+# ----  init shiny variables  ----
+
+showtext_auto()
+showtext_opts(dpi = 96) 
+
+font_add_google("Fira Code", "ibm")
+font_add_google("Noto Sans", "noto")
+
+ui <- fluidPage(
+  
+  theme = bslib::bs_theme(version = 5, bootswatch = "flatly"),
+  
+  fluidRow(
+    column(
+      width = 12,
+      wellPanel(
+        fluidRow(
+          column(
+            width = 6,
+            selectInput(
+              "event",
+              "Select Event:",
+              choices = unique(sort(init_xc_data$event)),
+              selected = sample(unique(sort(init_xc_data$event)), 1)
+            )
+          ),
+          column(                          
+            width = 6,
+            selectInput(
+              "athlete",
+              "Select Athlete:",
+              choices = NULL             
+            )
+          )
+        )
+      )
+    )
+  ),
+  
+  tabsetPanel(
+    type = "tabs",
+    
+    # Tab 1: Athlete Comparison 
+    #   examines how athlete's final time compares to the rest of the field
+    tabPanel(
+      "Athlete Comparison",
+      br(),
+      plotOutput("density_plot", height = "700px", width = "1000px")
+    ),
+    
+    # Tab 2: Pacing comparison
+    #   compares pacing against school or top 25 of race
+    tabPanel(
+      "Pacing per Split",
+      br(),
+      plotOutput("pacing_plot", height = "700px", width = "1000px")
+    ),
+    
+    # tab #3: adjacent competitors
+    #   compares race performance against adjacent competitors
+    tabPanel(
+      "Adjacent Competitors",
+      br(),
+      plotOutput("neighbor_places",height='700px',width='1000px')
+    )
+  )
+)
+server <- function(input, output, session) {
+  
+  observeEvent(input$event, {
+    athletes <- init_xc_data |>
+      filter(event == input$event) |>
+      pull(athlete) |>
+      unique() |>
+      sort()
+    
+    updateSelectInput(session,'athlete',choices = athletes)
+  })
+  
+  athlete_data <- reactive({
+    req(input$athlete)
+    
+    test_athlete <- input$athlete
+    
+    test_school <- init_xc_data |>
+      filter(event == input$event,# input$event,
+             athlete ==input$athlete)|> #input$athlete) |>
+      pull(school) |>
+      first()
+    
+    school_color_var <- school_colors$primary_color[school_colors$school == test_school][1]
+    school_color_var_light <- lighten(school_color_var, 0.5)
+    
+    clean_xc_data <- init_xc_data |>
+      filter(event == "2025 Midwest Men's Regional") |>
+      assign_spotlight(test_athlete, test_school)
+    
+    filter_final_splits <- clean_xc_data |>
+      filter(
+        distance_m == max(distance_m)
+      )
+    
+    group_summary_splits <- clean_xc_data |>
+      group_by(distance_m, 
+               color_spotlight) |>
+      summarise(median_pace_km = median(pace_km_min, na.rm = TRUE), .groups = 'drop')  |>
+      mutate(distance_m = factor(distance_m))
+    
+    list(
+      athlete_var = test_athlete,
+      school_var = test_school,
+      event_var = input$event,
+      school_color_var = school_color_var,
+      school_color_var_light = school_color_var_light,
+      final_splits = filter_final_splits,
+      group_summary_splits = group_summary_splits
+    )
+    
+    
+  })
+  
+  output$density_plot <- renderPlot({
+    data <- athlete_data()
+    
+    test_athlete           <- data$athlete_var
+    test_event             <- data$event_var
+    test_school            <- data$school_var
+    school_color_var       <- data$school_color_var
+    school_color_var_light <- data$school_color_var_light
+    filter_final_splits    <- data$final_splits 
+    
+    group_medians <- filter_final_splits |>
+      filter(!is.na(time_decimal)) |>
+      mutate(
+        group_for_median = if_else(color_spotlight == "spotlight", "teammates", as.character(color_spotlight))
+      ) |>
+      group_by(group_for_median) |>
+      summarise(
+        median_time = median(time_decimal, na.rm = TRUE),
+        .groups = "drop"
+      ) |>
+      transmute(
+        color_spotlight = factor(group_for_median, levels = c('teammates', 'other')),
+        median_time,
+        label = if_else(group_for_median == "teammates", test_school, "Others")
+      )
+    
+    
+    final_athlete_spotlight_times <- filter_final_splits |>
+      filter(color_spotlight == 'spotlight') |>
+      select(time_decimal,
+             time_new)
+    
+    athlete_time_decimal <- final_athlete_spotlight_times$time_decimal
+    athlete_time_formatted <- final_athlete_spotlight_times$time_new
+    
+    
+    teammates_median <- group_medians |>
+      filter(color_spotlight == 'teammates') |>
+      pull(median_time)
+    teammate_median_formatted <- sprintf("%d:%04.1f", floor(teammates_median), (teammates_median %% 1) * 60)
+    
+    others_median <- group_medians |>
+      filter(color_spotlight == 'other') |>
+      pull(median_time)
+    others_median_formatted <- sprintf("%d:%04.1f", floor(others_median), (others_median %% 1) * 60)
+    
+    min_time <- floor(min(filter_final_splits$time_decimal, na.rm = TRUE))
+    max_time <- ceiling(max(filter_final_splits$time_decimal, na.rm = TRUE))
+    
+    diff_vs_team <- athlete_time_decimal - teammates_median
+    diff_abs <- abs(diff_vs_team)
+    diff_secs <- diff_abs * 60
+    
+    team_diff_text <- case_when(
+      diff_secs <= 1 ~ "around the same time as",
+      
+      diff_vs_team < 0 & diff_secs < 60 ~ sprintf("%.1f seconds faster than", diff_secs),
+      diff_vs_team > 0 & diff_secs < 60 ~ sprintf("%.1f seconds slower than", diff_secs),
+      
+      diff_vs_team < 0 ~ paste0(sprintf("%d:%04.1f", floor(diff_abs), (diff_abs %% 1) * 60), " faster than "),
+      TRUE ~ paste0(sprintf("%d:%04.1f", floor(diff_abs), (diff_abs %% 1) * 60), " slower than ")
+    )
+    
+    ggplot(filter_final_splits, 
+           aes(x = 0, 
+               y = time_decimal,
+               fill = color_spotlight,
+               color = color_spotlight,
+               alpha = color_spotlight)
+    ) + 
+      geom_hline(data = filter(group_medians, 
+                               color_spotlight == 'other'),
+                 aes(yintercept = median_time), 
+                 color = 'gray70', 
+                 linewidth = 1.5) +
+      geom_hline(data = filter(group_medians, 
+                               color_spotlight == 'teammates'),
+                 aes(yintercept = median_time), 
+                 color = school_color_var, 
+                 linewidth = 1.5) +
+      # beeswarm
+      geom_quasirandom(data = filter_final_splits, 
+                       shape = 21, 
+                       stroke = 1, 
+                       width = 0.4, 
+                       method = 'smiley',
+                       #color = 'white', 
+                       size = 4) +
+      
+      geom_label_repel(
+        data = filter(filter_final_splits, color_spotlight == 'spotlight'),
+        aes(label = test_athlete),  # Can also be a static string like "Selected"
+        nudge_x = 0.5,              # Pushes the label vertically (due to coord_flip) above the swarm
+        min.segment.length = 0,     # Forces the arrow to always draw
+        segment.color = "black",
+        segment.size = 0.6,
+        arrow = arrow(length = unit(0.015, "npc"), type = "closed"),
+        family = "noto",            # Matches the fonts in your theme
+        fontface = "bold",
+        fill = "white",
+        color = "black",
+        show.legend = FALSE
+      ) +
+      
+      
+      scale_color_manual(
+        values = c('other' = 'white',
+                   'teammates' = 'black',
+                   'spotlight' = 'black')
+      ) +
+      coord_flip() +
+      scale_y_reverse(limits = c(max_time, min_time), 
+                      breaks = seq(min_time, max_time, by = 3),
+                      labels = function(x) sprintf("%d:%02d", floor(x), round((x - floor(x)) * 60))) +
+      scale_alpha_manual(
+        values = c("spotlight" = 1, "teammates" = 1, "other" = 0.5), guide = 'none'
+      ) +
+      scale_fill_manual(
+        values = c("spotlight" = school_color_var, "teammates" = school_color_var_light, "other" = "gray75"), 
+        guide = 'none'
+      ) +
+      labs(x = '', 
+           y = 'Race Time\n← Slower                    Faster →',
+           title = glue("<b><span style='font-size:18pt'>{test_event}</span></b>"),
+           caption = '\nSource: NCAA & PrimeTime Timing',
+           subtitle = glue(
+             "<b><span style='font-size:12pt; color:{school_color_var};'>{test_athlete}</span></b> finished in ",
+             "<span style='font-family:ibm; font-weight:bold;'>{athlete_time_formatted}</span>, ",
+             "{team_diff_text} the median <b><span style='font-size:12pt; color:{school_color_var};'>{test_school}</span></b> runner. ",
+             "<br>The median <b><span style='font-size:12pt; color:{school_color_var};'>{test_school}</span></b> runner finished with a time of ",
+             "<span style='font-family:ibm; font-weight:bold;'>{teammate_median_formatted}</span>, while <b><span style='font-size:12pt; color:gray70;'>the rest of the field</span></b> finished with a median time of ",
+             "<span style='font-family:ibm; font-weight:bold;'>{others_median_formatted}</span>.")
+      ) +
+      theme_minimal() +
+      theme(
+        legend.position = "none", 
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(size = 13, color = 'gray80', family = 'ibm'),
+        axis.title.x = element_text(size = 13, face = 'bold', family = 'noto'),
+        plot.caption = element_text(size = 13, family = 'noto', hjust = 0, color = 'gray80'),
+        
+        # Add this line right here to render the HTML:
+        plot.subtitle = ggtext::element_markdown(lineheight = 1.2),
+        plot.title = ggtext::element_markdown(lineheight = 1.2),
+        
+        axis.title.y = element_blank(), 
+        axis.line = element_blank(), 
+        axis.ticks = element_blank(),
+        panel.background = element_blank(), 
+        panel.grid = element_blank(),
+        plot.margin = margin(t = 10, r = 10, b = 10, l = 10)
+      )
+    
+    
+  }, res = 96)
+  
+
+}
+shinyApp(ui = ui, server = server)

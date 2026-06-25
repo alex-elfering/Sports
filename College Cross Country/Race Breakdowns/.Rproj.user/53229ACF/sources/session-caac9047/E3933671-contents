@@ -171,14 +171,14 @@ server <- function(input, output, session) {
   
   # Density plot - similar optimizations
   output$density_plot <- renderPlot({
-
+    
     
   }, res = 96)
   
   output$pacing_plot <- renderPlot({
-
+    
     
   }, res = 96)
   
-
+  
 }

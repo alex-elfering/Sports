@@ -3,7 +3,7 @@
     "path": "~/GitHub/Sports/College Cross Country/Race Breakdowns/20260624 Data Cleaning.R",
     "project_path": "20260624 Data Cleaning.R",
     "type": "r_source",
-    "hash": "2411185749",
+    "hash": "0",
     "contents": "",
     "dirty": false,
     "created": 1782297817050.0,
@@ -13,8 +13,8 @@
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "10,34",
-        "scrollLine": "0"
+        "cursorPosition": "48,14",
+        "scrollLine": "13"
     },
     "folds": "15|70|26|0|\n27|39|29|0|\n30|35|38|0|\n",
     "lastKnownWriteTime": 1782298274,

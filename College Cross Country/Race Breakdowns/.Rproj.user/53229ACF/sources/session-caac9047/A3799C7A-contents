@@ -1,0 +1,53 @@
+# the brand new shiny script
+
+library(colorspace)
+library(ggbeeswarm)
+library(showtext)
+library(ggtext)
+library(ggpattern)
+library(shiny)
+
+# ----  pull in the cleaned and compiled file ----
+
+source('~/GitHub/Sports/College Cross Country/Race Breakdowns/20260624 Data Cleaning.R')
+
+# ----  init shiny variables  ----
+
+showtext_auto()
+showtext_opts(dpi = 96)  # Use 96 for screen display
+
+font_add_google("Fira Code", "ibm")
+font_add_google("Noto Sans", "noto")
+
+ui <- fluidPage(
+  
+  theme = bslib::bs_theme(version = 5, bootswatch = "flatly"),
+  
+  fluidRow(
+    column(
+      width = 12,
+      wellPanel(
+        fluidRow(
+          column(
+            width = 6,
+            selectInput(
+              "event",
+              "Select Event:",
+              choices = (unique(sort(init_xc_data$event))),
+              selected = sample(unique(sort(init_xc_data$event)), 1)
+            )
+          )
+        )
+      )
+    )
+  )
+)
+server <- function(input, output, session) {
+  
+  # # dataset to dynamically pull variables depending on the selection(s)
+  athlete_data <- reactive({
+    req(input$athlete)
+  })
+  
+
+}
