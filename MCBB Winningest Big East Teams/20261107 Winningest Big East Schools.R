@@ -25,6 +25,7 @@ mcbb_games <- read.csv('schedules_2012_2026.csv') |>
     game_lost = ifelse(tm<opp,1,0)
   )
 
+# script provides clean slug names to add school name for provided slugs
 source('20261105 School Slug Cleaning.R')
 
 
