@@ -17,8 +17,11 @@ showtext_opts(dpi = 300)
 font_add_google("Fira Code", "ibm")
 font_add_google("Noto Sans", "noto")
 
+documents_loc <- "~/"
+proj_loc <- '~/GitHub/Sports/MCBB Winningest Big East Teams'
+
 # data loading  -----------------------------------
-mcbb_games <- read.csv('schedules_2012_2026.csv') |>
+mcbb_games <- read.csv(file.path(documents_loc, 'schedules_2012_2026.csv')) |>
   clean_names() |>
   mutate(
     game_won = ifelse(tm>opp,1,0),
@@ -26,8 +29,7 @@ mcbb_games <- read.csv('schedules_2012_2026.csv') |>
   )
 
 # script provides clean slug names to add school name for provided slugs
-source('20261105 School Slug Cleaning.R')
-
+source(file.path(documents_loc, '20261105 School Slug Cleaning.R'))
 
 # data cleaning -----------------------------------
 clean_mcbb <- mcbb_games |>
@@ -223,8 +225,9 @@ ggplot(
   scale_x_continuous(breaks = seq(2005, 2025, 5),
                      expand = expansion(mult = c(0.01, 0))) +
   labs(
-    title = "UConn Remains Winningest MCBB in the Big East",
+    title = "UConn Remains Winningest MCBB Team in the Big East",
     subtitle = "Total program wins trailing five seasons 2001-2026, including post-season games.", 
+    caption = 'Source: College-Basketball Reference; Data Visualization created by Alex Elfering',
     x = '',
     y = ''
   ) +
@@ -238,15 +241,17 @@ ggplot(
         legend.title = element_blank(),
         legend.text = element_text(family = 'noto'),
         #plot.subtitle = ggtext::element_textbox_simple(lineheight = 1.2, margin = margin(t = 5, b = 15)),
-        plot.title = element_text(family = 'noto',size = 16,face = 'bold'),
-        plot.subtitle = element_textbox_simple(family = 'noto', size = 12, margin = margin(b = 15)),
+        plot.title = element_text(family = 'noto', size = 16, face = 'bold',margin = margin(b = 1)),
+        plot.subtitle = element_text(family = 'noto', size = 12,margin = margin(t = 1, b = 15)),
+        plot.caption = element_text(family = 'noto', size = 8, color = 'gray40',hjust = 0, margin = margin(t = 1)),
+        plot.caption.position = 'plot',
+        plot.margin = margin(r = 60,t=1,b=1,l=1),
         plot.title.position = "plot",
         axis.line = element_blank(), axis.ticks = element_blank(),
         panel.background = element_blank(), panel.grid.minor = element_blank(),
-        plot.margin = margin(t = 10, r = 60, b = 10, l = 40),
         panel.grid.major = element_blank(),
         panel.grid.major.y = element_line(color = 'gray92', linetype = 'solid'))
 
-ggsave('big_east_winningest_teams.png', device = 'png',
-       width = 7, height = 5, dpi = 300, bg = 'white')
+#dir.create(proj_loc, showWarnings = FALSE, recursive = TRUE)
+ggsave(file.path(proj_loc, 'big_east_winningest_teams.png'), device = 'png', width = 7, height = 5, dpi = 300, bg = 'white')
 
