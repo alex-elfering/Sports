@@ -1,0 +1,13 @@
+name: XCRaceBreakdowns
+title: XCRaceBreakdowns
+username: aelfering
+account: aelfering
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 17635395
+bundleId: 12316025
+url: https://alexvizzesthings.shinyapps.io/XCRaceBreakdowns/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: 20260624 Data Cleaning.R

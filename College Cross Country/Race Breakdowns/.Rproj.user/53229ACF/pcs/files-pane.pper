@@ -1,6 +1,10 @@
 {
-    "path": "~/GitHub/Sports/College Cross Country/Race Breakdowns",
+    "path": "C:/Users/alexe/Downloads",
     "sortOrder": [
+        {
+            "columnIndex": 4,
+            "ascending": false
+        },
         {
             "columnIndex": 2,
             "ascending": true
