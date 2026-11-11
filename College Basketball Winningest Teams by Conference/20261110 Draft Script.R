@@ -21,6 +21,34 @@ font_add_google("Noto Sans", "noto")
 documents_loc <- "~/"
 proj_loc <- '~/GitHub/Sports/MCBB Winningest Big East Teams'
 
+# functions ----
+roll_conf_label <- function(flag, conf, width, suffix = "winner") {
+  # needed to identify teams that either won regular season championships or conference tournament championships
+  # they might win one conference one season, then the next season, move a conference and win there, too
+  
+  # flag    - 0/1 identifying if the team won the title that season (reg season or tourney)
+  # conf    - what conference the team played in
+  # width   - number of seasons counted in the rolling window 
+  # suffix  - text added after the conference name 
+  
+  # loop over every season
+  purrr::map_chr(seq_along(flag), function(i) {
+    
+    # row positions in this window
+    idx <- seq.int(max(1, i - width + 1), i)
+    # keep rows where a title is won
+    hit <- idx[flag[idx] > 0]
+    # if there are no titles, then nothing to label
+    if (length(hit) == 0) return(NA_character_)
+    # conferences that the team won a title in, starting with the most recent title
+    confs <- rev(conf[hit])
+    # count titles per conference; the factor keeps the newest-first order
+    tab <- table(factor(confs, levels = unique(confs)))
+    # "1x SEC winner, 2x Big 12 winner"
+    paste0(tab, "x ", names(tab), " ", suffix, collapse = ", ")
+  })
+}
+
 # data loading  -----------------------------------
 mcbb_games <- read.csv(file.path(documents_loc, 'schedules_2012_2026.csv')) |>
   clean_names() |>
@@ -140,7 +168,7 @@ regular_conf_champions <- clean_mcbb |>
     reg_season_champ = 1
   )
 
-rolling_win_var <- 4
+rolling_win_var <- 10
 
 rolling_wins <- clean_mcbb |>
   arrange(season,
@@ -173,27 +201,34 @@ rolling_wins <- clean_mcbb |>
   ) |>
   mutate(across(where(is.numeric), ~ replace(.x, .x == -Inf, 0))) |>
   group_by(school_name) |>
+  arrange(school_name, season) |>
+  group_by(school_name) |>
   mutate(
-    rolling_wins = rollapplyr(wins, width = rolling_win_var, FUN = sum, partial = TRUE, na.rm = TRUE),
-    rolling_losses = rollapplyr(losses, width = rolling_win_var, FUN = sum, partial = T, na.rm = T),
-    rolling_ncaa = rollapplyr(ncaa, width = rolling_win_var, FUN = sum, partial = T, na.rm = T),
-    rolling_nit = rollapplyr(nit, width = rolling_win_var, FUN = sum, partial = T, na.rm = T),
-    rolling_cit = rollapplyr(cit, width = rolling_win_var, FUN = sum, partial = T, na.rm = T),
-    rolling_cbi = rollapplyr(cbi, width = rolling_win_var, FUN = sum, partial = T, na.rm = T),
-    rolling_cbc = rollapplyr(cbc, width = rolling_win_var, FUN = sum, partial = T, na.rm = T),
-    rolling_reg_conf_champ = rollapplyr(reg_season_champ, width = rolling_win_var, FUN = sum, partial = T, na.rm = T),
-    rolling_tourney_winner = rollapplyr(tourney_winner, width = rolling_win_var, FUN = sum, partial = T, na.rm = T)
+    rolling_wins   = rollapplyr(wins,   width = rolling_win_var, FUN = sum, partial = TRUE, na.rm = TRUE),
+    rolling_losses = rollapplyr(losses, width = rolling_win_var, FUN = sum, partial = TRUE, na.rm = TRUE),
+    rolling_ncaa   = rollapplyr(ncaa,   width = rolling_win_var, FUN = sum, partial = TRUE, na.rm = TRUE),
+    rolling_nit    = rollapplyr(nit,    width = rolling_win_var, FUN = sum, partial = TRUE, na.rm = TRUE),
+    rolling_cit    = rollapplyr(cit,    width = rolling_win_var, FUN = sum, partial = TRUE, na.rm = TRUE),
+    rolling_cbi    = rollapplyr(cbi,    width = rolling_win_var, FUN = sum, partial = TRUE, na.rm = TRUE),
+    rolling_cbc    = rollapplyr(cbc,    width = rolling_win_var, FUN = sum, partial = TRUE, na.rm = TRUE),
+    rolling_reg_conf_champ = rollapplyr(reg_season_champ, width = rolling_win_var, FUN = sum, partial = TRUE, na.rm = TRUE),
+    rolling_tourney_winner = rollapplyr(tourney_winner,   width = rolling_win_var, FUN = sum, partial = TRUE, na.rm = TRUE),
+    
+    # conference-aware labels
+    reg_conf_wins_rolling   = roll_conf_label(reg_season_champ, conference, rolling_win_var),
+    tournament_wins_rolling = roll_conf_label(tourney_winner,   conference, rolling_win_var)
   ) |>
   mutate(
-    rolling_ncaa_appearance = ifelse(rolling_ncaa > 0, paste0("March Madness (", rolling_ncaa, "x)"),NA),
-    rolling_nit_appearance = ifelse(rolling_nit > 0, paste0("NIT (", rolling_nit, "x)"),NA),
-    rolling_cit_appearance = ifelse(rolling_cit > 0, paste0("CIT (", rolling_cit, "x)"),NA),
-    rolling_cbi_appearance = ifelse(rolling_cbi > 0, paste0("CBI (", rolling_cbi, "x)"),NA),
-    rolling_cbc_appearance = ifelse(rolling_cbc > 0, paste0("CBC (", rolling_cbc, "x)"),NA),
-    reg_conf_wins_rolling =ifelse(rolling_reg_conf_champ > 0, glue("{rolling_reg_conf_champ}x {conference} winner"),NA),
-    tournament_wins_rolling =ifelse(rolling_tourney_winner > 0, glue("{rolling_tourney_winner}x {conference} winner"),NA),
+    rolling_ncaa_appearance = ifelse(rolling_ncaa > 0, paste0("March Madness (", rolling_ncaa, "x)"), NA),
+    rolling_nit_appearance  = ifelse(rolling_nit  > 0, paste0("NIT (", rolling_nit, "x)"), NA),
+    rolling_cit_appearance  = ifelse(rolling_cit  > 0, paste0("CIT (", rolling_cit, "x)"), NA),
+    rolling_cbi_appearance  = ifelse(rolling_cbi  > 0, paste0("CBI (", rolling_cbi, "x)"), NA),
+    rolling_cbc_appearance  = ifelse(rolling_cbc  > 0, paste0("CBC (", rolling_cbc, "x)"), NA)
   ) |>
-  unite(post_season_appearances, c(rolling_ncaa_appearance, rolling_nit_appearance, rolling_cit_appearance, rolling_cbi_appearance, rolling_cbc_appearance), sep = ', ', na.rm = T) |>
+  unite(post_season_appearances,
+        c(rolling_ncaa_appearance, rolling_nit_appearance, rolling_cit_appearance,
+          rolling_cbi_appearance, rolling_cbc_appearance),
+        sep = ', ', na.rm = TRUE) |>
   ungroup() |>
   group_by(season,conference) |>
   mutate(rolling_win_ranked = dense_rank(desc(rolling_wins))) |>
@@ -398,14 +433,17 @@ rolling_conference_filter |>
   )
 
 rolling_wins |>
-  filter(school_name == 'Iowa') |>
-  arrange(rolling_win_ranked) |>
+  filter(school_name == 'Texas') |>
+  arrange(season) |>
+  #arrange(rolling_win_ranked) |>
   unite(total_record, c(rolling_wins, rolling_losses), sep='-') |>
   select(
     season,
+    conference,
     school_name,
     total_record,
     reg_conf_wins_rolling,
-    post_season_appearances,
-    tournament_wins_rolling
-  )
+    tournament_wins_rolling,
+    post_season_appearances
+  ) |>
+  as.data.frame()
