@@ -143,10 +143,16 @@ regular_conf_champions <- clean_mcbb |>
 rolling_win_var <- 4
 
 rolling_wins <- clean_mcbb |>
+  arrange(season,
+          school_name) |>
   left_join(school_conferences,
             by = c('school_name' = 'school',
                    'season' = 'season')) |>
   left_join(tournament_winner_list,
+            by = c('season' = 'season',
+                   'conference' = 'conference',
+                   'school_name' = 'school_name')) |>
+  left_join(regular_conf_champions,
             by = c('season' = 'season',
                    'conference' = 'conference',
                    'school_name' = 'school_name')) |>
@@ -161,6 +167,7 @@ rolling_wins <- clean_mcbb |>
     cit = max(cit_appearance,na.rm = T),
     cbi = max(cbi_appearance,na.rm = T),
     cbc = max(cbc_appearance,na.rm = T),
+    reg_season_champ = max(reg_season_champ,na.rm = T),
     tourney_winner = max(tourney_winner,na.rm = T),
     .groups = 'drop'
   ) |>
@@ -174,6 +181,7 @@ rolling_wins <- clean_mcbb |>
     rolling_cit = rollapplyr(cit, width = rolling_win_var, FUN = sum, partial = T, na.rm = T),
     rolling_cbi = rollapplyr(cbi, width = rolling_win_var, FUN = sum, partial = T, na.rm = T),
     rolling_cbc = rollapplyr(cbc, width = rolling_win_var, FUN = sum, partial = T, na.rm = T),
+    rolling_reg_conf_champ = rollapplyr(reg_season_champ, width = rolling_win_var, FUN = sum, partial = T, na.rm = T),
     rolling_tourney_winner = rollapplyr(tourney_winner, width = rolling_win_var, FUN = sum, partial = T, na.rm = T)
   ) |>
   mutate(
@@ -182,6 +190,7 @@ rolling_wins <- clean_mcbb |>
     rolling_cit_appearance = ifelse(rolling_cit > 0, paste0("CIT (", rolling_cit, "x)"),NA),
     rolling_cbi_appearance = ifelse(rolling_cbi > 0, paste0("CBI (", rolling_cbi, "x)"),NA),
     rolling_cbc_appearance = ifelse(rolling_cbc > 0, paste0("CBC (", rolling_cbc, "x)"),NA),
+    reg_conf_wins_rolling =ifelse(rolling_reg_conf_champ > 0, glue("{rolling_reg_conf_champ}x {conference} winner"),NA),
     tournament_wins_rolling =ifelse(rolling_tourney_winner > 0, glue("{rolling_tourney_winner}x {conference} winner"),NA),
   ) |>
   unite(post_season_appearances, c(rolling_ncaa_appearance, rolling_nit_appearance, rolling_cit_appearance, rolling_cbi_appearance, rolling_cbc_appearance), sep = ', ', na.rm = T) |>
@@ -194,7 +203,7 @@ rolling_wins <- clean_mcbb |>
 
 # ----  if the user selects different conferences?  ----
 
-conference_filter <- 'A-10'
+conference_filter <- 'Patriot'
 
 last_season <- max(rolling_wins$season)
 
@@ -383,7 +392,20 @@ rolling_conference_filter |>
     season,
     school_name,
     total_record,
+    reg_conf_wins_rolling,
     post_season_appearances,
     tournament_wins_rolling
   )
 
+rolling_wins |>
+  filter(school_name == 'Iowa') |>
+  arrange(rolling_win_ranked) |>
+  unite(total_record, c(rolling_wins, rolling_losses), sep='-') |>
+  select(
+    season,
+    school_name,
+    total_record,
+    reg_conf_wins_rolling,
+    post_season_appearances,
+    tournament_wins_rolling
+  )
