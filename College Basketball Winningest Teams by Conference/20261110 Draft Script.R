@@ -130,7 +130,15 @@ regular_conf_champions <- clean_mcbb |>
   ) |>
   mutate(pct_conf = conf_w/(conf_w+conf_l)) |>
   filter(pct_conf == max(pct_conf)) |>
-  ungroup()
+  ungroup() |>
+  select(
+  -conf_w,
+  -conf_l,
+  -pct_conf
+    ) |>
+  mutate(
+    reg_season_champ = 1
+  )
 
 rolling_win_var <- 4
 
