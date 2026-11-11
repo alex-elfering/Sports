@@ -108,28 +108,31 @@ tournament_winner_list <- clean_mcbb |>
   distinct() |>
   mutate(tourney_winner = 1)
 
-clean_mcbb |>
+regular_conf_champions <- clean_mcbb |>
   left_join(school_conferences,
             by = c('school_name' = 'school',
                    'season' = 'season')) |>
   filter(
-    season == 2026
-  ) |>
-  filter(
-    conference == 'Big Ten',
     type == 'REG',
     conference == opp_conference
   ) |>
   group_by(
+    season,
     school_name,
     conference
   ) |>
   summarise(conf_w = sum(game_won,na.rm = T),
             conf_l = sum(game_lost,na.rm = T),
             .groups = 'drop') |>
-  arrange(desc(conf_w/(conf_w+conf_l))) 
+  group_by(
+    season,
+    conference
+  ) |>
+  mutate(pct_conf = conf_w/(conf_w+conf_l)) |>
+  filter(pct_conf == max(pct_conf)) |>
+  ungroup()
 
-rolling_win_var <- 10
+rolling_win_var <- 4
 
 rolling_wins <- clean_mcbb |>
   left_join(school_conferences,
@@ -183,7 +186,7 @@ rolling_wins <- clean_mcbb |>
 
 # ----  if the user selects different conferences?  ----
 
-conference_filter <- 'ACC'
+conference_filter <- 'A-10'
 
 last_season <- max(rolling_wins$season)
 
@@ -360,7 +363,7 @@ conference_trending <- ggplot(
         panel.grid.major = element_blank(),
         panel.grid.major.y = element_line(color = 'gray92', linetype = 'solid'))
 
-ggsave(conference_trending,file.path(documents_loc, 'test_winningest_teams.png'), device = 'png', width = 7, height = 5, dpi = 300, bg = 'white')
+ggsave(plot = conference_trending,file.path(documents_loc, 'test_winningest_teams.png'), device = 'png', width = 7, height = 5, dpi = 300, bg = 'white')
 
 # table ----
 
