@@ -10,6 +10,7 @@ library(ggplot2)
 library(ggrepel)
 library(showtext)
 library(ggtext)
+library(gt)
 
 showtext_auto()
 showtext_opts(dpi = 300)
