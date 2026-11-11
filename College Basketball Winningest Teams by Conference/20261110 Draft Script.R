@@ -238,7 +238,7 @@ rolling_wins <- clean_mcbb |>
 
 # ----  if the user selects different conferences?  ----
 
-conference_filter <- 'Big 12'
+conference_filter <- 'A-10'
 
 last_season <- max(rolling_wins$season)
 
@@ -360,13 +360,17 @@ conference_trending <- ggplot(
       ifelse(x == max(x, na.rm = TRUE), paste0(x, '\nwins'), x)
     }
   ) + 
-  scale_x_continuous(breaks = seq(1997, 2025, 4),
-                     expand = expansion(mult = c(0.01, 0.12))) +
+  scale_x_continuous(
+    breaks = seq(1997, 2025, 4),
+    expand = expansion(add = c(0.3, 5))
+  ) +
   geom_text_repel(
     data = end_labels,
     aes(label = label, color = school_name),
     family = 'noto', fontface = 'bold', size = 3.5,
-    hjust = -1, direction = 'y',
+    hjust = 0, 
+    direction = 'y',
+    nudge_x = 0.6,
     xlim = c(last_season + 0.6, NA),
     segment.color = NA,
     show.legend = FALSE,
