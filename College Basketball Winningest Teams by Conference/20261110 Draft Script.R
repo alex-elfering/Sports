@@ -168,7 +168,7 @@ regular_conf_champions <- clean_mcbb |>
     reg_season_champ = 1
   )
 
-rolling_win_var <- 10
+rolling_win_var <- 3
 
 rolling_wins <- clean_mcbb |>
   arrange(season,
@@ -238,7 +238,7 @@ rolling_wins <- clean_mcbb |>
 
 # ----  if the user selects different conferences?  ----
 
-conference_filter <- 'Patriot'
+conference_filter <- 'Big 12'
 
 last_season <- max(rolling_wins$season)
 
