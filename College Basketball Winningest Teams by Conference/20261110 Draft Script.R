@@ -86,10 +86,59 @@ school_conferences <- clean_mcbb |>
   ) |>
   rename(school = opponent_name, conference = opp_conference)
 
+tournament_winner_list <- clean_mcbb |>
+  left_join(school_conferences,
+            by = c('school_name' = 'school',
+                   'season' = 'season')) |>
+  filter(
+    type == 'CTOURN'
+  ) |>
+  filter(result == 'W') |>
+  group_by(
+    season,
+    conference
+  ) |>
+  slice_max(date) |>
+  ungroup() |>
+  select(
+    season,
+    school_name,
+    conference
+  ) |>
+  distinct() |>
+  mutate(tourney_winner = 1)
+
+clean_mcbb |>
+  left_join(school_conferences,
+            by = c('school_name' = 'school',
+                   'season' = 'season')) |>
+  filter(
+    season == 2026
+  ) |>
+  filter(
+    conference == 'Big Ten',
+    type == 'REG',
+    conference == opp_conference
+  ) |>
+  group_by(
+    school_name,
+    conference
+  ) |>
+  summarise(conf_w = sum(game_won,na.rm = T),
+            conf_l = sum(game_lost,na.rm = T),
+            .groups = 'drop') |>
+  arrange(desc(conf_w/(conf_w+conf_l))) 
+
+rolling_win_var <- 10
+
 rolling_wins <- clean_mcbb |>
   left_join(school_conferences,
             by = c('school_name' = 'school',
                    'season' = 'season')) |>
+  left_join(tournament_winner_list,
+            by = c('season' = 'season',
+                   'conference' = 'conference',
+                   'school_name' = 'school_name')) |>
   group_by(
     season, school_name, conference
   ) |>
@@ -101,24 +150,28 @@ rolling_wins <- clean_mcbb |>
     cit = max(cit_appearance,na.rm = T),
     cbi = max(cbi_appearance,na.rm = T),
     cbc = max(cbc_appearance,na.rm = T),
+    tourney_winner = max(tourney_winner,na.rm = T),
     .groups = 'drop'
   ) |>
+  mutate(across(where(is.numeric), ~ replace(.x, .x == -Inf, 0))) |>
   group_by(school_name) |>
   mutate(
-    rolling_wins = rollapplyr(wins, width = 5, FUN = sum, partial = TRUE, na.rm = TRUE),
-    rolling_losses = rollapplyr(losses, width = 5, FUN = sum, partial = T, na.rm = T),
-    rolling_ncaa = rollapplyr(ncaa, width = 5, FUN = sum, partial = T, na.rm = T),
-    rolling_nit = rollapplyr(nit, width = 5, FUN = sum, partial = T, na.rm = T),
-    rolling_cit = rollapplyr(cit, width = 5, FUN = sum, partial = T, na.rm = T),
-    rolling_cbi = rollapplyr(cbi, width = 5, FUN = sum, partial = T, na.rm = T),
-    rolling_cbc = rollapplyr(cbc, width = 5, FUN = sum, partial = T, na.rm = T),
+    rolling_wins = rollapplyr(wins, width = rolling_win_var, FUN = sum, partial = TRUE, na.rm = TRUE),
+    rolling_losses = rollapplyr(losses, width = rolling_win_var, FUN = sum, partial = T, na.rm = T),
+    rolling_ncaa = rollapplyr(ncaa, width = rolling_win_var, FUN = sum, partial = T, na.rm = T),
+    rolling_nit = rollapplyr(nit, width = rolling_win_var, FUN = sum, partial = T, na.rm = T),
+    rolling_cit = rollapplyr(cit, width = rolling_win_var, FUN = sum, partial = T, na.rm = T),
+    rolling_cbi = rollapplyr(cbi, width = rolling_win_var, FUN = sum, partial = T, na.rm = T),
+    rolling_cbc = rollapplyr(cbc, width = rolling_win_var, FUN = sum, partial = T, na.rm = T),
+    rolling_tourney_winner = rollapplyr(tourney_winner, width = rolling_win_var, FUN = sum, partial = T, na.rm = T)
   ) |>
   mutate(
     rolling_ncaa_appearance = ifelse(rolling_ncaa > 0, paste0("March Madness (", rolling_ncaa, "x)"),NA),
     rolling_nit_appearance = ifelse(rolling_nit > 0, paste0("NIT (", rolling_nit, "x)"),NA),
     rolling_cit_appearance = ifelse(rolling_cit > 0, paste0("CIT (", rolling_cit, "x)"),NA),
     rolling_cbi_appearance = ifelse(rolling_cbi > 0, paste0("CBI (", rolling_cbi, "x)"),NA),
-    rolling_cbc_appearance = ifelse(rolling_cbc > 0, paste0("CBC (", rolling_cbc, "x)"),NA)
+    rolling_cbc_appearance = ifelse(rolling_cbc > 0, paste0("CBC (", rolling_cbc, "x)"),NA),
+    tournament_wins_rolling =ifelse(rolling_tourney_winner > 0, glue("{rolling_tourney_winner}x {conference} winner"),NA),
   ) |>
   unite(post_season_appearances, c(rolling_ncaa_appearance, rolling_nit_appearance, rolling_cit_appearance, rolling_cbi_appearance, rolling_cbc_appearance), sep = ', ', na.rm = T) |>
   ungroup() |>
@@ -130,7 +183,7 @@ rolling_wins <- clean_mcbb |>
 
 # ----  if the user selects different conferences?  ----
 
-conference_filter <- 'Patriot'
+conference_filter <- 'ACC'
 
 last_season <- max(rolling_wins$season)
 
@@ -280,8 +333,8 @@ conference_trending <- ggplot(
     fontface = 'bold'
   ) +
   labs(
-    title = "lorenipsum",
-    subtitle = "lorenipsum", 
+    title = glue("Winningest Men's College Basketball Teams in the {conference_filter}"),
+    subtitle = glue("Total program wins trailing {rolling_win_var} seasons 1997-2026, including post-season games."), 
     caption = 'Source: College-Basketball Reference; Data Visualization created by Alex Elfering',
     x = '',
     y = ''
@@ -307,12 +360,19 @@ conference_trending <- ggplot(
         panel.grid.major = element_blank(),
         panel.grid.major.y = element_line(color = 'gray92', linetype = 'solid'))
 
-#ggsave(file.path(documents_loc, 'test_winningest_teams.png'), device = 'png', width = 7, height = 5, dpi = 300, bg = 'white')
+ggsave(conference_trending,file.path(documents_loc, 'test_winningest_teams.png'), device = 'png', width = 7, height = 5, dpi = 300, bg = 'white')
 
 # table ----
 
 rolling_conference_filter |>
   filter(season == max(season)) |>
   arrange(rolling_win_ranked) |>
-  unite(rolling_record, c(rolling_wins, rolling_losses), sep='-')
+  unite(total_record, c(rolling_wins, rolling_losses), sep='-') |>
+  select(
+    season,
+    school_name,
+    total_record,
+    post_season_appearances,
+    tournament_wins_rolling
+  )
 
