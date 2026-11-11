@@ -10,7 +10,6 @@ library(ggplot2)
 library(ggrepel)
 library(showtext)
 library(ggtext)
-library(tidylog)
 
 showtext_auto()
 showtext_opts(dpi = 300)
@@ -419,7 +418,7 @@ ggsave(plot = conference_trending,file.path(documents_loc, 'test_winningest_team
 
 # table ----
 
-rolling_conference_filter |>
+rolling_table_detail <- rolling_conference_filter |>
   filter(season == max(season)) |>
   arrange(rolling_win_ranked) |>
   unite(total_record, c(rolling_wins, rolling_losses), sep='-') |>
@@ -432,18 +431,5 @@ rolling_conference_filter |>
     tournament_wins_rolling
   )
 
-rolling_wins |>
-  filter(school_name == 'Texas') |>
-  arrange(season) |>
-  #arrange(rolling_win_ranked) |>
-  unite(total_record, c(rolling_wins, rolling_losses), sep='-') |>
-  select(
-    season,
-    conference,
-    school_name,
-    total_record,
-    reg_conf_wins_rolling,
-    tournament_wins_rolling,
-    post_season_appearances
-  ) |>
-  as.data.frame()
+rolling_table_detail |>
+  gt()
