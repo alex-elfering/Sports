@@ -1,22 +1,27 @@
 # script and output visualizes the winningest men's college basketball teams since the 2000s
 # data source: college basketball reference
 
-library(tidyverse)
-library(janitor)
-library(glue)
-library(lubridate)
-library(zoo)
-library(ggplot2)
-library(ggrepel)
-library(showtext)
-library(ggtext)
-library(gt)
-
-showtext_auto()
-showtext_opts(dpi = 300)
-
-font_add_google("Fira Code", "ibm")
-font_add_google("Noto Sans", "noto")
+if(!exists("setup_done")){
+  library(tidyverse)
+  library(janitor)
+  library(glue)
+  library(lubridate)
+  library(zoo)
+  library(ggplot2)
+  library(ggrepel)
+  library(showtext)
+  library(ggtext)
+  library(gt)
+  
+  showtext_auto()
+  showtext_opts(dpi = 300)
+  
+  font_add_google("Fira Code", "ibm")
+  font_add_google("Noto Sans", "noto")
+  
+  setup_done <- T
+  
+}
 
 documents_loc <- "~/"
 proj_loc <- '~/GitHub/Sports/MCBB Winningest Big East Teams'
