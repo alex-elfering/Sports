@@ -49,6 +49,64 @@ roll_conf_label <- function(flag, conf, width, suffix = "winner") {
   })
 }
 
+# nicknames vector  ----
+school_short_names <- c(
+  "Brigham Young"                   = "BYU",
+  "Southern California"             = "USC",
+  "Southern Methodist"              = "SMU",
+  "Texas Christian"                 = "TCU",
+  "Louisiana State"                 = "LSU",
+  "Virginia Commonwealth"           = "VCU",
+  "Virginia Military Institute"     = "VMI",
+  "Nevada–Las Vegas"                = "UNLV",
+  "Connecticut"                     = "UConn",
+  "Massachusetts"                   = "UMass",
+  "Massachusetts–Lowell"            = "UMass Lowell",
+  "Pennsylvania"                    = "Penn",
+  "Pittsburgh"                      = "Pitt",
+  "Mississippi"                     = "Ole Miss",
+  "Southern Mississippi"            = "Southern Miss",
+  "California"                      = "Cal",
+  "George Washington"               = "GW",
+  "William & Mary"                  = "W&M",
+  "Miami (FL)"                      = "Miami",
+  "St. John's (NY)"                 = "St. John's",
+  "Albany (NY)"                     = "Albany",
+  "Loyola (IL)"                     = "Loyola Chicago",
+  "Loyola (MD)"                     = "Loyola Maryland",
+  "Loyola Marymount"                = "LMU",
+  "Saint Francis (PA)"              = "Saint Francis",
+  "Illinois–Chicago"                = "UIC",
+  "Marylandâ€“Baltimore County"     = "UMBC",
+  "Maryland–Baltimore County"       = "UMBC",
+  "Maryland–Eastern Shore"          = "UMES",
+  "Southern Illinois–Edwardsville"  = "SIUE",
+  "Tennessee–Martin"                = "UT Martin",
+  "Louisiana–Monroe"                = "UL Monroe",
+  "Arkansas–Pine Bluff"             = "Arkansas-Pine Bluff",
+  "Texas A&M–Corpus Christi"        = "A&M-Corpus Christi",
+  "Texas–Rio Grande Valley"         = "UTRGV",
+  "Florida International"           = "FIU",
+  "Florida Atlantic"                = "FAU",
+  "Florida Gulf Coast"              = "FGCU",
+  "Long Island University"          = "LIU",
+  "Stephen F. Austin"               = "SFA",
+  "Southeast Missouri State"        = "SEMO",
+  "Southeastern Louisiana"          = "SE Louisiana",
+  "Central Connecticut State"       = "Central Conn.",
+  "Northern Kentucky"               = "NKU",
+  "Western Kentucky"                = "WKU",
+  "Eastern Kentucky"                = "EKU",
+  "North Carolina A&T"              = "NC A&T",
+  "North Carolina Central"          = "NC Central",
+  "Mississippi Valley State"        = "Miss. Valley St.",
+  "Prairie View A&M"                = "Prairie View",
+  "Cal State Bakersfield"           = "CSU Bakersfield",
+  "Cal State Fullerton"             = "CSU Fullerton",
+  "Cal State Los Angeles"           = "CSU LA",
+  "Cal State Northridge"            = "CSUN"
+)
+
 # data loading  -----------------------------------
 mcbb_games <- read.csv(file.path(documents_loc, 'schedules_2012_2026.csv')) |>
   clean_names() |>
@@ -234,7 +292,8 @@ rolling_wins <- clean_mcbb |>
   mutate(rolling_win_ranked = dense_rank(desc(rolling_wins))) |>
   ungroup() |> 
   filter(season >= 1997,
-         season < 2027)
+         season < 2027) |>
+  mutate(school_label = short_name(school_name))
 
 # ----  if the user selects different conferences?  ----
 
