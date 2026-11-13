@@ -12,6 +12,7 @@ if(!exists("setup_done")){
   library(showtext)
   library(ggtext)
   library(gt)
+  library(gtExtras)
   
   showtext_auto()
   showtext_opts(dpi = 300)
@@ -27,7 +28,7 @@ documents_loc <- "~/"
 proj_loc <- '~/GitHub/Sports/MCBB Winningest Big East Teams'
 
 # functions ----
-roll_conf_label <- function(flag, conf, width, suffix = "winner") {
+roll_conf_label <- function(flag, conf, width, suffix = "") {
   # needed to identify teams that either won regular season championships or conference tournament championships
   # they might win one conference one season, then the next season, move a conference and win there, too
   
@@ -231,7 +232,7 @@ regular_conf_champions <- clean_mcbb |>
     reg_season_champ = 1
   )
 
-rolling_win_var <- 3
+rolling_win_var <- 10
 
 rolling_wins <- clean_mcbb |>
   arrange(season,
@@ -247,6 +248,8 @@ rolling_wins <- clean_mcbb |>
             by = c('season' = 'season',
                    'conference' = 'conference',
                    'school_name' = 'school_name')) |>
+  #filter(school_name == 'Harvard',
+  #       season >= 2019) |>
   group_by(
     season, school_name, conference
   ) |>
@@ -262,7 +265,10 @@ rolling_wins <- clean_mcbb |>
     tourney_winner = max(tourney_winner,na.rm = T),
     .groups = 'drop'
   ) |>
+    #group_by(school_name, conference) |>
+    #complete(season = full_seq(season,1)) |>
   mutate(across(where(is.numeric), ~ replace(.x, .x == -Inf, 0))) |>
+  #ungroup() |>
   group_by(school_name) |>
   arrange(school_name, season) |>
   group_by(school_name) |>
@@ -302,7 +308,11 @@ rolling_wins <- clean_mcbb |>
 
 # ----  if the user selects different conferences?  ----
 
-conference_filter <- 'A-10'
+conference_filter <- rolling_wins |>
+  filter(season == max(season)) |>
+  distinct(conference) |>
+  sample_n(1) |>
+  pull(conference)
 
 last_season <- max(rolling_wins$season)
 
@@ -328,7 +338,8 @@ other_peak_schools <- rolling_conference_filter |>
   filter(!school_name %in% latest_winning_programs) |>
   select(school_name,
          season,
-         rolling_wins)
+         rolling_wins,
+         school_label)
 
 top_conference <- rolling_conference_filter |>
   filter(school_name %in% latest_winning_programs)
@@ -430,7 +441,7 @@ conference_trending <- ggplot(
   ) +
   geom_text_repel(
     data = end_labels,
-    aes(label = label, color = school_name),
+    aes(label = school_label, color = school_name),
     family = 'noto', fontface = 'bold', size = 3.5,
     hjust = 0, 
     direction = 'y',
@@ -443,7 +454,7 @@ conference_trending <- ggplot(
   geom_text_repel(
     data = other_peak_schools,
     aes(
-      label = school_name
+      label = school_label
     ),
     #label = school_name,
     family = 'noto',
@@ -456,7 +467,7 @@ conference_trending <- ggplot(
     fontface = 'bold'
   ) +
   labs(
-    title = glue("Winningest Men's College Basketball Teams in the {conference_filter}"),
+    title = glue("Winningest MCBB Teams in the {conference_filter} Conference"),
     subtitle = glue("Total program wins trailing {rolling_win_var} seasons 1997-2026, including post-season games."), 
     caption = 'Source: College-Basketball Reference; Data Visualization created by Alex Elfering',
     x = '',
@@ -471,7 +482,7 @@ conference_trending <- ggplot(
         legend.title = element_blank(),
         legend.text = element_text(family = 'noto'),
         #plot.subtitle = ggtext::element_textbox_simple(lineheight = 1.2, margin = margin(t = 5, b = 15)),
-        plot.title = element_text(family = 'noto', size = 16, face = 'bold',margin = margin(b = 1)),
+        plot.title = element_text(family = 'noto', size = 15, face = 'bold',margin = margin(b = 1)),
         plot.subtitle = element_text(family = 'noto', size = 12,margin = margin(t = 1, b = 15)),
         plot.caption = element_text(family = 'noto', size = 8, color = 'gray40',hjust = 0, margin = margin(t = 1)),
         plot.caption.position = 'plot',
@@ -484,21 +495,42 @@ conference_trending <- ggplot(
         panel.grid.major.y = element_line(color = 'gray92', linetype = 'solid'))
 
 ggsave(plot = conference_trending,file.path(documents_loc, 'test_winningest_teams.png'), device = 'png', width = 7, height = 5, dpi = 300, bg = 'white')
-
+conference_trending
 # table ----
 
 rolling_table_detail <- rolling_conference_filter |>
   filter(season == max(season)) |>
   arrange(rolling_win_ranked) |>
   unite(total_record, c(rolling_wins, rolling_losses), sep='-') |>
+  mutate(
+    reg_conf_wins_rolling = ifelse(is.na(reg_conf_wins_rolling),"",reg_conf_wins_rolling),
+    tournament_wins_rolling = ifelse(is.na(tournament_wins_rolling),"",tournament_wins_rolling)
+  ) |>
   select(
-    season,
+    #season,
     school_name,
     total_record,
     reg_conf_wins_rolling,
-    post_season_appearances,
-    tournament_wins_rolling
+    tournament_wins_rolling,
+    post_season_appearances
   )
 
 rolling_table_detail |>
-  gt()
+  gt() |>
+  # column labels
+  cols_label(
+    school_name = 'School',
+    total_record = 'Total Record',
+    reg_conf_wins_rolling = 'Regular Season Championships',
+    tournament_wins_rolling = 'Tournament Championships',
+    post_season_appearances = 'Post-Season Tournament Appearances'
+  ) |>
+  # alignment of columns
+  cols_align(
+    align = 'center',
+    columns = c(total_record, reg_conf_wins_rolling, tournament_wins_rolling)
+  ) |>
+  cols_align(
+    align = 'right',
+    columns = c(school_name)
+  )
