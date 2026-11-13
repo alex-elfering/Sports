@@ -110,7 +110,8 @@ school_short_names <- c(
   "Cal State Bakersfield"           = "CSU Bakersfield",
   "Cal State Fullerton"             = "CSU Fullerton",
   "Cal State Los Angeles"           = "CSU LA",
-  "Cal State Northridge"            = "CSUN"
+  "Cal State Northridge"            = "CSUN",
+  "Bethune-Cookman"                 = 'B-CU'
 )
 
 # data loading  -----------------------------------
@@ -232,7 +233,7 @@ regular_conf_champions <- clean_mcbb |>
     reg_season_champ = 1
   )
 
-rolling_win_var <- 10
+rolling_win_var <- round(runif(1,2,5))
 
 rolling_wins <- clean_mcbb |>
   arrange(season,
@@ -495,7 +496,7 @@ conference_trending <- ggplot(
         panel.grid.major.y = element_line(color = 'gray92', linetype = 'solid'))
 
 ggsave(plot = conference_trending,file.path(documents_loc, 'test_winningest_teams.png'), device = 'png', width = 7, height = 5, dpi = 300, bg = 'white')
-conference_trending
+
 # table ----
 
 rolling_table_detail <- rolling_conference_filter |>
@@ -533,4 +534,37 @@ rolling_table_detail |>
   cols_align(
     align = 'right',
     columns = c(school_name)
+  ) |>
+  # border formatting
+  gt_add_divider(
+    columns = c(total_record, tournament_wins_rolling),
+    weight = px(1),
+    color = 'gray50'
+  ) |>
+  # fonts
+  tab_style(
+    style = cell_text(
+      font = google_font('Fira Code'),
+      color = 'gray30'
+    ),
+    locations = cells_body(columns = c(total_record))
+  ) |>
+  tab_style(
+    style = cell_text(
+      font = google_font('Noto Sans'),
+    ),
+    locations = cells_body(columns = -c(total_record))
+  ) |>
+  # title formatting
+  tab_options(
+    table.border.top.style    = "none",  
+    table.border.bottom.style = "none"   
+  ) |>
+  opt_row_striping() |>
+  tab_options(
+    table.font.size = px(14),
+    heading.align = "left",
+    column_labels.font.weight = "bold",
+    table.border.top.color = "black",
+    table.border.bottom.color = "black"
   )
