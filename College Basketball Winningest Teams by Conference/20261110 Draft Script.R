@@ -225,10 +225,10 @@ regular_conf_champions <- clean_mcbb |>
   filter(pct_conf == max(pct_conf)) |>
   ungroup() |>
   select(
-  -conf_w,
-  -conf_l,
-  -pct_conf
-    ) |>
+    -conf_w,
+    -conf_l,
+    -pct_conf
+  ) |>
   mutate(
     reg_season_champ = 1
   )
@@ -266,8 +266,8 @@ rolling_wins <- clean_mcbb |>
     tourney_winner = max(tourney_winner,na.rm = T),
     .groups = 'drop'
   ) |>
-    #group_by(school_name, conference) |>
-    #complete(season = full_seq(season,1)) |>
+  #group_by(school_name, conference) |>
+  #complete(season = full_seq(season,1)) |>
   mutate(across(where(is.numeric), ~ replace(.x, .x == -Inf, 0))) |>
   #ungroup() |>
   group_by(school_name) |>
