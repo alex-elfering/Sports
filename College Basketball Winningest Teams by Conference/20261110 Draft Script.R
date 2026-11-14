@@ -355,6 +355,19 @@ end_labels <- top_conference |>
   filter(season == last_season) |>
   mutate(label = school_name)
 
+# title and subtitle idea ----
+
+
+top_schools_listed <- top_conference |> filter(!is.na(school_label)) |> distinct(school_label)  |> pull(school_label)
+schools_in_top_count <- length(top_schools_listed)
+top_schools_collapsed <- paste( paste(top_schools_listed[1:schools_in_top_count-1], collapse = ', '), top_schools_listed[schools_in_top_count], sep = ', and ')
+
+
+subtitle_used <- paste0(
+  top_schools_collapsed, glue(' are among the top schools through the {last_season} season')
+)
+
+
 # visualization testing ----
 
 conference_trending <- ggplot(  
@@ -469,7 +482,7 @@ conference_trending <- ggplot(
   ) +
   labs(
     title = glue("Winningest MCBB Teams in the {conference_filter} Conference"),
-    subtitle = glue("Total program wins trailing {rolling_win_var} seasons 1997-2026, including post-season games."), 
+    subtitle = subtitle_used, 
     caption = 'Source: College-Basketball Reference; Data Visualization created by Alex Elfering',
     x = '',
     y = ''
