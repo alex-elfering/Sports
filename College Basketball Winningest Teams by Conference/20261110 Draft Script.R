@@ -51,7 +51,7 @@ roll_conf_label <- function(flag, conf, width, suffix = "") {
     # count titles per conference; the factor keeps the newest-first order
     tab <- table(factor(confs, levels = unique(confs)))
     # "1x SEC winner, 2x Big 12 winner"
-    paste0(tab, "x ", names(tab), " ", suffix, collapse = ", ")
+    paste0(tab, "x ", names(tab), "", suffix, collapse = ", ")
   })
 }
 
@@ -207,6 +207,7 @@ regular_conf_champions <- clean_mcbb |>
                    'season' = 'season')) |>
   filter(
     type == 'REG',
+    conference != 'Ind',
     conference == opp_conference
   ) |>
   group_by(
@@ -233,7 +234,7 @@ regular_conf_champions <- clean_mcbb |>
     reg_season_champ = 1
   )
 
-rolling_win_var <- round(runif(1,2,5))
+rolling_win_var <- round(runif(1,7,10))
 
 rolling_wins <- clean_mcbb |>
   arrange(season,
@@ -328,6 +329,12 @@ rolling_conference_filter <- rolling_wins |>
   complete(season = full_seq(season,1)) |>
   ungroup()
 
+curr_school_list <- rolling_conference_filter |>
+  filter(
+    season == max(season)
+  ) |>
+  pull(school_name)
+
 latest_winning_programs <- rolling_conference_filter |>
   filter(season == last_season) |>
   filter(dense_rank(desc(rolling_wins)) <= 3) |>
@@ -354,6 +361,20 @@ oth_peak_schoo <- rolling_conference_filter |>
 end_labels <- top_conference |>
   filter(season == last_season) |>
   mutate(label = school_name)
+
+# schools with no complete rolling window ----
+# added for schools that might have joined division I recently and not have enough seasons for the rolling window selected
+
+rolling_wins |>
+  filter(school_name %in% curr_school_list ) |>
+  group_by(school_name) |>
+  summarise(seasons = n(),
+            first_season = min(season),
+            last_season = max(season),
+            .groups = 'drop') |>
+  filter(
+    seasons < rolling_win_var
+  )
 
 # title and subtitle idea ----
 
@@ -520,9 +541,10 @@ rolling_table_detail <- rolling_conference_filter |>
     reg_conf_wins_rolling = ifelse(is.na(reg_conf_wins_rolling),"",reg_conf_wins_rolling),
     tournament_wins_rolling = ifelse(is.na(tournament_wins_rolling),"",tournament_wins_rolling)
   ) |>
+  # final select
   select(
     #season,
-    school_name,
+    school_label,
     total_record,
     reg_conf_wins_rolling,
     tournament_wins_rolling,
@@ -533,7 +555,7 @@ rolling_table_detail |>
   gt() |>
   # column labels
   cols_label(
-    school_name = 'School',
+    school_label = 'School',
     total_record = 'Total Record',
     reg_conf_wins_rolling = 'Regular Season Championships',
     tournament_wins_rolling = 'Tournament Championships',
@@ -546,7 +568,7 @@ rolling_table_detail |>
   ) |>
   cols_align(
     align = 'right',
-    columns = c(school_name)
+    columns = c(school_label)
   ) |>
   # border formatting
   gt_add_divider(
