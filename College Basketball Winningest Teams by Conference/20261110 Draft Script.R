@@ -27,6 +27,12 @@ if(!exists("setup_done")){
 documents_loc <- "~/"
 #proj_loc <- '~/GitHub/Sports/MCBB Winningest Big East Teams'
 
+
+# variables for testing ----
+
+conference_filter <- 'NEC'
+rolling_win_var <- round(runif(1,2,5))
+
 # functions ----
 roll_conf_label <- function(flag, conf, width, suffix = "") {
   # needed to identify teams that either won regular season championships or conference tournament championships
@@ -234,10 +240,7 @@ regular_conf_champions <- clean_mcbb |>
     reg_season_champ = 1
   )
 
-rolling_win_var <- round(runif(1,2,5))
-
 rolling_wins <- clean_mcbb |>
-  #filter(school_name == 'Arkansas') |>
   arrange(season,
           school_name) |>
   left_join(school_conferences,
@@ -304,9 +307,6 @@ rolling_wins <- clean_mcbb |>
   ungroup() 
 
 # ----  if the user selects different conferences?  ----
-
-conference_filter <- 'MVC'
-
 last_season <- max(rolling_wins$season)
 
 rolling_conference_filter <- rolling_wins |>
@@ -358,7 +358,6 @@ end_labels <- top_conference |>
 
 schools_short_rolling <- rolling_wins |>
   filter(school_name %in% curr_school_list ) |>
-  #filter(school_name == 'North Dakota State') |>
   group_by(school_name) |>
   summarise(seasons = n(),
             first_season = min(season),
