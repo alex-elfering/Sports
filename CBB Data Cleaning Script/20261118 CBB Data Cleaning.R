@@ -5,6 +5,7 @@ library(tidyverse)
 library(janitor)
 library(glue)
 library(lubridate)
+library(tidylog)
 
 documents_loc <- "~"
 
@@ -200,6 +201,28 @@ full_cbb_dataset <- clean_mcbb |>
   left_join(regular_conf_champions,
             by = c('season' = 'season',
                    'conference' = 'conference',
-                   'school_name' = 'school_name'))
+                   'school_name' = 'school_name')) |>
+  select(
+    school_name,
+    slug,
+    conference,
+    season,
+    date,
+    g,
+    opponent_name,
+    opp_conference,
+    opponent_rank,
+    type,
+    loc,
+    tm,
+    opp,
+    result,
+    ot,
+    game_won,
+    game_lost,
+    contains('appearance',ignore.case = T),
+    tourney_winner,
+    reg_season_champ
+  )
 
 saveRDS(full_cbb_dataset, 'full_cbb_dataset_mens.rds')
