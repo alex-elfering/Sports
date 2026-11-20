@@ -7,6 +7,7 @@ if(!exists("setup_done")){
   library(gt)
   library(gtExtras)
   library(gghighlight)
+  library(tidyverse)
   
   showtext_auto()
   showtext_opts(dpi = 300)
