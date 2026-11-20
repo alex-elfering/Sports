@@ -1,27 +1,10 @@
 # what are the winningest teams by conference in men's and women's college basketball since 1997?
 
-if(!exists("setup_done")){
   library(tidyverse)
   library(janitor)
   library(glue)
   library(zoo)
-  library(ggplot2)
-  library(ggrepel)
-  library(showtext)
-  library(ggtext)
-  library(gt)
-  library(gtExtras)
   library(data.table)
-  
-  showtext_auto()
-  showtext_opts(dpi = 300)
-  
-  font_add_google("Fira Code", "ibm")
-  font_add_google("Noto Sans", "noto")
-  
-  setup_done <- T
-  
-}
 
 
 # bring in the dataset  ----
