@@ -21,7 +21,7 @@ if(!exists("setup_done")){
 cbb_rolling_win_teams <- read_rds('~/GitHub/Sports/College Basketball Winningest Teams by Conference/rolling winningest teams.rds')
 
 # variables to tesr right now ----
-window_rolling <- 8
+window_rolling <- 5
 
 test_cbb_rolling <- cbb_rolling_win_teams |>
   filter(season == max(season)) |>
@@ -31,52 +31,11 @@ test_cbb_rolling <- cbb_rolling_win_teams |>
 conference_selected <- 'All'
 #conference_selected <- 'Big Ten'
 
-top_n_view <- 5
+top_n_view <- 12
 
-# prepare dataframe ----
+# functions for visualizations  ----
 
-if(conference_selected == 'All'){
-  
-  top_schools <- test_cbb_rolling |>
-    arrange(desc(rolling_wins)) |>
-    filter(dense_rank(desc(rolling_wins)) <= top_n_view) |>
-    pull(school_name)
-  
-}else if (conference_selected != 'All'){
-  
-  top_schools <- test_cbb_rolling |>
-    filter(conference == conference_selected) |>
-    arrange(desc(rolling_wins)) |>
-    filter(dense_rank(desc(rolling_wins)) <= top_n_view)
-  
-}
-
-
-cbb_rolling_win_teams |>
-  filter(window_rolling_win_var == window_rolling) |>
-  filter(school_name %in% top_schools) |>
-  mutate(school_name = factor(school_name, levels = top_schools)) |>
-  ggplot() + 
-  geom_line(mapping = aes( x = season,
-                           y = rolling_wins,
-                           group = school_name),
-            color = 'steelblue',
-            lineend = 'round',
-            linewidth = 2) +
-  gghighlight(max(rolling_wins) > 0,
-              use_direct_label = F) +
-  labs(
-    x = '',
-    y = ''
-  ) +
-  facet_wrap(~school_name) +
-  scale_y_continuous(
-    expand = expansion(mult = c(0.05, 0.05)),
-    labels = function(x) {
-      ifelse(x == max(x, na.rm = TRUE), paste0(x, '\nwins'), x)
-    }
-  ) + 
-  coord_cartesian(clip = 'off') +
+theme_cbb <- function(){
   theme(legend.position = "none",
         axis.text.x = element_text(size = 10, color = 'gray50', family = 'ibm'),
         axis.text.y = element_text(size = 10, color = 'gray50', family = 'ibm'),
@@ -96,5 +55,67 @@ cbb_rolling_win_teams |>
         panel.grid.major.y = element_line(color = 'gray92', linetype = 'solid'),
         # facet_wrap formatting
         strip.background = element_blank(),
-        strip.text = element_text(family = 'noto', size = 10,margin = margin(t = 1, b = 15))
-        )
+        strip.text = element_text(family = 'noto', size = 10,margin = margin(t = 1, b = 15), face = 'bold')
+  )
+}
+
+# prepare dataframe ----
+
+
+  top_schools <- test_cbb_rolling |>
+    arrange(desc(rolling_win_pct)) |>
+    filter(dense_rank(desc(rolling_win_pct)) <= top_n_view) |>
+    pull(school_name)
+
+top_school_stats <- cbb_rolling_win_teams |>
+  filter(school_name %in% top_schools) |>
+  filter(window_rolling_win_var == window_rolling) |>
+  arrange(school_name,
+          desc(season)) |>
+  group_by(school_name) |>
+  filter(row_number() <= window_rolling) |>
+  ungroup() |>
+  arrange(school_name) |>
+  summarise(
+    .by = c('school_name'),
+    total_wins = sum(wins),
+    total_losses = sum(losses)
+  ) |>
+  unite(record, c('total_wins','total_losses'), sep ='-')
+
+  cbb_rolling_win_teams |>
+    filter(window_rolling_win_var == window_rolling) |>
+    filter(school_name %in% top_schools) |>
+    mutate(school_name = factor(school_name, levels = top_schools)) |>
+    left_join(top_school_stats,
+              by = c('school_name')) |>
+    mutate(school_name = paste0(school_name, ' (',record,')')) |>
+    ggplot() + 
+    geom_line(mapping = aes( x = season,
+                             y = rolling_win_pct,
+                             group = school_name),
+              color = 'steelblue',
+              lineend = 'round',
+              linewidth = 1) +
+    gghighlight(max(rolling_wins) > 0,
+                use_direct_label = F,
+                unhighlighted_params = list(alpha = 0.3, linewidth = 0.75)) +
+    labs(
+      x = '',
+      y = ''
+    ) +
+    facet_wrap(~school_name,
+               scales = 'free_x',ncol = 4) +
+    scale_y_continuous(
+      expand = expansion(mult = c(0.05, 0.05)),
+      labels = function(x) {
+        ifelse(x == max(x, na.rm = TRUE), paste0( paste0(x*100,'%'), '\ngames won'), paste0( paste0(x*100,'%')))
+      }
+    ) + 
+    coord_cartesian(clip = 'off') +
+    theme_cbb()
+  
+    
+
+
+ggsave('~/test_winningest_teams.png', device = 'png', width = 10, height = 10, dpi = 300, bg = 'white')
