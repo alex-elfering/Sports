@@ -202,6 +202,7 @@ full_cbb_dataset <- clean_mcbb |>
             by = c('season' = 'season',
                    'conference' = 'conference',
                    'school_name' = 'school_name')) |>
+  mutate(school_name = short_name(school_name)) |>
   select(
     school_name,
     slug,
