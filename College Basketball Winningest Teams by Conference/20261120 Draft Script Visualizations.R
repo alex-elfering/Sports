@@ -29,21 +29,21 @@ test_cbb_rolling <- cbb_rolling_win_teams |>
   filter(window_rolling_win_var == window_rolling)
 
 # perhaps the user wants to look at all-time winningest programs outside of conference
-conference_selected <- 'All'
-#conference_selected <- 'Big Ten'
+#conference_selected <- 'All'
+conference_selected <- 'A-10'
 
-top_n_view <- 12
+top_n_view <- 6
 
 # functions for visualizations  ----
 
 theme_cbb <- function(){
   theme(legend.position = "none",
-        axis.text.x = element_text(size = 10, color = 'gray50', family = 'ibm'),
-        axis.text.y = element_text(size = 10, color = 'gray50', family = 'ibm'),
-        axis.title.y.left = element_markdown(size = 10, family = 'noto', angle = 0, vjust = 0.5),
-        axis.title.x = element_text(size = 11, family = 'noto'),
+        axis.text.x = element_text(size = 9, color = 'gray50', family = 'ibm'),
+        axis.text.y = element_text(size = 9, color = 'gray50', family = 'ibm'),
+        axis.title.y.left = element_blank(),
+        axis.title.x = element_blank(),
         legend.title = element_blank(),
-        legend.text = element_text(family = 'noto'),
+        legend.text = element_blank(),
         plot.title = element_text(family = 'noto', size = 15, face = 'bold',margin = margin(b = 1)),
         plot.subtitle = element_text(family = 'noto', size = 12,margin = margin(t = 1, b = 15)),
         plot.caption = element_text(family = 'noto', size = 8, color = 'gray40',hjust = 0, margin = margin(t = 1)),
@@ -54,9 +54,8 @@ theme_cbb <- function(){
         panel.background = element_blank(), panel.grid.minor = element_blank(),
         panel.grid.major = element_blank(),
         panel.grid.major.y = element_line(color = 'gray92', linetype = 'solid'),
-        # facet_wrap formatting
         strip.background = element_blank(),
-        strip.text = element_text(family = 'noto', size = 10,margin = margin(t = 1, b = 15), face = 'bold')
+        strip.text = element_text(family = 'noto', size = 10, face = 'bold')
   )
 }
 
@@ -109,7 +108,7 @@ if(conference_selected == 'All'){
       group = school_name
     )
   ) + 
-    geom_line(filtered_dataframe_visual |> filter(window_full == F),
+    geom_line(filtered_dataframe_visual |> filter(rolling_seasons_played < window_rolling),
               mapping = aes( x = season,
                              y = rolling_win_pct,
                              group = school_name),
@@ -117,7 +116,7 @@ if(conference_selected == 'All'){
               color = 'steelblue',
               lineend = 'round',
               linewidth = 1) +
-    geom_line(filtered_dataframe_visual |> filter(window_full == T),
+    geom_line(filtered_dataframe_visual |> filter(rolling_seasons_played >= window_rolling),
               mapping = aes( x = season,
                              y = rolling_win_pct,
                              group = school_name),
@@ -157,6 +156,99 @@ if(conference_selected == 'All'){
     theme_cbb()
   
 }else if(conference_selected != 'All'){
+  
+  top_schools <- test_cbb_rolling |>
+    arrange(desc(rolling_win_pct)) |>
+    filter( conference == conference_selected ) |>
+    pull(school_name)
+  
+  top_school_stats <- cbb_rolling_win_teams |>
+    filter(school_name %in% top_schools) |>
+    filter(window_rolling_win_var == window_rolling) |>
+    arrange(school_name,
+            desc(season)) |>
+    group_by(school_name) |>
+    filter(row_number() <= window_rolling) |>
+    ungroup() |>
+    arrange(school_name) |>
+    summarise(
+      .by = c('school_name'),
+      total_wins = sum(wins),
+      total_losses = sum(losses)
+    ) |>
+    unite(record, c('total_wins','total_losses'), sep ='-')
+  
+  filtered_dataframe_visual <- cbb_rolling_win_teams |>
+    filter(window_rolling_win_var == window_rolling) |>
+    filter(school_name %in% top_schools) |>
+    mutate(school_name = factor(school_name, levels = top_schools)) #|>
+  
+  last_season <- max(test_cbb_rolling$season)
+  
+  end_labels <- test_cbb_rolling |>
+    filter(school_name %in% top_schools) |>
+    mutate(school_name = factor(school_name, levels = top_schools)) |>
+    select(
+      season,
+      school_name,
+      rolling_win_pct
+    ) 
+  
+  ggplot(
+    mapping = aes(
+      x = season,
+      y = rolling_win_pct,
+      group = school_name
+    )
+  ) + 
+    geom_line(filtered_dataframe_visual |> filter(rolling_seasons_played < window_rolling),
+              mapping = aes( x = season,
+                             y = rolling_win_pct,
+                             group = school_name),
+              linetype = 'dashed',
+              color = 'steelblue',
+              lineend = 'round',
+              linewidth = 1) +
+    geom_line(filtered_dataframe_visual |> filter(rolling_seasons_played >= window_rolling),
+              mapping = aes( x = season,
+                             y = rolling_win_pct,
+                             group = school_name),
+              linetype = 'solid',
+              color = 'steelblue',
+              lineend = 'round',
+              linewidth = 1) +
+    gghighlight(max(rolling_wins) > 0,
+                use_direct_label = F,
+                unhighlighted_params = list(alpha = 0.3, linewidth = 0.75)) +
+    geom_text_repel(
+      data = end_labels,
+      aes(label = paste0(round(rolling_win_pct*100,1), "%") ),
+      color = 'steelblue',
+      family = 'noto', fontface = 'bold', size = 3.5,
+      hjust = 0, 
+      direction = 'y',
+      nudge_x = 0.6,
+      xlim = c(last_season + 0.6, NA),
+      segment.color = NA,
+      show.legend = FALSE,
+      bg.color = 'white', bg.r = 0.15
+    ) +
+    labs(
+      x = '',
+      y = ''
+    ) +
+    facet_wrap(~school_name,
+               #scales = 'free_x',
+               ncol = 3) +
+    scale_y_continuous(
+      expand = expansion(mult = c(0.05, 0.05)),
+      labels = function(x) {
+        ifelse(x == max(x, na.rm = TRUE), paste0( paste0(x*100,'%'), '\ngames won'), paste0( paste0(x*100,'%')))
+      }
+    ) + 
+    coord_cartesian(clip = 'off') +
+    theme_cbb()
+  
   
 }
 
